@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>고려와 불교 마블</title>
+<title>고려 마블</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
@@ -11,7 +11,7 @@
 :root{
   --bg:#EFE8D8;--paper:#FBF7EE;--ink:#2C2A25;--dim:#77705F;--line:#D6CBB3;--deep:#6E5B3E;
   --ok:#3D7A57;--warn:#BF552E;--corner:#E6DABF;
-  --zA:#F1DEC0;--zB:#F3D3CE;--zC:#D3E0E6;
+  --zA:#F1DEC0;--zB:#F3D3CE;--zC:#D3E0E6;--zD:#DCE6CC;
 }
 *{box-sizing:border-box}
 html{font-size:min(1.85vh,1.04vw)}
@@ -34,35 +34,35 @@ button:disabled{opacity:.38;cursor:default}
 .neg{color:var(--warn)}
 
 /* ---------- 보드 ---------- */
-#board{position:fixed;inset:0;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(6,1fr);gap:.35rem;padding:.35rem}
+#board{position:fixed;inset:0;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(7,1fr);gap:.3rem;padding:.3rem}
 .cell{
   position:relative;min-width:0;min-height:0;overflow:hidden;
-  display:flex;flex-direction:column;padding:.35rem .5rem;
+  display:flex;flex-direction:column;padding:.25rem .45rem;
   background:var(--paper);border:.16rem solid var(--line);border-radius:.5rem;
 }
-.cell.zA{background:var(--zA)}.cell.zB{background:var(--zB)}.cell.zC{background:var(--zC)}
+.cell.zA{background:var(--zA)}.cell.zB{background:var(--zB)}.cell.zC{background:var(--zC)}.cell.zD{background:var(--zD)}
 .cell.corner{background:var(--corner);border-color:#C9BA98}
-.cell.owned{border:.42rem solid var(--own);padding:.1rem .28rem}
+.cell.owned{border:.38rem solid var(--own);padding:.03rem .25rem}
 .cell.pick{outline:.3rem dashed var(--ink);outline-offset:-.6rem;cursor:pointer}
-.cell .top{display:flex;justify-content:space-between;align-items:center;height:1.75rem;font-size:1.05rem;color:var(--dim);gap:.3rem;white-space:nowrap}
-.cell .pill{background:var(--own);color:#fff;border-radius:.4rem;padding:0 .5rem;font-size:1.15rem;line-height:1.6rem;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+.cell .top{display:flex;justify-content:space-between;align-items:center;height:1.55rem;font-size:1rem;color:var(--dim);gap:.3rem;white-space:nowrap}
+.cell .pill{background:var(--own);color:#fff;border-radius:.4rem;padding:0 .5rem;font-size:1.05rem;line-height:1.45rem;overflow:hidden;text-overflow:ellipsis;max-width:55%}
 .cell .tr{display:flex;align-items:center;gap:.25rem}
 .cell .toll{color:var(--ink);font-size:1.15rem}
 .cell .toll.up{color:var(--warn)}
-.cell .nm{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font-size:1.8rem;line-height:1.12;word-break:keep-all;min-height:0}
-.cell.corner .nm{font-size:2.05rem;flex:0 0 auto;margin-top:.2rem}
-.cell .tx{flex:1;text-align:center;font-size:1rem;line-height:1.2;color:var(--dim);word-break:keep-all;display:flex;align-items:center;justify-content:center}
+.cell .nm{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;font-size:1.7rem;line-height:1.1;word-break:keep-all;min-height:0}
+.cell.corner .nm{font-size:1.95rem;flex:0 0 auto;margin-top:.1rem}
+.cell .tx{flex:1;text-align:center;font-size:.95rem;line-height:1.2;color:var(--dim);word-break:keep-all;display:flex;align-items:center;justify-content:center}
 .cell.card .nm{gap:.4rem}
-.cell .toks{height:2.4rem;display:flex;gap:.25rem;justify-content:center;align-items:center;flex:0 0 auto}
+.cell .toks{height:2.15rem;display:flex;gap:.25rem;justify-content:center;align-items:center;flex:0 0 auto}
 .cell .no{position:absolute;left:.35rem;bottom:.2rem;font-size:.85rem;color:var(--dim);opacity:.7}
-.tok{width:2.25rem;height:2.25rem;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:1.3rem;border:.18rem solid #fff;box-shadow:0 0 0 .12rem var(--ink)}
+.tok{width:2.05rem;height:2.05rem;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-size:1.3rem;border:.18rem solid #fff;box-shadow:0 0 0 .12rem var(--ink)}
 .tok.now{box-shadow:0 0 0 .26rem var(--ink);animation:bob 1.1s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-.3rem)}}
 .lan{width:1.05rem;height:1.5rem;display:block}
 .lan.bigl{width:1.5rem;height:2.1rem}
 
 /* ---------- 가운데 ---------- */
-#center{grid-row:2/6;grid-column:2/6;position:relative;min-height:0;background:var(--paper);border:.16rem solid var(--line);border-radius:.8rem;padding:1.1rem 1.6rem 1.2rem;display:flex;flex-direction:column;gap:.7rem}
+#center{grid-row:2/7;grid-column:2/7;position:relative;min-height:0;background:var(--paper);border:.16rem solid var(--line);border-radius:.8rem;padding:1.1rem 1.6rem 1.2rem;display:flex;flex-direction:column;gap:.7rem}
 .hud1{display:flex;align-items:center;gap:1.2rem;padding-right:5rem}
 .turn{background:var(--tc);color:#fff;border-radius:.7rem;padding:.35rem 1.4rem;font-size:2.7rem;white-space:nowrap;max-width:60%;overflow:hidden;text-overflow:ellipsis}
 .turn small{font-size:1.4rem;opacity:.85;margin-left:.4rem}
@@ -79,7 +79,9 @@ button:disabled{opacity:.38;cursor:default}
 .die.roll{animation:shake .14s linear infinite}
 @keyframes shake{25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
 .msg{text-align:center;font-size:1.55rem;color:var(--deep);min-height:2rem;line-height:1.3}
-.legend{display:flex;justify-content:center;gap:.9rem;font-size:1rem;color:var(--dim);white-space:nowrap}
+.legend{display:flex;justify-content:center;flex-wrap:wrap;gap:.3rem 1.2rem;font-size:1.1rem;color:var(--dim)}
+.legend span{white-space:nowrap}
+.legend .late{color:#fff;background:var(--warn);border-radius:.4rem;padding:0 .6rem}
 .legend span{display:flex;align-items:center;gap:.4rem}
 .legend i{width:1.2rem;height:1.2rem;border-radius:.25rem;border:.1rem solid var(--line)}
 .teams{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem}
@@ -108,6 +110,24 @@ button:disabled{opacity:.38;cursor:default}
 .opt.right{background:#DCEBDF;border-color:var(--ok)}
 .opt.wrong{background:#F4DAD1;border-color:var(--warn)}
 .opt.dim{opacity:.45}
+.opts.done{gap:.35rem}
+.opts.done .opt{min-height:2.8rem;font-size:1.6rem;padding:.15rem 1rem}
+.opts.ox.done .opt{min-height:4.4rem;font-size:3rem;min-width:9rem}
+.payrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.4rem 1.4rem;margin-top:auto;font-variant-numeric:tabular-nums}
+.payrow .sum,.payrow button{white-space:nowrap}
+.qwrap .payrow .sum{font-size:1.9rem}
+.payrow .sum{font-size:2.3rem}
+.payrow .note{color:var(--warn);font-size:1.4rem;flex-basis:100%;text-align:center;order:3}
+.payrow .big{padding:.45rem 2rem}
+.opts.ox{flex-direction:row;justify-content:center;gap:2.4rem}
+.opts.ox .opt{font-size:4.2rem;min-width:11rem;min-height:7rem;text-align:center;line-height:1}
+.qwrap{display:flex;gap:2rem;align-items:center;width:100%;justify-content:center}
+.qwrap.done img{height:15rem}
+.qwrap.done .opt{min-height:3rem;font-size:1.7rem}
+.qwrap.done .btns{margin-top:.2rem}
+.qwrap img{height:23rem;max-width:30rem;object-fit:contain;border-radius:.6rem;border:.16rem solid var(--line);background:#fff}
+.qwrap .qs{display:flex;flex-direction:column;gap:.6rem;flex:1;max-width:54rem;align-items:center}
+.discount{font-size:1.6rem;color:var(--ok);text-align:center}
 .fb{font-size:1.65rem;text-align:center;line-height:1.35;word-break:keep-all;max-width:56rem}
 .fb b{font-weight:normal;font-size:2rem;margin-right:.5rem}
 .fb.ok b{color:var(--ok)}.fb.no b{color:var(--warn)}
@@ -173,16 +193,22 @@ button:disabled{opacity:.38;cursor:default}
 <script src="data.js"></script>
 <script>
 'use strict';
-const KEY = 'goryeoMarble.v1';
+const KEY = 'goryeoMarble.v2';
 const TC = ['#B3372B','#1F4E8C','#2E6A44','#6B3F8E'];
-const ZONE_BG = {A:'var(--zA)',B:'var(--zB)',C:'var(--zC)'};
-const START_GRAIN = 500, LAP_BONUS = 100, PALGWAN_BONUS = 100, NO_LAND_BONUS = 50;
+const ZONE_BG = {A:'var(--zA)',B:'var(--zB)',C:'var(--zC)',D:'var(--zD)'};
+const START_GRAIN = 500, LAP_BONUS = 50, PALGWAN_BONUS = 100, NO_LAND_BONUS = 50;
+const LAN_MULT = [1,2,4];      // 연등 0·1·2개일 때 통행료 배수
+const MONO_MULT = 2, LATE_MULT = 1.5;
+const LATE_MS = 10*60000;      // 남은 시간이 10분(짧은 판은 전체의 1/3) 이하면 물가 상승
 const N = BOARD.length;
 const LANDS = BOARD.map((c,i)=>c.type==='land'?i:-1).filter(i=>i>=0);
 const ZONE_CELLS = {}; LANDS.forEach(i=>(ZONE_CELLS[BOARD[i].zone] ||= []).push(i));
 const idxOf = name => BOARD.findIndex(c=>c.name===name);
 const price = i => ZONES[BOARD[i].zone].price;
 const lanCost = i => price(i)/2;
+const TOLL_RATE = 0.8;          // 기본 통행료 = 땅값의 80% (모의 2,000판으로 맞춘 값)
+const baseToll = i => Math.round(price(i)*TOLL_RATE/10)*10;
+const r10 = n => Math.round(n/10)*10;
 const cname = i => BOARD[i].type==='card' ? '연등 카드' : BOARD[i].name;
 
 const esc = s => String(s).replace(/[&<>"']/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -199,20 +225,20 @@ let S = load() || blank();
 const ui = {busy:false, rolling:null, tok:null, shown:null, moveMode:null, showBoard:false, layer:null, lockUntil:0, gsel:0};
 
 function blank(prev){
-  return {v:1, phase:'setup',
+  return {v:2, phase:'setup',
     names: prev?.names || ['1모둠','2모둠','3모둠','4모둠'],
     minutes: prev?.minutes || 30, sound: prev?.sound ?? true};
 }
-function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY)); return s && s.v===1 ? s : null; }catch(e){ return null; } }
+function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY)); return s && s.v===2 ? s : null; }catch(e){ return null; } }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
 function startGame(){
-  S = {v:1, phase:'play', names:S.names, minutes:S.minutes, sound:S.sound,
+  S = {v:2, phase:'play', names:S.names, minutes:S.minutes, sound:S.sound,
     teams: S.names.map(n=>({name:n, grain:START_GRAIN, pos:0, skip:false})),
     owner: Array(N).fill(-1), lan: Array(N).fill(0),
     turn:0, turnNo:1, rolled:false, dice:null, pending:null,
     deck: shuffle(CARDS.keys()), deckPos:0,
-    remaining: S.minutes*60000, paused:false, timeUp:false,
+    remaining: S.minutes*60000, paused:false, timeUp:false, late:false, usedQ:{},
     msg:'', hist:[]};
   S.msg = `${S.teams[0].name}부터 시작해요.`;
   startTurn(); save(); render();
@@ -244,10 +270,24 @@ function finish(){ S.phase='over'; S.pending=null; ui.showBoard=false; ui.moveMo
 
 /* ---------- 칸 효과 ---------- */
 function isMono(zone,t){ return ZONE_CELLS[zone].every(i=>S.owner[i]===t); }
-function tollOf(i){
-  const o=S.owner[i]; if(o<0) return 0;
-  const z=BOARD[i].zone; return ZONES[z].toll*(1+S.lan[i])*(isMono(z,o)?2:1);
+// 통행료 = 기본(땅값의 80%) × 연등 배수(1·2·4) × 독점 ×2 × 물가 상승 ×1.5
+function tollWith(i, lan, o){
+  const z=BOARD[i].zone;
+  return r10(baseToll(i)*LAN_MULT[lan]*(isMono(z,o)?MONO_MULT:1)*(S.late?LATE_MULT:1));
 }
+function tollOf(i){ const o=S.owner[i]; return o<0 ? 0 : tollWith(i, S.lan[i], o); }
+/* 땅 문제 하나 뽑기: 이 판에서 아직 안 나온 것부터 */
+function pickQ(name){
+  const pool=QUIZ[name], used=S.usedQ[name] ||= [];
+  let cand=pool.map((_,k)=>k).filter(k=>!used.includes(k));
+  if(!cand.length){ used.length=0; cand=pool.map((_,k)=>k); }
+  const qi=cand[rnd(cand.length)]; used.push(qi);
+  const q=pool[qi];
+  const order = q.ox ? (q.o[0]==='O'?[0,1]:[1,0]) : shuffle(q.o.map((_,k)=>k));
+  return {qi, order, answered:null};
+}
+const qOf = p => QUIZ[BOARD[p.cell].name][p.qi];
+const isRight = p => p.answered!=null && p.order[p.answered]===0;
 function landingPending(i){
   const c=BOARD[i], t=S.turn;
   switch(c.type){
@@ -260,10 +300,10 @@ function landingPending(i){
     }
     case 'land': {
       const o=S.owner[i];
-      if(o<0) return {kind:'land', cell:i, order:shuffle([0,1,2]), answered:null};
+      if(o<0) return {kind:'land', cell:i, ...pickQ(c.name)};
       if(o===t) return {kind:'own', cell:i};
-      const z=c.zone;
-      return {kind:'toll', cell:i, to:o, base:ZONES[z].toll, lan:S.lan[i], mono:isMono(z,o), amount:tollOf(i)};
+      const full=tollOf(i);
+      return {kind:'toll', cell:i, to:o, base:baseToll(i), lan:S.lan[i], mono:isMono(c.zone,o), late:S.late, full, half:Math.round(full/2), ...pickQ(c.name)};
     }
   }
 }
@@ -336,10 +376,10 @@ const ACT = {
     snd('coin'); endTurn();
   },
   pay(){
-    const p=S.pending; if(p?.kind!=='toll') return;
-    const T=S.teams[S.turn], O=S.teams[p.to];
-    T.grain-=p.amount; O.grain+=p.amount;
-    S.msg=`${T.name} → ${O.name} 통행료 ${p.amount}섬`;
+    const p=S.pending; if(p?.kind!=='toll' || p.answered==null) return;
+    const T=S.teams[S.turn], O=S.teams[p.to], amount=isRight(p)?p.half:p.full;
+    T.grain-=amount; O.grain+=amount;
+    S.msg=`${T.name} → ${O.name} 통행료 ${amount}섬${isRight(p)?' (정답 할인)':''}`;
     snd('coin'); endTurn();
   },
   info(){
@@ -371,7 +411,7 @@ const ACT = {
       endTurn(); return;
     }
     const a=C.act;
-    if(a.grain){ T.grain+=a.grain; S.msg=`${T.name}: 연등 카드 +${a.grain}섬`; snd('coin'); endTurn(); return; }
+    if(a.grain){ T.grain+=a.grain; S.msg=`${T.name}: 연등 카드 ${a.grain>0?'+':''}${a.grain}섬`; snd(a.grain>0?'coin':'no'); endTurn(); return; }
     if(a.freeLantern){ S.pending={kind:'lantern', cell:p.cell, fromCard:true, card:p.card}; save(); render(); return; }
     if(a.moveTo){
       const to=idxOf(a.moveTo), steps=(to-T.pos+N)%N;
@@ -443,6 +483,7 @@ setInterval(()=>{
   if(!S.paused && S.remaining>0){
     S.remaining=Math.max(0,S.remaining-d);
     if(S.remaining===0){ S.timeUp=true; toast('시간 끝! 이번 차례까지만'); }
+    if(!S.late && S.remaining>0 && S.remaining<=Math.min(LATE_MS, S.minutes*60000/3)){ S.late=true; toast(`물가 상승! 통행료 ×${LATE_MULT}`); snd('no'); if(!ui.busy) render(); }
     save(); renderTimer();
   }
   // 시간이 끝났는데 아직 주사위를 안 굴린 차례라면 바로 결과로
@@ -451,10 +492,10 @@ setInterval(()=>{
 
 /* ---------- 그리기 ---------- */
 function gridPos(i){
-  if(i<=5) return [1, i+1];
-  if(i<=9) return [i-4, 6];
-  if(i<=15) return [6, 6-(i-10)];
-  return [6-(i-15), 1];
+  if(i<=6) return [1, i+1];
+  if(i<=11) return [i-5, 7];
+  if(i<=18) return [7, 7-(i-12)];
+  return [7-(i-18), 1];
 }
 const LANTERN = cls => `<svg class="lan ${cls||''}" viewBox="0 0 20 28" aria-hidden="true"><rect x="7" y="0" width="6" height="3" rx="1" fill="#5B3A1E"/><ellipse cx="10" cy="13.5" rx="9" ry="10" fill="#D4462A"/><ellipse cx="10" cy="13.5" rx="4" ry="10" fill="#E8743F"/><rect x="7" y="23" width="6" height="3" rx="1" fill="#5B3A1E"/><path d="M10 26v2" stroke="#5B3A1E" stroke-width="1.5"/></svg>`;
 
@@ -469,8 +510,8 @@ function cellHTML(i){
     if(o>=0){
       cls+=' owned'; style=`--own:${TC[o]}`;
       const tl=tollOf(i);
-      inner=`<div class="top"><span class="pill">${esc(S.teams[o].name)}</span><span class="tr">${LANTERN().repeat(S.lan[i])}<span class="toll ${tl>z.toll?'up':''}">통행 ${tl}</span></span></div>`;
-    } else inner=`<div class="top"><span>땅 ${z.price}</span><span>통행 ${z.toll}</span></div>`;
+      inner=`<div class="top"><span class="pill">${esc(S.teams[o].name)}</span><span class="tr">${LANTERN().repeat(S.lan[i])}<span class="toll ${tl>baseToll(i)?'up':''}">통행 ${tl}</span></span></div>`;
+    } else inner=`<div class="top"><span>땅 ${z.price}</span><span>통행 ${r10(baseToll(i)*(S.late?LATE_MULT:1))}</span></div>`;
     inner+=`<div class="nm">${esc(c.name)}</div>`;
   } else if(c.type==='card'){
     cls+=' card';
@@ -515,8 +556,9 @@ function renderCenter(){
       <div class="tg">${g(gr)}</div>
       <div class="ts">땅 ${lands.length} · 연등 ${lan}</div></div>`;
   }).join('');
-  const legend = Object.entries(ZONES).map(([k,z])=>`<span><i style="background:${ZONE_BG[k]}"></i>${z.name} (땅 ${z.price} · 통행 ${z.toll})</span>`).join('')
-    + `<span>4칸 독점 → 통행료 ×2</span>`;
+  const legend = Object.entries(ZONES).map(([k,z])=>`<span><i style="background:${ZONE_BG[k]}"></i>${z.name} (땅 ${z.price})</span>`).join('')
+    + `<span>통행료: 연등 1개 ×2 · 2개 ×4 · 같은 색 4칸 독점 ×2 · 문제 맞히면 절반</span>`
+    + (S.late?`<span class="late">물가 상승! 통행료 ×${LATE_MULT}</span>`:'');
   el.innerHTML = `
     ${S.phase==='play'?`<button id="tbtn" data-act="teacher" ${ui.busy?'disabled':''}>교사</button>`:''}
     <div class="hud1"><div class="turn">${esc(T.name)}<small>차례</small></div>${timerHTML()}</div>
@@ -536,24 +578,30 @@ function modalHTML(){
   const t=S.turn, T=S.teams[t];
   const head = (right='') => `<div class="mh"><span class="who">${esc(T.name)}</span><span>${right}</span></div>`;
   const ztag = i => `<span class="ztag" style="background:${ZONE_BG[BOARD[i].zone]}">${ZONES[BOARD[i].zone].name}</span>`;
-  const optsHTML = (opts, order, ans) => `<div class="opts">${order.map((oi,k)=>{
+  const optsHTML = (opts, order, ans, ox) => `<div class="opts ${ox?'ox':''} ${ans!=null?'done':''}">${order.map((oi,k)=>{
       const st = ans==null ? '' : oi===0 ? 'right' : k===ans ? 'wrong' : 'dim';
-      return `<button class="opt ${st}" data-act="ans" data-v="${k}" ${ans!=null?'disabled':''}>${k+1}. ${esc(opts[oi])}</button>`;
+      return `<button class="opt ${st}" data-act="ans" data-v="${k}" ${ans!=null?'disabled':''}>${ox?'':`${k+1}. `}${esc(opts[oi])}</button>`;
     }).join('')}</div>`;
+  // 사진 문제는 사진 옆 칸에 문제·선택지·결과를 함께 둔다 (답을 고르면 사진을 줄인다)
+  const quizHTML = (q, p, after='') => {
+    const inner = `<div class="mq">${esc(q.q)}</div>${optsHTML(q.o, p.order, p.answered, q.ox)}${after}`;
+    return q.img ? `<div class="qwrap ${p.answered!=null?'done':''}"><img src="${q.img}" alt=""><div class="qs">${inner}</div></div>` : inner;
+  };
   let body='';
   switch(p.kind){
     case 'land': {
-      const c=BOARD[p.cell], q=LAND_QUIZ[c.name], ok = p.answered!=null && p.order[p.answered]===0;
+      const c=BOARD[p.cell], q=qOf(p), ok=isRight(p);
       body = head(`${ztag(p.cell)} 땅값 ${price(p.cell)}섬`)
-        + `<div class="mt">${esc(c.name)}</div><div class="mq">${esc(q.q)}</div>`
-        + optsHTML(q.o, p.order, p.answered);
+        + `<div class="mt">${esc(c.name)}</div>`;
+      let after='';
       if(p.answered!=null){
-        body += `<div class="fb ${ok?'ok':'no'}"><b>${ok?'정답!':'아쉬워요.'}</b>${esc(q.ex)}</div>`;
-        body += ok
+        after += `<div class="fb ${ok?'ok':'no'}"><b>${ok?'정답!':'아쉬워요.'}</b>${esc(q.ex)}</div>`;
+        after += ok
           ? `<div class="btns"><button class="big solid" data-act="buy" ${T.grain<price(p.cell)?'disabled':''}>산다 (${price(p.cell)}섬)</button><button class="big" data-act="pass">안 산다</button></div>`
             + (T.grain<price(p.cell)?`<div class="note">곡식이 모자라서 살 수 없어요 (지금 ${T.grain}섬)</div>`:'')
           : `<div class="btns"><button class="big" data-act="pass">넘어가기</button></div>`;
       }
+      body += quizHTML(q, p, after);
       break;
     }
     case 'own': {
@@ -561,19 +609,26 @@ function modalHTML(){
       body = head(`${ztag(i)} 우리 땅`)
         + `<div class="mt">${esc(BOARD[i].name)}</div>`
         + `<div class="lanrow">연등 ${LANTERN('bigl').repeat(S.lan[i]) || '없음'} <span>(${S.lan[i]}/2)</span></div>`
-        + `<div class="mp">${full ? '연등이 꽉 찼어요.' : `연등을 1개 달면 통행료가 ${tollOf(i)}섬 → ${ZONES[BOARD[i].zone].toll*(2+S.lan[i])*(isMono(BOARD[i].zone,t)?2:1)}섬이 돼요.`}</div>`
+        + `<div class="mp">${full ? '연등이 꽉 찼어요.' : `연등을 1개 달면 통행료가 ${tollOf(i)}섬 → ${tollWith(i,S.lan[i]+1,t)}섬이 돼요.`}</div>`
         + `<div class="btns">${full ? '' : `<button class="big solid" data-act="lantern" ${T.grain<cost?'disabled':''}>연등 달기 (${cost}섬)</button>`}<button class="big" data-act="pass">${full?'확인':'그냥 두기'}</button></div>`
         + (!full && T.grain<cost ? `<div class="note">곡식이 모자라요 (지금 ${T.grain}섬)</div>`:'');
       break;
     }
     case 'toll': {
-      const O=S.teams[p.to], z=ZONES[BOARD[p.cell].zone];
-      body = head(`${ztag(p.cell)}`)
+      const O=S.teams[p.to], q=qOf(p), ok=isRight(p);
+      const parts=[`기본 ${p.base}`]; if(p.lan) parts.push(`연등 ${p.lan}개 ×${LAN_MULT[p.lan]}`); if(p.mono) parts.push(`독점 ×${MONO_MULT}`); if(p.late) parts.push(`물가 상승 ×${LATE_MULT}`);
+      body = head(`${ztag(p.cell)} ${esc(O.name)}의 땅`)
         + `<div class="mt">${esc(BOARD[p.cell].name)}</div>`
-        + `<div class="mp">${esc(O.name)}의 땅이에요. 통행료를 내요.</div>`
-        + `<div class="calc">기본 통행료 ${p.base} × (1 + 연등 ${p.lan})${p.mono?` × 2 <small>(「${z.name}」 구역 독점)</small>`:''}<br><span class="sum">${esc(T.name)} → ${esc(O.name)} ${p.amount}섬</span></div>`
-        + (T.grain-p.amount<0 ? `<div class="note">곡식이 모자라 빚이 생겨요 (${T.grain} → ${T.grain-p.amount}섬)</div>`:'')
-        + `<div class="btns"><button class="big solid" data-act="pay">내기</button></div>`;
+        + `<div class="discount">통행료 ${p.full}섬 <small>(${parts.join(' · ')})</small> — 문제를 맞히면 절반 ${p.half}섬!</div>`;
+      let after='';
+      if(p.answered!=null){
+        const amount = ok ? p.half : p.full;
+        after += `<div class="fb ${ok?'ok':'no'}"><b>${ok?'정답! 절반만 내요.':'아쉬워요.'}</b>${esc(q.ex)}</div>`
+          + `<div class="payrow"><span class="sum">${esc(T.name)} → ${esc(O.name)} ${amount}섬</span>`
+          + (T.grain-amount<0 ? `<span class="note">빚이 생겨요 (${T.grain} → ${T.grain-amount}섬)</span>`:'')
+          + `<button class="big solid" data-act="pay">내기</button></div>`;
+      }
+      body += quizHTML(q, p, after);
       break;
     }
     case 'info': {
@@ -604,8 +659,8 @@ function modalHTML(){
         } else body += `<div class="note">맞히면 곡식 ${C.quiz.win}섬</div>`;
       } else {
         const a=C.act;
-        const eff = a.grain ? `곡식 +${a.grain}섬` : a.freeLantern ? '우리 땅 하나에 연등 1개를 공짜로 단다' : `${ro(`「${a.moveTo}」`)} 간다${a.noStartBonus?' (개경을 지나도 곡식 없음)':''}`;
-        body += `<div class="calc"><span class="sum">${eff}</span></div><div class="btns"><button class="big solid" data-act="card">${a.moveTo?'가기':a.grain?'받기':'확인'}</button></div>`;
+        const eff = a.grain ? `곡식 ${a.grain>0?'+':''}${a.grain}섬` : a.freeLantern ? '우리 땅 하나에 연등 1개를 공짜로 단다' : `${ro(`「${a.moveTo}」`)} 간다${a.noStartBonus?' (개경을 지나도 곡식 없음)':''}`;
+        body += `<div class="calc"><span class="sum">${eff}</span></div><div class="btns"><button class="big solid" data-act="card">${a.moveTo?'가기':a.grain>0?'받기':a.grain<0?'내기':'확인'}</button></div>`;
       }
       break;
     }
@@ -621,8 +676,8 @@ function renderSetup(){
   const el=document.getElementById('setup');
   el.innerHTML = `<div class="sheet">
     <div>
-      <h1>고려와 불교 마블</h1>
-      <div class="sub">5학년 사회 1단원 복습 · 4모둠이 돌아가며 주사위를 굴려요</div>
+      <h1>고려 마블</h1>
+      <div class="sub">5학년 사회 1단원 고려 복습 (13~19차시) · 4모둠이 돌아가며 주사위를 굴려요</div>
       ${S.names.map((n,k)=>`<label class="field"><span class="dot" style="--c:${TC[k]}"></span><input type="text" maxlength="8" value="${esc(n)}"></label>`).join('')}
       <div class="field">플레이 시간 <span class="step"><button data-act="minus">−5</button><b>${S.minutes}분</b><button data-act="plus">+5</button></span></div>
       <div class="field">효과음 <button data-act="sound">${S.sound?'켜짐':'꺼짐'}</button></div>
@@ -634,7 +689,8 @@ function renderSetup(){
         <li>개경을 지나거나 도착하면 <b>+${LAP_BONUS}섬</b>.</li>
         <li><b>빈 땅</b>: 문제를 맞히면 살 수 있다. 틀리면 못 산다.</li>
         <li><b>우리 땅</b>: 연등을 단다. 1개 = 땅값의 절반, 한 땅에 2개까지.</li>
-        <li><b>남의 땅</b>: 통행료 = 기본 통행료 × (1 + 연등 수).<br>같은 색 4칸을 한 모둠이 다 가지면 ×2.</li>
+        <li><b>남의 땅</b>: 문제를 맞히면 통행료 <b>절반</b>.<br>통행료 = 칸에 적힌 기본 통행료 × 연등(1개 ×2, 2개 ×4). 같은 색 4칸 독점 ×2.</li>
+        <li>남은 시간 10분부터 <b>물가 상승</b>: 모든 통행료 ×${LATE_MULT}.</li>
         <li><b>연등 카드</b>: 한 장 뽑아 그대로 한다.</li>
         <li><b>몽골 침입</b>: 다음 차례 한 번 쉰다.</li>
         <li>곡식이 모자라면 빚(마이너스)이 된다. 파산은 없다.</li>
