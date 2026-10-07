@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>고려 마블</title>
+<title>사회 마블</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
@@ -127,7 +127,9 @@ button:disabled{opacity:.38;cursor:default}
 .opts.ox{flex-direction:row;justify-content:center;gap:2.4rem}
 .opts.ox .opt{font-size:4.2rem;min-width:11rem;min-height:7rem;text-align:center;line-height:1}
 .qwrap{display:flex;gap:2rem;align-items:center;width:100%;justify-content:center}
-.qwrap.done img{height:15rem}
+.qwrap.done img{height:13rem}
+.qwrap .fb{font-size:1.45rem}
+.qwrap .payrow .note{font-size:1.25rem}
 .qwrap.done .opt{min-height:3rem;font-size:1.7rem}
 .qwrap.done .btns{margin-top:.2rem}
 .qwrap img{height:23rem;max-width:30rem;object-fit:contain;border-radius:.6rem;border:.16rem solid var(--line);background:#fff}
@@ -190,6 +192,22 @@ button:disabled{opacity:.38;cursor:default}
 .row button.sel{background:var(--c,var(--deep));color:#fff;border-color:var(--c,var(--deep))}
 .note{font-size:1.3rem;color:var(--dim);text-align:center}
 #backres{position:fixed;right:1rem;bottom:1rem;z-index:15;font-size:1.4rem;background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* 시작 화면: 문제·규칙 고르기 (터치하기 쉬운 큰 체크 단추) */
+.opts-col{display:flex;flex-direction:column;gap:.55rem}
+.opts-col h3{font-size:1.7rem;font-weight:normal;margin:.3rem 0 0;color:var(--deep)}
+.chk{display:flex;align-items:center;gap:1rem;text-align:left;font-size:1.6rem;padding:.55rem 1rem;border-color:var(--line);background:#fff}
+.chk i{flex:0 0 auto;width:2.1rem;height:2.1rem;border:.2rem solid var(--deep);border-radius:.45rem;display:grid;place-items:center;background:#fff}
+.chk.on{border-color:var(--deep);background:#F4EEDF}
+.chk.on i{background:var(--deep)}
+.chk.on i::after{content:'';width:.6rem;height:1.05rem;border:solid #fff;border-width:0 .25rem .25rem 0;transform:rotate(45deg) translate(-.05rem,-.1rem)}
+.chk small{display:block;font-size:1.15rem;color:var(--dim)}
+.opts-col .rules{font-size:1.3rem;line-height:1.45;margin-top:.3rem}
+.opts-col .note{text-align:left}
+.team.out{opacity:.45}
+.badge.cheer{background:var(--ok)}
+.rk.out{opacity:.6}
+.rk.out .s{font-size:2.6rem;color:var(--warn)}
 </style>
 </head>
 <body>
@@ -200,7 +218,8 @@ button:disabled{opacity:.38;cursor:default}
 <button id="backres" data-act="showres" hidden>결과로 돌아가기</button>
 <div id="layer" hidden></div>
 
-<script src="data.js"></script>
+<script src="data.js?v=3"></script>
+<script src="bank.js?v=3"></script>
 <script>
 'use strict';
 const KEY = 'goryeoMarble.v2';
@@ -209,19 +228,31 @@ const MIN_TEAMS = 2, MAX_TEAMS = TC.length;
 const defaultNames = () => TC.map((_,k)=>`${k+1}모둠`);
 const ZONE_BG = {A:'var(--zA)',B:'var(--zB)',C:'var(--zC)',D:'var(--zD)'};
 const START_GRAIN = 500, LAP_BONUS = 50, PALGWAN_BONUS = 100, NO_LAND_BONUS = 50;
-const LAN_MULT = [1,2,4];      // 연등 0·1·2개일 때 통행료 배수
+const CATCHUP_BONUS = 150;     // 꼴찌 응원: 꼴찌 모둠이 출발점을 지나면 더 받는다 (모의 200판에서 격차가 절반으로 줄어든 값)
+const LAN_MULT = [1,2,4];      // 연등(건물) 0·1·2개일 때 통행료 배수
 const MONO_MULT = 2, LATE_MULT = 1.5;
 const LATE_MS = 10*60000;      // 남은 시간이 10분(짧은 판은 전체의 1/3) 이하면 물가 상승
-const N = BOARD.length;
-const LANDS = BOARD.map((c,i)=>c.type==='land'?i:-1).filter(i=>i>=0);
-const ZONE_CELLS = {}; LANDS.forEach(i=>(ZONE_CELLS[BOARD[i].zone] ||= []).push(i));
+const TOLL_RATE = 0.8;          // 기본 통행료 = 땅값의 80% (모의 2,000판으로 맞춘 값)
+
+/* ---------- 판 모양(테마): 시작할 때 고른 문제 묶음에 따라 정해진다 ---------- */
+let TH, ZONES, BOARD, CARDS, N, LANDS, ZONE_CELLS, CUR, U;
+function applyTheme(id){
+  TH = THEMES[id] || THEMES.goryeo;
+  ZONES = TH.zones; BOARD = TH.board; CARDS = TH.cards; N = BOARD.length; CUR = TH.cur; U = TH.unit;
+  LANDS = BOARD.map((c,i)=>c.type==='land'?i:-1).filter(i=>i>=0);
+  ZONE_CELLS = {}; LANDS.forEach(i=>(ZONE_CELLS[BOARD[i].zone] ||= []).push(i));
+}
+const themeFor = packs => (packs.length===1 && PACKS.find(p=>p.id===packs[0])?.theme==='goryeo') ? 'goryeo' : 'world';
+function poolFor(packs){
+  const sets = new Set(packs.flatMap(id=>PACKS.find(p=>p.id===id)?.sets || []));
+  return BANK.map((q,k)=>sets.has(q.set)?k:-1).filter(k=>k>=0);
+}
 const idxOf = name => BOARD.findIndex(c=>c.name===name);
 const price = i => ZONES[BOARD[i].zone].price;
 const lanCost = i => price(i)/2;
-const TOLL_RATE = 0.8;          // 기본 통행료 = 땅값의 80% (모의 2,000판으로 맞춘 값)
 const baseToll = i => Math.round(price(i)*TOLL_RATE/10)*10;
 const r10 = n => Math.round(n/10)*10;
-const cname = i => BOARD[i].type==='card' ? '연등 카드' : BOARD[i].name;
+const cname = i => BOARD[i].type==='card' ? TH.card : BOARD[i].name;
 
 const esc = s => String(s).replace(/[&<>"']/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const rnd = n => Math.floor(Math.random()*n);
@@ -230,32 +261,45 @@ const sum = a => a.reduce((s,x)=>s+x,0);
 // 받침에 따라 조사를 고른다: eul('장터') → '장터를'
 const jong = w => { w=String(w).replace(/[^가-힣0-9]+$/,''); const c=w.charCodeAt(w.length-1)-0xAC00; return c>=0 && c<=11171 ? c%28 : (/[0-9]$/.test(w) ? [0,1,1,1,0,0,1,1,1,0][+String(w).slice(-1)] : 0); };
 const eul = w => w+(jong(w)?'을':'를'), eun = w => w+(jong(w)?'은':'는'), ro = w => w+(jong(w)&&jong(w)!==8?'으로':'로');
-const g = n => `<span class="${n<0?'neg':''}">${n}섬</span>`;
+const money = n => `${n}${U}`;
+const g = n => `<span class="${n<0?'neg':''}">${money(n)}</span>`;
 
 /* ---------- 상태 ---------- */
 let S = load() || blank();
+applyTheme(S.theme || 'goryeo');
 const ui = {busy:false, rolling:null, tok:null, shown:null, moveMode:null, showBoard:false, layer:null, lockUntil:0, gsel:0};
 
 function blank(prev){
   return {v:2, phase:'setup',
     names: defaultNames().map((d,k)=>prev?.names?.[k] || d),
     count: prev?.count || prev?.teams?.length || 4,
-    minutes: prev?.minutes || 30, sound: prev?.sound ?? true};
+    minutes: prev?.minutes || 30, sound: prev?.sound ?? true,
+    packs: prev?.packs || ['goryeo'], catchup: prev?.catchup ?? true, bankrupt: prev?.bankrupt ?? false};
 }
 function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY)); return s && s.v===2 ? s : null; }catch(e){ return null; } }
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
 function startGame(){
+  const theme = themeFor(S.packs);
+  applyTheme(theme);
   S = {v:2, phase:'play', names:S.names, count:S.count, minutes:S.minutes, sound:S.sound,
-    teams: S.names.slice(0,S.count).map(n=>({name:n, grain:START_GRAIN, pos:0, skip:false})),
+    packs:S.packs, catchup:S.catchup, bankrupt:S.bankrupt, theme, pool:poolFor(S.packs), usedBank:[],
+    teams: S.names.slice(0,S.count).map(n=>({name:n, grain:START_GRAIN, pos:0, skip:false, out:false})),
     owner: Array(N).fill(-1), lan: Array(N).fill(0),
     turn:0, turnNo:1, rolled:false, dice:null, pending:null,
-    deck: shuffle(CARDS.keys()), deckPos:0,
+    deck: shuffle(CARDS.keys()), deckPos:0, outCount:0,
     remaining: S.minutes*60000, paused:false, timeUp:false, late:false, usedQ:{},
     msg:'', hist:[]};
   S.msg = `${S.teams[0].name}부터 시작해요.`;
   startTurn(); save(); render();
 }
+
+/* 살아 있는 모둠 (파산 모드에서 탈락한 모둠은 건너뛴다) */
+const alive = t => !S.teams[t].out;
+const aliveList = () => S.teams.map((_,t)=>t).filter(alive);
+const firstAlive = () => aliveList()[0];
+const lastAlive = () => aliveList().slice(-1)[0];
+function nextAlive(t){ for(let k=1;k<=S.teams.length;k++){ const n=(t+k)%S.teams.length; if(alive(n)) return n; } return t; }
 
 /* 차례 시작 상태를 쌓아 두고 [되돌리기]에 쓴다. 시간은 되돌리지 않는다. */
 const SNAP_SKIP = new Set(['hist','remaining','paused','timeUp','sound']);
@@ -267,8 +311,11 @@ function startTurn(){
 }
 function endTurn(){
   S.pending=null;
-  if(S.timeUp){ finish(); return; }
-  S.turn=(S.turn+1)%S.teams.length; S.turnNo++;
+  if(aliveList().length<=1){ finish(); return; }
+  const cur=S.turn, nxt=nextAlive(cur);
+  // 시간이 끝났으면 이번 바퀴의 마지막 모둠까지 마치고 끝낸다 (모든 모둠이 같은 횟수)
+  if(S.timeUp && nxt<=cur){ finish(); return; }
+  S.turn=nxt; S.turnNo++;
   startTurn(); save(); render();
 }
 function canUndo(){ return S.phase==='play' && !ui.busy && (S.rolled || S.hist.length>=2); }
@@ -281,6 +328,20 @@ function undo(){
 }
 function finish(){ S.phase='over'; S.pending=null; ui.showBoard=false; ui.moveMode=null; save(); render(); snd('coin'); }
 
+/* ---------- 점수 ---------- */
+function scores(){
+  return S.teams.map((T,t)=>{
+    const lands=LANDS.filter(i=>S.owner[i]===t);
+    const landV=sum(lands.map(price)), lanV=sum(lands.map(i=>S.lan[i]*lanCost(i)));
+    return {t, T, lands, landV, lanV, total:T.grain+landV+lanV, monos:Object.keys(ZONES).filter(z=>isMono(z,t))};
+  });
+}
+// 꼴찌인가: 살아 있는 모둠 가운데 점수가 가장 낮고, 모두 같은 점수는 아닐 때
+function isLast(t){
+  const tot=scores().filter(x=>alive(x.t)).map(x=>x.total), me=scores()[t].total;
+  return tot.length>1 && me===Math.min(...tot) && Math.max(...tot)>me;
+}
+
 /* ---------- 칸 효과 ---------- */
 function isMono(zone,t){ return ZONE_CELLS[zone].every(i=>S.owner[i]===t); }
 // 통행료 = 기본(땅값의 80%) × 연등 배수(1·2·4) × 독점 ×2 × 물가 상승 ×1.5
@@ -289,17 +350,24 @@ function tollWith(i, lan, o){
   return r10(baseToll(i)*LAN_MULT[lan]*(isMono(z,o)?MONO_MULT:1)*(S.late?LATE_MULT:1));
 }
 function tollOf(i){ const o=S.owner[i]; return o<0 ? 0 : tollWith(i, S.lan[i], o); }
-/* 땅 문제 하나 뽑기: 이 판에서 아직 안 나온 것부터 */
-function pickQ(name){
-  const pool=QUIZ[name], used=S.usedQ[name] ||= [];
+const orderFor = q => q.ox ? (q.o[0]==='O'?[0,1]:[1,0]) : shuffle(q.o.map((_,k)=>k));
+/* 고려 보드: 땅마다 그 주제 문제 묶음에서, 이 판에서 아직 안 나온 것부터 */
+function pickLandQ(name){
+  const pool=TH.quiz[name], used=S.usedQ[name] ||= [];
   let cand=pool.map((_,k)=>k).filter(k=>!used.includes(k));
   if(!cand.length){ used.length=0; cand=pool.map((_,k)=>k); }
   const qi=cand[rnd(cand.length)]; used.push(qi);
-  const q=pool[qi];
-  const order = q.ox ? (q.o[0]==='O'?[0,1]:[1,0]) : shuffle(q.o.map((_,k)=>k));
-  return {qi, order, answered:null};
+  return {qi, order:orderFor(pool[qi]), answered:null};
 }
-const qOf = p => QUIZ[BOARD[p.cell].name][p.qi];
+/* 세계 보드: 고른 문제 묶음 전체에서, 아직 안 나온 것부터 */
+function pickBankQ(){
+  let cand=S.pool.filter(k=>!S.usedBank.includes(k));
+  if(!cand.length){ S.usedBank=[]; cand=[...S.pool]; }
+  const bi=cand[rnd(cand.length)]; S.usedBank.push(bi);
+  return {bi, order:orderFor(BANK[bi]), answered:null};
+}
+const pickFor = i => TH.quiz ? pickLandQ(BOARD[i].name) : pickBankQ();
+const qOf = p => p.bi!=null ? BANK[p.bi] : TH.quiz[BOARD[p.cell].name][p.qi];
 const isRight = p => p.answered!=null && p.order[p.answered]===0;
 function landingPending(i){
   const c=BOARD[i], t=S.turn;
@@ -308,26 +376,44 @@ function landingPending(i){
     case 'yeondeung': return {kind:'lantern', cell:i};
     case 'card': {
       if(S.deckPos>=S.deck.length){ S.deck=shuffle(CARDS.keys()); S.deckPos=0; }
-      const ci=S.deck[S.deckPos++];
-      return {kind:'card', cell:i, card:ci, order: CARDS[ci].quiz ? shuffle([0,1,2]) : null, answered:null};
+      const ci=S.deck[S.deckPos++], C=CARDS[ci];
+      if(C.quiz==='pool') return {kind:'card', cell:i, card:ci, ...pickBankQ()};
+      return {kind:'card', cell:i, card:ci, order: C.quiz ? shuffle([0,1,2]) : null, answered:null};
     }
     case 'land': {
       const o=S.owner[i];
-      if(o<0) return {kind:'land', cell:i, ...pickQ(c.name)};
+      if(o<0) return {kind:'land', cell:i, ...pickFor(i)};
       if(o===t) return {kind:'own', cell:i};
       const full=tollOf(i);
-      return {kind:'toll', cell:i, to:o, base:baseToll(i), lan:S.lan[i], mono:isMono(c.zone,o), late:S.late, full, half:Math.round(full/2), ...pickQ(c.name)};
+      return {kind:'toll', cell:i, to:o, base:baseToll(i), lan:S.lan[i], mono:isMono(c.zone,o), late:S.late, full, half:Math.round(full/2), ...pickFor(i)};
     }
   }
 }
 function lanternTargets(t){ return LANDS.filter(i=>S.owner[i]===t && S.lan[i]<2); }
 
+/* 곡식을 낸 뒤: 파산 모드에서 빚이 생기면 땅을 팔고, 그래도 모자라면 탈락 */
+function settleOrEnd(){
+  const t=S.turn, T=S.teams[t];
+  if(!(S.bankrupt && T.grain<0)){ endTurn(); return; }
+  const value = i => price(i)+S.lan[i]*lanCost(i);
+  const mine = LANDS.filter(i=>S.owner[i]===t).sort((a,b)=>value(a)-value(b));
+  const sold=[];
+  for(const i of mine){
+    if(T.grain>=0) break;
+    const got=Math.round(value(i)/2); T.grain+=got; sold.push({i, name:BOARD[i].name, got});
+    S.owner[i]=-1; S.lan[i]=0;
+  }
+  S.pending={kind:'settle', sold, out:T.grain<0};
+  save(); render();
+}
+
 /* 이동: 상태를 먼저 확정·저장한 뒤 그림만 따라간다 (도중에 새로고침해도 두 번 굴리기 없음) */
 async function travel(steps, bonus, dice){
   const t=S.turn, T=S.teams[t], from=T.pos, to=(from+steps)%N;
   const passed = from+steps>=N && bonus;
+  const extra = passed && S.catchup && isLast(t) ? CATCHUP_BONUS : 0;
   const before = T.grain;
-  T.pos=to; if(passed) T.grain+=LAP_BONUS;
+  T.pos=to; if(passed) T.grain+=LAP_BONUS+extra;
   if(dice) S.dice=dice;
   S.pending = landingPending(to);
   save();
@@ -338,10 +424,13 @@ async function travel(steps, bonus, dice){
   for(let k=1;k<=steps;k++){
     await wait(170);
     ui.tok.pos=(from+k)%N;
-    if(ui.tok.pos===0 && passed){ ui.shown.grain=before+LAP_BONUS; toast(`개경 통과 +${LAP_BONUS}섬`); snd('coin'); } else snd('step');
+    if(ui.tok.pos===0 && passed){
+      ui.shown.grain=before+LAP_BONUS+extra;
+      toast(`${TH.start} 통과 +${money(LAP_BONUS)}${extra?` · 꼴찌 응원 +${money(extra)}`:''}`, extra?2200:1300); snd('coin');
+    } else snd('step');
     renderCells(); renderCenter();
   }
-  await wait(380);
+  await wait(extra?900:380);
   ui.busy=false; ui.tok=null; ui.shown=null;
   render();
 }
@@ -364,20 +453,20 @@ function roll(){
 const ACT = {
   roll,
   ans(k){
-    const p=S.pending; if(!p || p.answered!=null) return;
-    p.answered=k;
+    const p=S.pending; if(!p || p.answered!=null || !p.order) return;
+    p.answered=+k;
     snd(p.order[k]===0 ? 'ok':'no'); save(); render();
   },
   buy(){
     const p=S.pending, t=S.turn, T=S.teams[t]; if(p?.kind!=='land') return;
     const i=p.cell; if(T.grain<price(i) || S.owner[i]>=0) return;
     T.grain-=price(i); S.owner[i]=t;
-    S.msg=`${T.name}: ${eul(`「${cname(i)}」`)} 샀어요 (-${price(i)}섬)`;
+    S.msg=`${T.name}: ${eul(`「${cname(i)}」`)} 샀어요 (-${money(price(i))})`;
     snd('coin'); endTurn();
   },
   pass(){
     const p=S.pending, T=S.teams[S.turn];
-    if(p?.kind==='land') S.msg = p.order[p.answered]===0 ? `${T.name}: ${eul(`「${cname(p.cell)}」`)} 사지 않았어요` : `${T.name}: 「${cname(p.cell)}」 문제를 틀려서 못 샀어요`;
+    if(p?.kind==='land') S.msg = isRight(p) ? `${T.name}: ${eul(`「${cname(p.cell)}」`)} 사지 않았어요` : `${T.name}: 「${cname(p.cell)}」 문제를 틀려서 못 샀어요`;
     if(p?.kind==='own') S.msg = `${T.name}: 우리 땅 「${cname(p.cell)}」에 쉬었어요`;
     endTurn();
   },
@@ -385,33 +474,33 @@ const ACT = {
     const p=S.pending, T=S.teams[S.turn]; if(p?.kind!=='own') return;
     const i=p.cell; if(S.lan[i]>=2 || T.grain<lanCost(i)) return;
     T.grain-=lanCost(i); S.lan[i]++;
-    S.msg=`${T.name}: 「${cname(i)}」에 연등을 달았어요 (-${lanCost(i)}섬)`;
+    S.msg=`${T.name}: 「${cname(i)}」에 ${TH.upDone} (-${money(lanCost(i))})`;
     snd('coin'); endTurn();
   },
   pay(){
     const p=S.pending; if(p?.kind!=='toll' || p.answered==null) return;
     const T=S.teams[S.turn], O=S.teams[p.to], amount=isRight(p)?p.half:p.full;
     T.grain-=amount; O.grain+=amount;
-    S.msg=`${T.name} → ${O.name} 통행료 ${amount}섬${isRight(p)?' (정답 할인)':''}`;
-    snd('coin'); endTurn();
+    S.msg=`${T.name} → ${O.name} 통행료 ${money(amount)}${isRight(p)?' (정답 할인)':''}`;
+    snd('coin'); settleOrEnd();
   },
   info(){
     const p=S.pending; if(p?.kind!=='info') return;
     const c=BOARD[p.cell], T=S.teams[S.turn];
-    if(c.type==='palgwan'){ T.grain+=PALGWAN_BONUS; S.msg=`${T.name}: 팔관회에서 무역 +${PALGWAN_BONUS}섬`; snd('coin'); }
-    if(c.type==='rest'){ T.skip=true; S.msg=`${T.name}: 몽골 침입으로 피란, 다음 차례를 쉬어요`; }
-    if(c.type==='start'){ S.msg=`${T.name}: 개경에 도착 (+${LAP_BONUS}섬)`; }
+    if(c.type==='palgwan'){ T.grain+=PALGWAN_BONUS; S.msg=`${T.name}: ${TH.festMsg} +${money(PALGWAN_BONUS)}`; snd('coin'); }
+    if(c.type==='rest'){ T.skip=true; S.msg=`${T.name}: ${TH.restMsg}`; }
+    if(c.type==='start'){ S.msg=`${T.name}: ${TH.start}에 도착`; }
     endTurn();
   },
   hang(i){
     const p=S.pending, t=S.turn, T=S.teams[t]; if(p?.kind!=='lantern') return;
     i=+i; if(S.owner[i]!==t || S.lan[i]>=2) return;
-    S.lan[i]++; S.msg=`${T.name}: 「${cname(i)}」에 연등을 공짜로 달았어요`;
+    S.lan[i]++; S.msg=`${T.name}: 「${cname(i)}」에 공짜로 ${TH.upDone}`;
     snd('coin'); endTurn();
   },
   nolan(){
     const p=S.pending, t=S.turn, T=S.teams[t]; if(p?.kind!=='lantern' || lanternTargets(t).length) return;
-    T.grain+=NO_LAND_BONUS; S.msg=`${T.name}: ${LANDS.some(i=>S.owner[i]===t)?'연등이 꽉 차서':'연등을 달 땅이 없어'} 곡식 +${NO_LAND_BONUS}섬`;
+    T.grain+=NO_LAND_BONUS; S.msg=`${T.name}: ${LANDS.some(i=>S.owner[i]===t)?`${TH.up}이 꽉 차서`:'땅이 없어서'} ${CUR} +${money(NO_LAND_BONUS)}`;
     snd('coin'); endTurn();
   },
   card(){
@@ -419,23 +508,34 @@ const ACT = {
     const C=CARDS[p.card], T=S.teams[S.turn];
     if(C.quiz){
       if(p.answered==null) return;
-      if(p.order[p.answered]===0){ T.grain+=C.quiz.win; S.msg=`${T.name}: 카드 문제 정답 +${C.quiz.win}섬`; }
-      else S.msg=`${T.name}: 카드 문제를 틀렸어요`;
+      const win = C.quiz==='pool' ? C.win : C.quiz.win;
+      if(isRight(p)){ T.grain+=win; S.msg=`${T.name}: ${TH.card} 문제 정답 +${money(win)}`; }
+      else S.msg=`${T.name}: ${TH.card} 문제를 틀렸어요`;
       endTurn(); return;
     }
     const a=C.act;
-    if(a.grain){ T.grain+=a.grain; S.msg=`${T.name}: 연등 카드 ${a.grain>0?'+':''}${a.grain}섬`; snd(a.grain>0?'coin':'no'); endTurn(); return; }
+    if(a.grain){ T.grain+=a.grain; S.msg=`${T.name}: ${TH.card} ${a.grain>0?'+':''}${money(a.grain)}`; snd(a.grain>0?'coin':'no'); settleOrEnd(); return; }
     if(a.freeLantern){ S.pending={kind:'lantern', cell:p.cell, fromCard:true, card:p.card}; save(); render(); return; }
     if(a.moveTo){
-      const to=idxOf(a.moveTo), steps=(to-T.pos+N)%N;
-      S.msg=`${T.name}: 연등 카드로 「${a.moveTo}」에 가요`;
+      const to=idxOf(a.moveTo), steps=(to-T.pos+N)%N || N;
+      S.msg=`${T.name}: ${TH.card}로 「${a.moveTo}」에 가요`;
       travel(steps, !a.noStartBonus, null);
     }
   },
   skip(){
     if(S.pending?.kind!=='skip') return;
     S.teams[S.turn].skip=false;
-    S.msg=`${S.teams[S.turn].name}: 피란 중이라 한 번 쉬었어요`;
+    S.msg=`${S.teams[S.turn].name}: ${TH.skipMsg}`;
+    endTurn();
+  },
+  settle(){
+    const p=S.pending; if(p?.kind!=='settle') return;
+    const T=S.teams[S.turn];
+    if(p.out){
+      T.out=true; T.skip=false; T.outNo=++S.outCount;
+      S.owner=S.owner.map(o=>o===S.turn?-1:o);
+      S.msg=`${T.name} 파산! 탈락했어요`; snd('no');
+    } else S.msg=`${T.name}: 땅을 팔아 빚을 갚았어요`;
     endTurn();
   },
   /* 시작 화면 */
@@ -445,6 +545,10 @@ const ACT = {
   tminus(){ readNames(); S.count=Math.max(MIN_TEAMS,S.count-1); renderSetup(); },
   tplus(){ readNames(); S.count=Math.min(MAX_TEAMS,S.count+1); renderSetup(); },
   sound(){ readNames(); S.sound=!S.sound; renderSetup(); },
+  pack(id){ readNames(); const on=S.packs.includes(id);
+    if(on && S.packs.length===1) return;           // 하나는 꼭 골라야 한다
+    S.packs = on ? S.packs.filter(x=>x!==id) : [...S.packs, id]; renderSetup(); },
+  opt(k){ readNames(); S[k]=!S[k]; renderSetup(); },
   begin(){ readNames(); snd('ok'); startGame(); },
   /* 결과 */
   board(){ ui.showBoard=true; render(); },
@@ -454,12 +558,12 @@ const ACT = {
   lclose(){ ui.layer=null; renderLayer(); },
   undoAsk(){
     if(!canUndo()) return;
-    const who = S.rolled ? S.teams[S.turn].name : S.teams[(S.turn+S.teams.length-1)%S.teams.length].name;
+    const who = S.rolled ? S.teams[S.turn].name : '앞 모둠';
     ask(`${who} 차례가 시작될 때로 되돌릴까요?`, ()=>undo());
   },
   gview(){ ui.layer={view:'grain'}; renderLayer(); },
   gsel(t){ ui.gsel=+t; renderLayer(); },
-  gadd(n){ const T=S.teams[ui.gsel]; T.grain+=(+n); S.msg=`교사: ${T.name} 곡식 ${+n>0?'+':''}${n}섬`; save(); renderLayer(); render(); },
+  gadd(n){ const T=S.teams[ui.gsel]; T.grain+=(+n); S.msg=`교사: ${T.name} ${CUR} ${+n>0?'+':''}${money(n)}`; save(); renderLayer(); render(); },
   mview(){ if(S.rolled || S.pending) return; ui.layer={view:'move'}; renderLayer(); },
   msel(t){ ui.moveMode=+t; ui.layer=null; renderLayer(); render(); },
   mcancel(){ ui.moveMode=null; render(); },
@@ -494,12 +598,12 @@ setInterval(()=>{
   if(S.phase!=='play') return;
   if(!S.paused && S.remaining>0){
     S.remaining=Math.max(0,S.remaining-d);
-    if(S.remaining===0){ S.timeUp=true; toast('시간 끝! 이번 차례까지만'); }
+    if(S.remaining===0){ S.timeUp=true; toast(`시간 끝! ${S.teams[lastAlive()].name} 차례까지 하고 끝나요`, 2500); if(!ui.busy) render(); }
     if(!S.late && S.remaining>0 && S.remaining<=Math.min(LATE_MS, S.minutes*60000/3)){ S.late=true; toast(`물가 상승! 통행료 ×${LATE_MULT}`); snd('no'); if(!ui.busy) render(); }
     save(); renderTimer();
   }
-  // 시간이 끝났는데 아직 주사위를 안 굴린 차례라면 바로 결과로
-  if(S.timeUp && !ui.busy && !S.rolled) finish();
+  // 시간이 끝났고 새 바퀴가 막 시작되려는 참(첫 모둠이 아직 안 굴림)이면 바로 결과로
+  if(S.timeUp && !ui.busy && !S.rolled && S.turn===firstAlive() && S.pending?.kind!=='settle') finish();
 }, 500);
 
 /* ---------- 그리기 ---------- */
@@ -509,11 +613,15 @@ function gridPos(i){
   if(i<=18) return [7, 7-(i-12)];
   return [7-(i-18), 1];
 }
-const LANTERN = cls => `<svg class="lan ${cls||''}" viewBox="0 0 20 28" aria-hidden="true"><rect x="7" y="0" width="6" height="3" rx="1" fill="#5B3A1E"/><ellipse cx="10" cy="13.5" rx="9" ry="10" fill="#D4462A"/><ellipse cx="10" cy="13.5" rx="4" ry="10" fill="#E8743F"/><rect x="7" y="23" width="6" height="3" rx="1" fill="#5B3A1E"/><path d="M10 26v2" stroke="#5B3A1E" stroke-width="1.5"/></svg>`;
+const LANTERN_SVG = cls => `<svg class="lan ${cls||''}" viewBox="0 0 20 28" aria-hidden="true"><rect x="7" y="0" width="6" height="3" rx="1" fill="#5B3A1E"/><ellipse cx="10" cy="13.5" rx="9" ry="10" fill="#D4462A"/><ellipse cx="10" cy="13.5" rx="4" ry="10" fill="#E8743F"/><rect x="7" y="23" width="6" height="3" rx="1" fill="#5B3A1E"/><path d="M10 26v2" stroke="#5B3A1E" stroke-width="1.5"/></svg>`;
+const HOUSE_SVG = cls => `<svg class="lan ${cls||''}" viewBox="0 0 22 24" aria-hidden="true"><path d="M11 1 1 10h3v13h14V10h3z" fill="#C2492E"/><rect x="8" y="14" width="6" height="9" fill="#F3E2C2"/><rect x="5.5" y="11" width="3" height="3" fill="#F3E2C2"/><rect x="13.5" y="11" width="3" height="3" fill="#F3E2C2"/></svg>`;
+const KEY_SVG = cls => `<svg class="lan ${cls||''}" viewBox="0 0 20 28" aria-hidden="true"><circle cx="10" cy="7" r="6" fill="none" stroke="#C99A1E" stroke-width="3"/><path d="M10 13v14M10 20h5M10 25h4" stroke="#C99A1E" stroke-width="3" fill="none"/></svg>`;
+const UPICON = cls => (TH.icon==='house' ? HOUSE_SVG : LANTERN_SVG)(cls);
+const CARDICON = cls => (TH.icon==='house' ? KEY_SVG : LANTERN_SVG)(cls);
 
 function cellHTML(i){
   const c=BOARD[i];
-  const here = S.teams.map((T,t)=>({t,pos: ui.tok && ui.tok.t===t ? ui.tok.pos : T.pos})).filter(x=>x.pos===i);
+  const here = S.teams.map((T,t)=>({t,pos: ui.tok && ui.tok.t===t ? ui.tok.pos : T.pos})).filter(x=>x.pos===i && alive(x.t));
   const toks = here.map(x=>`<div class="tok ${x.t===S.turn&&S.phase==='play'?'now':''}" style="--c:${TC[x.t]}">${x.t+1}</div>`).join('');
   let cls='cell', inner='', style='';
   if(c.type==='land'){
@@ -522,12 +630,12 @@ function cellHTML(i){
     if(o>=0){
       cls+=' owned'; style=`--own:${TC[o]}`;
       const tl=tollOf(i);
-      inner=`<div class="top"><span class="pill">${esc(S.teams[o].name)}</span><span class="tr">${LANTERN().repeat(S.lan[i])}<span class="toll ${tl>baseToll(i)?'up':''}">통행 ${tl}</span></span></div>`;
+      inner=`<div class="top"><span class="pill">${esc(S.teams[o].name)}</span><span class="tr">${UPICON().repeat(S.lan[i])}<span class="toll ${tl>baseToll(i)?'up':''}">통행 ${tl}</span></span></div>`;
     } else inner=`<div class="top"><span>땅 ${z.price}</span><span>통행 ${r10(baseToll(i)*(S.late?LATE_MULT:1))}</span></div>`;
     inner+=`<div class="nm">${esc(c.name)}</div>`;
   } else if(c.type==='card'){
     cls+=' card';
-    inner=`<div class="top"></div><div class="nm">${LANTERN('bigl')}연등 카드</div>`;
+    inner=`<div class="top"></div><div class="nm">${CARDICON('bigl')}${esc(TH.card)}</div>`;
   } else {
     cls+=' corner';
     inner=`<div class="nm">${esc(c.name)}</div><div class="tx">${esc(c.text)}</div>`;
@@ -550,7 +658,7 @@ function dieHTML(n, rolling){
 }
 function fmt(ms){ const s=Math.ceil(ms/1000); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; }
 function timerHTML(){
-  if(S.timeUp) return `<div class="timer up" id="timer">시간 끝 · 이번 차례까지</div>`;
+  if(S.timeUp) return `<div class="timer up" id="timer">시간 끝 · ${esc(S.teams[lastAlive()].name)}까지</div>`;
   return `<div class="timer" id="timer">${S.paused?'멈춤 ':'남은 시간 '}<b>${fmt(S.remaining)}</b></div>`;
 }
 function renderTimer(){ const el=document.getElementById('timer'); if(el) el.outerHTML=timerHTML(); }
@@ -561,16 +669,20 @@ function renderCenter(){
   el.style.setProperty('--tc', TC[t]);
   const faces = ui.rolling || S.dice;
   const canRoll = S.phase==='play' && !ui.busy && !S.pending && !S.rolled && ui.moveMode==null && !S.paused;
+  const last = S.phase==='play' && S.catchup ? S.teams.map((_,k)=>alive(k) && isLast(k)) : [];
   const teams = S.teams.map((X,k)=>{
     const lands=LANDS.filter(i=>S.owner[i]===k), lan=sum(lands.map(i=>S.lan[i]));
     const gr = ui.shown && ui.shown.t===k ? ui.shown.grain : X.grain;
-    return `<div class="team ${k===t?'now':''}" style="--c:${TC[k]}">
-      <div class="tn"><span>${esc(X.name)}</span>${X.skip?'<span class="badge">다음 차례 쉼</span>':''}</div>
-      <div class="tg">${g(gr)}</div>
-      <div class="ts">땅 ${lands.length} · 연등 ${lan}</div></div>`;
+    const badge = X.out ? '<span class="badge">파산</span>' : X.skip ? '<span class="badge">다음 차례 쉼</span>' : last[k] ? '<span class="badge cheer">꼴찌 응원</span>' : '';
+    return `<div class="team ${k===t?'now':''} ${X.out?'out':''}" style="--c:${TC[k]}">
+      <div class="tn"><span>${esc(X.name)}</span>${badge}</div>
+      <div class="tg">${X.out?'탈락':g(gr)}</div>
+      <div class="ts">땅 ${lands.length} · ${TH.up} ${lan}</div></div>`;
   }).join('');
   const legend = Object.entries(ZONES).map(([k,z])=>`<span><i style="background:${ZONE_BG[k]}"></i>${z.name} (땅 ${z.price})</span>`).join('')
-    + `<span>통행료: 연등 1개 ×2 · 2개 ×4 · 같은 색 4칸 독점 ×2 · 문제 맞히면 절반</span>`
+    + `<span>통행료: ${TH.up} 1${TH.upN} ×2 · 2${TH.upN} ×4 · 같은 색 4칸 독점 ×2 · 문제 맞히면 절반</span>`
+    + (S.catchup?`<span>꼴찌가 ${TH.start}을 지나면 +${money(CATCHUP_BONUS)}</span>`:'')
+    + (S.bankrupt?`<span class="late">파산 모드</span>`:'')
     + (S.late?`<span class="late">물가 상승! 통행료 ×${LATE_MULT}</span>`:'');
   el.innerHTML = `
     ${S.phase==='play'?`<button id="tbtn" data-act="teacher" ${ui.busy?'disabled':''}>교사</button>`:''}
@@ -600,18 +712,19 @@ function modalHTML(){
     const inner = `<div class="mq">${esc(q.q)}</div>${optsHTML(q.o, p.order, p.answered, q.ox)}${after}`;
     return q.img ? `<div class="qwrap ${p.answered!=null?'done':''}"><img src="${q.img}" alt=""><div class="qs">${inner}</div></div>` : inner;
   };
+  const exOf = q => q.ex || `정답은 「${q.o[0]}」`;
   let body='';
   switch(p.kind){
     case 'land': {
       const c=BOARD[p.cell], q=qOf(p), ok=isRight(p);
-      body = head(`${ztag(p.cell)} 땅값 ${price(p.cell)}섬`)
+      body = head(`${ztag(p.cell)} 땅값 ${money(price(p.cell))}`)
         + `<div class="mt">${esc(c.name)}</div>`;
       let after='';
       if(p.answered!=null){
-        after += `<div class="fb ${ok?'ok':'no'}"><b>${ok?'정답!':'아쉬워요.'}</b>${esc(q.ex)}</div>`;
+        after += `<div class="fb ${ok?'ok':'no'}"><b>${ok?'정답!':'아쉬워요.'}</b>${esc(exOf(q))}</div>`;
         after += ok
-          ? `<div class="btns"><button class="big solid" data-act="buy" ${T.grain<price(p.cell)?'disabled':''}>산다 (${price(p.cell)}섬)</button><button class="big" data-act="pass">안 산다</button></div>`
-            + (T.grain<price(p.cell)?`<div class="note">곡식이 모자라서 살 수 없어요 (지금 ${T.grain}섬)</div>`:'')
+          ? `<div class="btns"><button class="big solid" data-act="buy" ${T.grain<price(p.cell)?'disabled':''}>산다 (${money(price(p.cell))})</button><button class="big" data-act="pass">안 산다</button></div>`
+            + (T.grain<price(p.cell)?`<div class="note">${CUR}이 모자라서 살 수 없어요 (지금 ${money(T.grain)})</div>`:'')
           : `<div class="btns"><button class="big" data-act="pass">넘어가기</button></div>`;
       }
       body += quizHTML(q, p, after);
@@ -621,24 +734,25 @@ function modalHTML(){
       const i=p.cell, full=S.lan[i]>=2, cost=lanCost(i);
       body = head(`${ztag(i)} 우리 땅`)
         + `<div class="mt">${esc(BOARD[i].name)}</div>`
-        + `<div class="lanrow">연등 ${LANTERN('bigl').repeat(S.lan[i]) || '없음'} <span>(${S.lan[i]}/2)</span></div>`
-        + `<div class="mp">${full ? '연등이 꽉 찼어요.' : `연등을 1개 달면 통행료가 ${tollOf(i)}섬 → ${tollWith(i,S.lan[i]+1,t)}섬이 돼요.`}</div>`
-        + `<div class="btns">${full ? '' : `<button class="big solid" data-act="lantern" ${T.grain<cost?'disabled':''}>연등 달기 (${cost}섬)</button>`}<button class="big" data-act="pass">${full?'확인':'그냥 두기'}</button></div>`
-        + (!full && T.grain<cost ? `<div class="note">곡식이 모자라요 (지금 ${T.grain}섬)</div>`:'');
+        + `<div class="lanrow">${TH.up} ${UPICON('bigl').repeat(S.lan[i]) || '없음'} <span>(${S.lan[i]}/2)</span></div>`
+        + `<div class="mp">${full ? TH.upFull : `${TH.up} 1${TH.upN}를 더하면 통행료가 ${money(tollOf(i))} → ${money(tollWith(i,S.lan[i]+1,t))}이 돼요.`}</div>`
+        + `<div class="btns">${full ? '' : `<button class="big solid" data-act="lantern" ${T.grain<cost?'disabled':''}>${TH.upAct} (${money(cost)})</button>`}<button class="big" data-act="pass">${full?'확인':'그냥 두기'}</button></div>`
+        + (!full && T.grain<cost ? `<div class="note">${CUR}이 모자라요 (지금 ${money(T.grain)})</div>`:'');
       break;
     }
     case 'toll': {
       const O=S.teams[p.to], q=qOf(p), ok=isRight(p);
-      const parts=[`기본 ${p.base}`]; if(p.lan) parts.push(`연등 ${p.lan}개 ×${LAN_MULT[p.lan]}`); if(p.mono) parts.push(`독점 ×${MONO_MULT}`); if(p.late) parts.push(`물가 상승 ×${LATE_MULT}`);
+      const parts=[`기본 ${p.base}`]; if(p.lan) parts.push(`${TH.up} ${p.lan}${TH.upN} ×${LAN_MULT[p.lan]}`); if(p.mono) parts.push(`독점 ×${MONO_MULT}`); if(p.late) parts.push(`물가 상승 ×${LATE_MULT}`);
       body = head(`${ztag(p.cell)} ${esc(O.name)}의 땅`)
         + `<div class="mt">${esc(BOARD[p.cell].name)}</div>`
-        + `<div class="discount">통행료 ${p.full}섬 <small>(${parts.join(' · ')})</small> — 문제를 맞히면 절반 ${p.half}섬!</div>`;
+        + `<div class="discount">통행료 ${money(p.full)} <small>(${parts.join(' · ')})</small> — 문제를 맞히면 절반 ${money(p.half)}!</div>`;
       let after='';
       if(p.answered!=null){
         const amount = ok ? p.half : p.full;
-        after += `<div class="fb ${ok?'ok':'no'}"><b>${ok?'정답! 절반만 내요.':'아쉬워요.'}</b>${esc(q.ex)}</div>`
-          + `<div class="payrow"><span class="sum">${esc(T.name)} → ${esc(O.name)} ${amount}섬</span>`
-          + (T.grain-amount<0 ? `<span class="note">빚이 생겨요 (${T.grain} → ${T.grain-amount}섬)</span>`:'')
+        const debt = T.grain-amount<0;
+        after += `<div class="fb ${ok?'ok':'no'}"><b>${ok?'정답! 절반만 내요.':'아쉬워요.'}</b>${esc(exOf(q))}</div>`
+          + `<div class="payrow"><span class="sum">${esc(T.name)} → ${esc(O.name)} ${money(amount)}</span>`
+          + (debt ? `<span class="note">${S.bankrupt?'파산 위기! 땅을 팔아야 해요':'빚이 생겨요'} (${T.grain} → ${T.grain-amount})</span>`:'')
           + `<button class="big solid" data-act="pay">내기</button></div>`;
       }
       body += quizHTML(q, p, after);
@@ -646,41 +760,61 @@ function modalHTML(){
     }
     case 'info': {
       const c=BOARD[p.cell];
-      const eff = {start:`곡식 ${LAP_BONUS}섬을 받았어요.`, palgwan:`곡식 +${PALGWAN_BONUS}섬`, rest:'다음 차례에 한 번 쉬어요.'}[c.type];
+      const eff = {start:`${CUR} ${money(LAP_BONUS)}을 받았어요.`, palgwan:`${CUR} +${money(PALGWAN_BONUS)}`, rest:'다음 차례에 한 번 쉬어요.'}[c.type];
       body = head() + `<div class="mt" style="margin-top:2rem">${esc(c.name)}</div><div class="mp">${esc(c.text)}</div><div class="calc"><span class="sum">${eff}</span></div>`
         + `<div class="btns"><button class="big solid" data-act="info">확인</button></div>`;
       break;
     }
     case 'lantern': {
       const tg=lanternTargets(t), c=BOARD[p.cell];
-      body = head(p.fromCard?'연등 카드':'') + `<div class="mt" style="margin-top:1rem">${p.fromCard?esc(CARDS[p.card].text):esc(c.name)}</div>`
-        + `<div class="mp">${p.fromCard?'우리 땅 하나에 연등 1개를 공짜로 단다.':esc(c.text)}</div>`;
+      body = head(p.fromCard?TH.card:'') + `<div class="mt" style="margin-top:1rem">${p.fromCard?esc(CARDS[p.card].text):esc(c.name)}</div>`
+        + `<div class="mp">${p.fromCard?`${TH.upFree}.`:esc(c.text)}</div>`;
       body += tg.length
-        ? `<div class="mp">연등을 달 땅을 고르세요.</div><div class="landlist">${tg.map(i=>`<button data-act="hang" data-v="${i}" style="background:${ZONE_BG[BOARD[i].zone]}">${esc(BOARD[i].name)} <small>(${S.lan[i]}/2)</small></button>`).join('')}</div>`
-        : `<div class="calc"><span class="sum">${LANDS.some(i=>S.owner[i]===t)?'연등이 꽉 찬 땅뿐이라':'땅이 없어서'} 곡식 +${NO_LAND_BONUS}섬</span></div><div class="btns"><button class="big solid" data-act="nolan">받기</button></div>`;
+        ? `<div class="mp">${TH.upPick}</div><div class="landlist">${tg.map(i=>`<button data-act="hang" data-v="${i}" style="background:${ZONE_BG[BOARD[i].zone]}">${esc(BOARD[i].name)} <small>(${S.lan[i]}/2)</small></button>`).join('')}</div>`
+        : `<div class="calc"><span class="sum">${LANDS.some(i=>S.owner[i]===t)?`${TH.up}이 꽉 찬 땅뿐이라`:'땅이 없어서'} ${CUR} +${money(NO_LAND_BONUS)}</span></div><div class="btns"><button class="big solid" data-act="nolan">받기</button></div>`;
       break;
     }
     case 'card': {
       const C=CARDS[p.card];
-      body = head('연등 카드') + `<div class="mt" style="margin-top:.6rem">${LANTERN('bigl')}</div><div class="mq" style="font-size:2.4rem">${esc(C.text)}</div>`;
+      if(C.quiz==='pool'){
+        const q=qOf(p), ok=isRight(p);
+        body = head(TH.card) + `<div class="mt">${CARDICON('bigl')} ${esc(C.text)}</div>`;
+        const after = p.answered==null ? `<div class="note">맞히면 ${CUR} ${money(C.win)}</div>`
+          : `<div class="fb ${ok?'ok':'no'}"><b>${ok?`정답! +${money(C.win)}`:'아쉬워요.'}</b>${esc(exOf(q))}</div><div class="btns"><button class="big solid" data-act="card">확인</button></div>`;
+        body += quizHTML(q, p, after);
+        break;
+      }
+      body = head(TH.card) + `<div class="mt" style="margin-top:.6rem">${CARDICON('bigl')}</div><div class="mq" style="font-size:2.4rem">${esc(C.text)}</div>`;
       if(C.quiz){
         body += optsHTML(C.quiz.o, p.order, p.answered);
         if(p.answered!=null){
-          const ok=p.order[p.answered]===0;
-          body += `<div class="fb ${ok?'ok':'no'}"><b>${ok?'정답!':'아쉬워요.'}</b>${ok?`곡식 +${C.quiz.win}섬`:`정답은 「${esc(C.quiz.o[0])}」`}</div>`
+          const ok=isRight(p);
+          body += `<div class="fb ${ok?'ok':'no'}"><b>${ok?'정답!':'아쉬워요.'}</b>${ok?`${CUR} +${money(C.quiz.win)}`:`정답은 「${esc(C.quiz.o[0])}」`}</div>`
             + `<div class="btns"><button class="big solid" data-act="card">확인</button></div>`;
-        } else body += `<div class="note">맞히면 곡식 ${C.quiz.win}섬</div>`;
+        } else body += `<div class="note">맞히면 ${CUR} ${money(C.quiz.win)}</div>`;
       } else {
         const a=C.act;
-        const eff = a.grain ? `곡식 ${a.grain>0?'+':''}${a.grain}섬` : a.freeLantern ? '우리 땅 하나에 연등 1개를 공짜로 단다' : `${ro(`「${a.moveTo}」`)} 간다${a.noStartBonus?' (개경을 지나도 곡식 없음)':''}`;
-        body += `<div class="calc"><span class="sum">${eff}</span></div><div class="btns"><button class="big solid" data-act="card">${a.moveTo?'가기':a.grain>0?'받기':a.grain<0?'내기':'확인'}</button></div>`;
+        const eff = a.grain ? `${CUR} ${a.grain>0?'+':''}${money(a.grain)}` : a.freeLantern ? TH.upFree : `${ro(`「${a.moveTo}」`)} 간다${a.noStartBonus?` (${eul(TH.start)} 지나도 ${CUR} 없음)`:''}`;
+        body += `<div class="calc"><span class="sum">${eff}</span></div>`
+          + (a.grain<0 && S.bankrupt && T.grain+a.grain<0 ? `<div class="note">파산 위기! 땅을 팔아야 해요</div>`:'')
+          + `<div class="btns"><button class="big solid" data-act="card">${a.moveTo?'가기':a.grain>0?'받기':a.grain<0?'내기':'확인'}</button></div>`;
       }
       break;
     }
-    case 'skip':
-      body = head() + `<div class="mt" style="margin-top:2.5rem">몽골 침입</div><div class="mp">${esc(eun(T.name))} 피란 중이에요. 이번 차례를 한 번 쉬어요.</div>`
+    case 'skip': {
+      const rest=BOARD.find(c=>c.type==='rest');
+      body = head() + `<div class="mt" style="margin-top:2.5rem">${esc(rest.name)}</div><div class="mp">${esc(eun(T.name))} ${TH.skipText}</div>`
         + `<div class="btns"><button class="big solid" data-act="skip">확인</button></div>`;
       break;
+    }
+    case 'settle': {
+      body = head('파산 모드') + `<div class="mt" style="margin-top:1rem">${p.out?'파산!':'땅을 팔아 빚을 갚아요'}</div>`
+        + (p.sold.length ? `<div class="mp">${p.sold.map(s=>`「${esc(s.name)}」 팔고 +${money(s.got)}`).join('<br>')}</div>` : `<div class="mp">팔 땅이 없어요.</div>`)
+        + `<div class="calc"><span class="sum">${p.out ? `${esc(eun(T.name))} 탈락했어요.` : `남은 ${CUR} ${money(T.grain)}`}</span></div>`
+        + `<div class="note">땅은 땅값과 ${TH.up}값을 더한 것의 절반에 팔려요.</div>`
+        + `<div class="btns"><button class="big solid" data-act="settle">확인</button></div>`;
+      break;
+    }
   }
   return `<div id="modal">${body}</div>`;
 }
@@ -690,50 +824,50 @@ function readNames(){
 }
 function renderSetup(){
   const el=document.getElementById('setup');
+  const pt=THEMES[themeFor(S.packs)], nq=poolFor(S.packs).length;
+  const chk = (on, act, v, label, sub) => `<button class="chk ${on?'on':''}" data-act="${act}" data-v="${v}"><i></i><span>${label}<small>${sub}</small></span></button>`;
   el.innerHTML = `<div class="sheet">
     <div>
-      <h1>고려 마블</h1>
-      <div class="sub">5학년 사회 1단원 고려 복습 (13~19차시) · 2~6모둠이 돌아가며 주사위를 굴려요</div>
+      <h1>사회 마블</h1>
+      <div class="sub">5학년 사회 1단원 복습 · 2~6모둠이 돌아가며 주사위를 굴려요</div>
       <div class="field">모둠 수 <span class="step"><button data-act="tminus" ${S.count<=MIN_TEAMS?'disabled':''}>−1</button><b>${S.count}모둠</b><button data-act="tplus" ${S.count>=MAX_TEAMS?'disabled':''}>+1</button></span></div>
       <div class="names">${S.names.slice(0,S.count).map((n,k)=>`<label class="field"><span class="dot" style="--c:${TC[k]}"></span><input type="text" maxlength="8" value="${esc(n)}"></label>`).join('')}</div>
       <div class="field">플레이 시간 <span class="step"><button data-act="minus">−5</button><b>${S.minutes}분</b><button data-act="plus">+5</button></span></div>
       <div class="field">효과음 <button data-act="sound">${S.sound?'켜짐':'꺼짐'}</button></div>
-      <div style="margin-top:1.6rem"><button class="big solid" data-act="begin">게임 시작</button></div>
+      <div style="margin-top:1.2rem"><button class="big solid" data-act="begin">게임 시작</button></div>
     </div>
-    <div>
+    <div class="opts-col">
+      <h3>문제 고르기</h3>
+      ${PACKS.map(pk=>chk(S.packs.includes(pk.id),'pack',pk.id,pk.name,`${poolFor([pk.id]).length}문제 · ${THEMES[pk.theme].title}`)).join('')}
+      <div class="note">지금 고른 것: ${nq}문제 · <b>${pt.title}</b>${pt.quiz?' (땅마다 그 주제 문제)':' (고른 문제에서 무작위)'}</div>
+      <h3>규칙 고르기</h3>
+      ${chk(S.catchup,'opt','catchup','꼴찌 응원',`꼴찌 모둠이 ${pt.start}을 지나면 +${CATCHUP_BONUS}${pt.unit} 더`)}
+      ${chk(S.bankrupt,'opt','bankrupt','파산 모드','빚이 생기면 땅을 팔아 갚고, 그래도 모자라면 탈락')}
       <ol class="rules">
-        <li>모둠마다 곡식 <b>${START_GRAIN}섬</b>으로 시작. 주사위 2개의 합만큼 간다.</li>
-        <li>개경을 지나거나 도착하면 <b>+${LAP_BONUS}섬</b>.</li>
-        <li><b>빈 땅</b>: 문제를 맞히면 살 수 있다. 틀리면 못 산다.</li>
-        <li><b>우리 땅</b>: 연등을 단다. 1개 = 땅값의 절반, 한 땅에 2개까지.</li>
-        <li><b>남의 땅</b>: 문제를 맞히면 통행료 <b>절반</b>.<br>통행료 = 칸에 적힌 기본 통행료 × 연등(1개 ×2, 2개 ×4). 같은 색 4칸 독점 ×2.</li>
-        <li>남은 시간 10분부터 <b>물가 상승</b>: 모든 통행료 ×${LATE_MULT}.</li>
-        <li><b>연등 카드</b>: 한 장 뽑아 그대로 한다.</li>
-        <li><b>몽골 침입</b>: 다음 차례 한 번 쉰다.</li>
-        <li>곡식이 모자라면 빚(마이너스)이 된다. 파산은 없다.</li>
-        <li>시간이 끝나면 그 차례까지만 하고 끝.<br>점수 = 곡식 + 가진 땅값 + 단 연등값.</li>
+        <li>${pt.cur} <b>${START_GRAIN}${pt.unit}</b>으로 시작. ${pt.start}을 지나면 +${LAP_BONUS}.</li>
+        <li><b>빈 땅</b>: 문제를 맞히면 살 수 있다.</li>
+        <li><b>우리 땅</b>: ${pt.up}(땅값의 절반) — 1${pt.upN} 통행료 ×2, 2${pt.upN} ×4.</li>
+        <li><b>남의 땅</b>: 문제를 맞히면 통행료 <b>절반</b>. 4칸 독점 ×2.</li>
+        <li>남은 10분부터 <b>물가 상승</b> ×${LATE_MULT}. 시간이 끝나면 <b>그 바퀴 마지막 모둠까지</b>.</li>
+        <li>점수 = ${pt.cur} + 가진 땅값 + ${pt.up}값.${S.bankrupt?' 탈락한 모둠은 맨 아래.':' 모자라면 빚(마이너스).'}</li>
       </ol>
     </div></div>`;
 }
 
-function scores(){
-  return S.teams.map((T,t)=>{
-    const lands=LANDS.filter(i=>S.owner[i]===t);
-    const landV=sum(lands.map(price)), lanV=sum(lands.map(i=>S.lan[i]*lanCost(i)));
-    return {t, T, lands, landV, lanV, total:T.grain+landV+lanV, monos:Object.keys(ZONES).filter(z=>isMono(z,t))};
-  });
-}
 function renderResult(){
-  const sc=scores().sort((a,b)=>b.total-a.total);
+  const sc=scores();
+  const live=sc.filter(x=>!x.T.out).sort((a,b)=>b.total-a.total);
+  const dead=sc.filter(x=>x.T.out).sort((a,b)=>b.T.outNo-a.T.outNo);
   const el=document.getElementById('result');
-  el.innerHTML = `<h2>결과</h2><div class="ranks" style="--n:${S.teams.length}">${sc.map(x=>{
-    const rank=1+sc.filter(y=>y.total>x.total).length;
+  el.innerHTML = `<h2>결과</h2><div class="ranks" style="--n:${S.teams.length}">${[...live,...dead].map((x,k)=>{
+    const rank = x.T.out ? live.length+1+dead.indexOf(x) : 1+live.filter(y=>y.total>x.total).length;
+    if(x.T.out) return `<div class="rk out" style="--c:${TC[x.t]}"><div class="r">${rank}위</div><div class="n">${esc(x.T.name)}</div><div class="s">파산</div><div class="none">${x.T.outNo}번째로 탈락했어요</div></div>`;
     return `<div class="rk ${rank===1?'first':''}" style="--c:${TC[x.t]}">
       <div class="r">${rank}위</div><div class="n">${esc(x.T.name)}</div><div class="s">${x.total}</div>
-      <table><tr><td>곡식</td><td>${g(x.T.grain)}</td></tr><tr><td>가진 땅값</td><td>${x.landV}섬</td></tr><tr><td>단 연등값</td><td>${x.lanV}섬</td></tr>
-      <tr class="tot"><td>합계</td><td>${x.total}섬</td></tr></table>
+      <table><tr><td>${CUR}</td><td>${g(x.T.grain)}</td></tr><tr><td>가진 땅값</td><td>${money(x.landV)}</td></tr><tr><td>${TH.up}값</td><td>${money(x.lanV)}</td></tr>
+      <tr class="tot"><td>합계</td><td>${money(x.total)}</td></tr></table>
       ${x.monos.map(z=>`<div class="mono">구역 독점: ${ZONES[z].name}</div>`).join('')}
-      <div class="chips">${x.lands.length ? x.lands.map(i=>`<span class="chip" style="background:${ZONE_BG[BOARD[i].zone]}">${esc(BOARD[i].name)}${LANTERN().repeat(S.lan[i])}</span>`).join('') : '<span class="none">가진 땅 없음</span>'}</div>
+      <div class="chips">${x.lands.length ? x.lands.map(i=>`<span class="chip" style="background:${ZONE_BG[BOARD[i].zone]}">${esc(BOARD[i].name)}${UPICON().repeat(S.lan[i])}</span>`).join('') : '<span class="none">가진 땅 없음</span>'}</div>
     </div>`;}).join('')}</div>
     <div class="btns"><button class="big" data-act="board">보드 보기</button><button class="big" data-act="newAsk">새 게임</button></div>`;
 }
@@ -747,7 +881,7 @@ function renderLayer(){
     const mid = S.rolled || !!S.pending;
     h = `<h3>교사</h3><div class="grid3">
       <button data-act="undoAsk" ${canUndo()?'':'disabled'}>되돌리기</button>
-      <button data-act="gview">곡식 조정</button>
+      <button data-act="gview">${CUR} 조정</button>
       <button data-act="mview" ${mid?'disabled':''}>말 옮기기</button>
       <button data-act="pause">${S.paused?'시간 계속':'시간 멈추기'}</button>
       <button data-act="endAsk">지금 끝내기</button>
@@ -756,13 +890,13 @@ function renderLayer(){
       <button data-act="lclose">닫기</button>`;
   } else if(L.view==='grain'){
     const T=S.teams[ui.gsel];
-    h = `<h3>곡식 조정</h3><div class="row">${S.teams.map((X,k)=>`<button class="${k===ui.gsel?'sel':''}" style="--c:${TC[k]}" data-act="gsel" data-v="${k}">${esc(X.name)}</button>`).join('')}</div>
+    h = `<h3>${CUR} 조정</h3><div class="row">${S.teams.map((X,k)=>`<button class="${k===ui.gsel?'sel':''}" style="--c:${TC[k]}" data-act="gsel" data-v="${k}" ${X.out?'disabled':''}>${esc(X.name)}</button>`).join('')}</div>
       <div class="calc"><span class="sum">${esc(T.name)} ${g(T.grain)}</span></div>
       <div class="row">${[-100,-50,-10,10,50,100].map(n=>`<button data-act="gadd" data-v="${n}">${n>0?'+':''}${n}</button>`).join('')}</div>
       <button data-act="teacher">뒤로</button>`;
   } else if(L.view==='move'){
     h = `<h3>말 옮기기</h3><div class="note">옮길 모둠을 고른 다음 보드에서 칸을 누르세요. 칸 효과는 없어요.</div>
-      <div class="row">${S.teams.map((X,k)=>`<button style="--c:${TC[k]}" class="sel" data-act="msel" data-v="${k}">${esc(X.name)}</button>`).join('')}</div>
+      <div class="row">${S.teams.map((X,k)=>`<button style="--c:${TC[k]}" class="sel" data-act="msel" data-v="${k}" ${X.out?'disabled':''}>${esc(X.name)}</button>`).join('')}</div>
       <button data-act="teacher">뒤로</button>`;
   } else if(L.view==='confirm'){
     h = `<h3>${esc(L.text)}</h3><div class="row"><button class="big solid" data-act="yes">예</button><button class="big" data-act="lclose">아니요</button></div>`;
@@ -781,10 +915,10 @@ function render(){
 }
 
 let toastT;
-function toast(text){
+function toast(text, ms=1300){
   const el=document.getElementById('toast'); if(!el) return;
   el.textContent=text; el.classList.add('show');
-  clearTimeout(toastT); toastT=setTimeout(()=>{ const e2=document.getElementById('toast'); e2 && e2.classList.remove('show'); }, 1300);
+  clearTimeout(toastT); toastT=setTimeout(()=>{ const e2=document.getElementById('toast'); e2 && e2.classList.remove('show'); }, ms);
 }
 
 let AC;

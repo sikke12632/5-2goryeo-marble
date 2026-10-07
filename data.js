@@ -3,7 +3,7 @@
 // 문제의 정답은 항상 o[0] (화면에서 섞는다). ox:true 는 O/X 문제(화면에선 늘 O, X 순서).
 // img 가 있으면 사진 문제.
 
-const ZONES = {
+const GORYEO_ZONES = {
   A:{name:"고려를 세우고 지키다", price:100},
   B:{name:"세계와 만나고 함께 살다", price:140},
   C:{name:"고려와 불교", price:160},
@@ -11,7 +11,7 @@ const ZONES = {
 };
 
 // 24칸, 0번부터 시계 방향
-const BOARD = [
+const GORYEO_BOARD = [
  {type:"start", name:"개경 (출발)", text:"지나가거나 도착하면 곡식 50섬"},
  {type:"land", zone:"A", name:"왕건과 고려"},
  {type:"land", zone:"A", name:"서희의 담판"},
@@ -39,7 +39,7 @@ const BOARD = [
 ];
 
 // 땅마다 문제 묶음. 도착할 때마다 아직 안 나온 문제 하나를 뽑는다.
-const QUIZ = {
+const GORYEO_QUIZ = {
  /* ── 13-14차시 고려의 성립 ── */
  "왕건과 고려": [
   {q:"나라 이름을 '고려'라고 정한 데 담긴 뜻은?", o:["고구려를 잇겠다는 뜻","고요한 나라라는 뜻","높은 산이라는 뜻"], ex:"고구려를 잇겠다는 선언이에요. 태조 왕건은 서경(평양)을 중히 여기며 북쪽으로 나아가려 했어요."},
@@ -129,7 +129,7 @@ const QUIZ = {
 };
 
 // 카드 칸에 도착하면 1장. 다 쓰면 다시 섞는다. (앞 8장은 1판 그대로)
-const CARDS = [
+const GORYEO_CARDS = [
  {text:"해가 저물었다. 가까운 절에서 하룻밤 묵어 간다.", act:{moveTo:"나그네의 하룻밤"}},
  {text:"흉년이 들었다. 절에서 곡식을 빌려 버텼다.", act:{grain:100}},
  {text:"절 앞 장터에서 물건을 팔았다.", act:{grain:80}},
@@ -143,3 +143,16 @@ const CARDS = [
  {text:"몽골군을 막느라 곡식을 내놓았다.", act:{grain:-80}},
  {text:"몽골에서 고려로 들어와 자리 잡은 것은?", quiz:{o:["소주와 태평소","인삼과 삼베","청자와 금속 활자"], win:150}},
 ];
+
+/* 판 모양(테마) 묶음. 세계 보드는 bank.js 에 있다. */
+const THEMES = {
+  goryeo: {
+    id:'goryeo', title:'고려 보드',
+    start:'개경', cur:'곡식', unit:'섬',
+    up:'연등', upN:'개', upAct:'연등 달기', upDone:'연등을 달았어요', upFree:'우리 땅 하나에 연등 1개를 공짜로 단다', upPick:'연등을 달 땅을 고르세요.', upFull:'연등이 꽉 찼어요.',
+    card:'연등 카드', icon:'lantern',
+    restMsg:'몽골 침입으로 피란, 다음 차례를 쉬어요', skipText:'피란 중이에요. 이번 차례를 한 번 쉬어요.', skipMsg:'피란 중이라 한 번 쉬었어요',
+    festMsg:'팔관회에서 무역했어요',
+    zones:GORYEO_ZONES, board:GORYEO_BOARD, quiz:GORYEO_QUIZ, cards:GORYEO_CARDS,
+  },
+};
