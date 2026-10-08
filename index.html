@@ -206,6 +206,13 @@ button:disabled{opacity:.38;cursor:default}
 .opts-col .note{text-align:left}
 .team.out{opacity:.45}
 .badge.cheer{background:var(--ok)}
+.orderlist{display:flex;flex-direction:column;gap:.5rem;width:100%;max-width:40rem}
+.orow{display:flex;align-items:center;gap:1rem;border:.16rem solid var(--line);border-left:.8rem solid var(--c);border-radius:.6rem;padding:.3rem 1rem;font-size:1.9rem;background:#fff}
+.orow b{font-weight:normal;width:2rem;color:var(--c)}
+.orow span{flex:1}
+.orow .die{width:3.4rem;height:3.4rem;padding:.4rem;border-width:.16rem}
+.orow .die i{width:.65rem;height:.65rem}
+.orow em{font-style:normal;width:2.6rem;text-align:right}
 .rk.out{opacity:.6}
 .rk.out .s{font-size:2.6rem;color:var(--warn)}
 </style>
@@ -275,14 +282,14 @@ function blank(prev){
     names: defaultNames().map((d,k)=>prev?.names?.[k] || d),
     count: prev?.count || prev?.teams?.length || 4,
     minutes: prev?.minutes || 30, sound: prev?.sound ?? true,
-    packs: prev?.packs || ['goryeo'], catchup: prev?.catchup ?? true, bankrupt: prev?.bankrupt ?? false};
+    packs: prev?.packs || ['goryeo'], catchup: prev?.catchup ?? true, bankrupt: prev?.bankrupt ?? false, diceOrder: prev?.diceOrder ?? true};
 }
 // 예전 판에서 저장된 값에는 새 설정이 없을 수 있다 → 빠진 값을 채운다
 function load(){
   try{
     const s=JSON.parse(localStorage.getItem(KEY)); if(!s || s.v!==2) return null;
     const d=blank(s);
-    for(const k of ['names','count','minutes','sound','packs','catchup','bankrupt']) if(s[k]==null) s[k]=d[k];
+    for(const k of ['names','count','minutes','sound','packs','catchup','bankrupt','diceOrder']) if(s[k]==null) s[k]=d[k];
     s.packs = s.packs.filter(id=>PACKS.some(p=>p.id===id)); if(!s.packs.length) s.packs=['goryeo'];
     if(s.phase!=='setup' && !Array.isArray(s.teams)) return null;
     return s;
@@ -294,23 +301,32 @@ function startGame(){
   const theme = themeFor(S.packs);
   applyTheme(theme);
   S = {v:2, phase:'play', names:S.names, count:S.count, minutes:S.minutes, sound:S.sound,
-    packs:S.packs, catchup:S.catchup, bankrupt:S.bankrupt, theme, pool:poolFor(S.packs), usedBank:[],
+    packs:S.packs, catchup:S.catchup, bankrupt:S.bankrupt, diceOrder:S.diceOrder, theme, pool:poolFor(S.packs), usedBank:[],
     teams: S.names.slice(0,S.count).map(n=>({name:n, grain:START_GRAIN, pos:0, skip:false, out:false})),
     owner: Array(N).fill(-1), lan: Array(N).fill(0),
     turn:0, turnNo:1, rolled:false, dice:null, pending:null,
     deck: shuffle(CARDS.keys()), deckPos:0, outCount:0,
     remaining: S.minutes*60000, paused:false, timeUp:false, late:false, usedQ:{},
     msg:'', hist:[]};
-  S.msg = `${S.teams[0].name}부터 시작해요.`;
-  startTurn(); save(); render();
+  // 시작할 때 모둠마다 주사위를 굴려 큰 수부터 순서를 정한다 (같으면 무작위). 한 판 안에서는 고정.
+  let rolls = S.teams.map((_,t)=>({t, d:[1+rnd(6),1+rnd(6)]}));
+  if(S.diceOrder){ rolls = shuffle(rolls).sort((a,b)=>(b.d[0]+b.d[1])-(a.d[0]+a.d[1])); S.order = rolls.map(r=>r.t); }
+  else S.order = S.teams.map((_,t)=>t);
+  S.turn = S.order[0];
+  S.msg = `${S.teams[S.turn].name}부터 시작해요.`;
+  startTurn();
+  if(S.diceOrder) S.pending = {kind:'order', rolls};
+  save(); render();
 }
 
 /* 살아 있는 모둠 (파산 모드에서 탈락한 모둠은 건너뛴다) */
 const alive = t => !S.teams[t].out;
-const aliveList = () => S.teams.map((_,t)=>t).filter(alive);
+const ORD = () => S.order || S.teams.map((_,t)=>t);      // 차례 순서 (예전 판은 1모둠부터)
+const seat = t => ORD().indexOf(t);
+const aliveList = () => ORD().filter(alive);
 const firstAlive = () => aliveList()[0];
 const lastAlive = () => aliveList().slice(-1)[0];
-function nextAlive(t){ for(let k=1;k<=S.teams.length;k++){ const n=(t+k)%S.teams.length; if(alive(n)) return n; } return t; }
+function nextAlive(t){ const o=ORD(); for(let k=1;k<=o.length;k++){ const n=o[(seat(t)+k)%o.length]; if(alive(n)) return n; } return t; }
 
 /* 차례 시작 상태를 쌓아 두고 [되돌리기]에 쓴다. 시간은 되돌리지 않는다. */
 const SNAP_SKIP = new Set(['hist','remaining','paused','timeUp','sound']);
@@ -325,7 +341,7 @@ function endTurn(){
   if(aliveList().length<=1){ finish(); return; }
   const cur=S.turn, nxt=nextAlive(cur);
   // 시간이 끝났으면 이번 바퀴의 마지막 모둠까지 마치고 끝낸다 (모든 모둠이 같은 횟수)
-  if(S.timeUp && nxt<=cur){ finish(); return; }
+  if(S.timeUp && seat(nxt)<=seat(cur)){ finish(); return; }
   S.turn=nxt; S.turnNo++;
   startTurn(); save(); render();
 }
@@ -539,6 +555,7 @@ const ACT = {
     S.msg=`${S.teams[S.turn].name}: ${TH.skipMsg}`;
     endTurn();
   },
+  orderok(){ if(S.pending?.kind!=='order') return; S.pending=null; save(); render(); },
   settle(){
     const p=S.pending; if(p?.kind!=='settle') return;
     const T=S.teams[S.turn];
@@ -688,7 +705,7 @@ function renderCenter(){
     return `<div class="team ${k===t?'now':''} ${X.out?'out':''}" style="--c:${TC[k]}">
       <div class="tn"><span>${esc(X.name)}</span>${badge}</div>
       <div class="tg">${X.out?'탈락':g(gr)}</div>
-      <div class="ts">땅 ${lands.length} · ${TH.up} ${lan}</div></div>`;
+      <div class="ts">${seat(k)+1}번째 · 땅 ${lands.length} · ${TH.up} ${lan}</div></div>`;
   }).join('');
   const legend = Object.entries(ZONES).map(([k,z])=>`<span><i style="background:${ZONE_BG[k]}"></i>${z.name} (땅 ${z.price})</span>`).join('')
     + `<span>통행료: ${TH.up} 1${TH.upN} ×2 · 2${TH.upN} ×4 · 같은 색 4칸 독점 ×2 · 문제 맞히면 절반</span>`
@@ -818,6 +835,12 @@ function modalHTML(){
         + `<div class="btns"><button class="big solid" data-act="skip">확인</button></div>`;
       break;
     }
+    case 'order': {
+      body = `<div class="mt" style="margin-top:.6rem">순서 정하기</div><div class="mp">주사위를 굴려 큰 수가 나온 모둠부터 해요.</div>
+        <div class="orderlist">${p.rolls.map((r,k)=>`<div class="orow" style="--c:${TC[r.t]}"><b>${k+1}</b><span>${esc(S.teams[r.t].name)}</span>${dieHTML(r.d[0])}${dieHTML(r.d[1])}<em>${r.d[0]+r.d[1]}</em></div>`).join('')}</div>
+        <div class="btns"><button class="big solid" data-act="orderok">${esc(S.teams[p.rolls[0].t].name)}부터 시작!</button></div>`;
+      break;
+    }
     case 'settle': {
       body = head('파산 모드') + `<div class="mt" style="margin-top:1rem">${p.out?'파산!':'땅을 팔아 빚을 갚아요'}</div>`
         + (p.sold.length ? `<div class="mp">${p.sold.map(s=>`「${esc(s.name)}」 팔고 +${money(s.got)}`).join('<br>')}</div>` : `<div class="mp">팔 땅이 없어요.</div>`)
@@ -853,6 +876,7 @@ function renderSetup(){
       <div class="note">지금 고른 것: ${nq}문제 · <b>${pt.title}</b>${pt.quiz?' (땅마다 그 주제 문제)':' (고른 문제에서 무작위)'}</div>
       <h3>규칙 고르기</h3>
       ${chk(S.catchup,'opt','catchup','꼴찌 응원',`꼴찌 모둠이 ${pt.start}을 지나면 +${CATCHUP_BONUS}${pt.unit} 더`)}
+      ${chk(S.diceOrder,'opt','diceOrder','주사위로 순서 정하기','시작할 때 주사위를 굴려 큰 수부터 (한 판 동안 고정)')}
       ${chk(S.bankrupt,'opt','bankrupt','파산 모드','빚이 생기면 땅을 팔아 갚고, 그래도 모자라면 탈락')}
       <ol class="rules">
         <li>${pt.cur} <b>${START_GRAIN}${pt.unit}</b>으로 시작. ${pt.start}을 지나면 +${LAP_BONUS}.</li>
