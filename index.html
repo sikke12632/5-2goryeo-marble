@@ -218,8 +218,8 @@ button:disabled{opacity:.38;cursor:default}
 <button id="backres" data-act="showres" hidden>결과로 돌아가기</button>
 <div id="layer" hidden></div>
 
-<script src="data.js?v=3"></script>
-<script src="bank.js?v=3"></script>
+<script src="data.js?v=4"></script>
+<script src="bank.js?v=4"></script>
 <script>
 'use strict';
 const KEY = 'goryeoMarble.v2';
@@ -242,7 +242,8 @@ function applyTheme(id){
   LANDS = BOARD.map((c,i)=>c.type==='land'?i:-1).filter(i=>i>=0);
   ZONE_CELLS = {}; LANDS.forEach(i=>(ZONE_CELLS[BOARD[i].zone] ||= []).push(i));
 }
-const themeFor = packs => (packs.length===1 && PACKS.find(p=>p.id===packs[0])?.theme==='goryeo') ? 'goryeo' : 'world';
+// 보드는 언제나 세계 보드 (고려 보드 데이터는 하던 판 이어하기·문제 원본으로만 남긴다)
+const themeFor = packs => 'world';
 function poolFor(packs){
   const sets = new Set(packs.flatMap(id=>PACKS.find(p=>p.id===id)?.sets || []));
   return BANK.map((q,k)=>sets.has(q.set)?k:-1).filter(k=>k>=0);
