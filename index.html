@@ -195,6 +195,22 @@ button:disabled{opacity:.38;cursor:default}
 
 /* 시작 화면: 문제·규칙 고르기 (터치하기 쉬운 큰 체크 단추) */
 .opts-col{display:flex;flex-direction:column;gap:.5rem}
+.opts-col h3 small{font-size:1.15rem;color:var(--dim);margin-left:.6rem}
+.unit{border:.16rem solid var(--line);border-radius:.6rem;background:#fff}
+.unit.open{border-color:var(--deep)}
+.uhead{display:flex;align-items:stretch}
+.uhead .chk.box{border:0;background:transparent;padding:.5rem .8rem}
+.chk.part i{background:var(--deep)}
+.chk.part i::after{content:'';width:.9rem;height:.25rem;background:#fff}
+.uname{flex:1;border:0;background:transparent;text-align:left;font-size:1.5rem;padding:.5rem .6rem;display:flex;justify-content:space-between;align-items:center;gap:.6rem}
+.uname small{font-size:1.1rem;color:var(--dim);white-space:nowrap}
+.ubtns{display:flex;gap:.5rem;padding:0 .8rem .4rem}
+.ubtns button{font-size:1.15rem;padding:.25rem .8rem}
+.setgrid{display:grid;grid-template-columns:1fr 1fr;gap:.35rem;padding:0 .8rem .7rem}
+.chk.sm{font-size:1.2rem;padding:.3rem .6rem;gap:.55rem}
+.chk.sm i{width:1.6rem;height:1.6rem;border-width:.16rem}
+.chk.sm.on i::after{width:.45rem;height:.8rem}
+.chk.sm small{display:inline;font-size:1rem}
 .rulechips{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
 .rulechips .chk{font-size:1.45rem;padding:.45rem .8rem;gap:.7rem}
 .rulechips .chk small{font-size:1.05rem}
@@ -228,8 +244,9 @@ button:disabled{opacity:.38;cursor:default}
 <button id="backres" data-act="showres" hidden>결과로 돌아가기</button>
 <div id="layer" hidden></div>
 
-<script src="data.js?v=4"></script>
-<script src="bank.js?v=4"></script>
+<script src="data.js?v=5"></script>
+<script src="bank.js?v=5"></script>
+<script src="bank2.js?v=5"></script>
 <script>
 'use strict';
 const KEY = 'goryeoMarble.v2';
@@ -255,8 +272,11 @@ function applyTheme(id){
 }
 // 보드는 언제나 세계 보드 (고려 보드 데이터는 하던 판 이어하기·문제 원본으로만 남긴다)
 const themeFor = packs => 'world';
-function poolFor(packs){
-  const sets = new Set((packs||[]).flatMap(id=>PACKS.find(p=>p.id===id)?.sets || []));
+// 예전에 저장된 '문제 묶음'을 차시 묶음 목록으로 바꾼다
+const setsFromPacks = packs => [...new Set((packs||[]).flatMap(id=>PACKS.find(p=>p.id===id)?.sets || []))];
+const setCount = id => BANK.filter(q=>q.set===id).length;
+function poolFor(setIds){
+  const sets = new Set(setIds||[]);
   return BANK.map((q,k)=>sets.has(q.set)?k:-1).filter(k=>k>=0);
 }
 const idxOf = name => BOARD.findIndex(c=>c.name===name);
@@ -279,22 +299,22 @@ const g = n => `<span class="${n<0?'neg':''}">${money(n)}</span>`;
 /* ---------- 상태 ---------- */
 let S = load() || blank();
 applyTheme(S.theme || 'goryeo');
-const ui = {busy:false, rolling:null, tok:null, shown:null, moveMode:null, showBoard:false, layer:null, lockUntil:0, gsel:0};
+const ui = {openUnit:null, busy:false, rolling:null, tok:null, shown:null, moveMode:null, showBoard:false, layer:null, lockUntil:0, gsel:0};
 
 function blank(prev){
   return {v:2, phase:'setup',
     names: defaultNames().map((d,k)=>prev?.names?.[k] || d),
     count: prev?.count || prev?.teams?.length || 4,
     minutes: prev?.minutes || 30, sound: prev?.sound ?? true,
-    packs: prev?.packs || ['goryeo'], catchup: prev?.catchup ?? true, bankrupt: prev?.bankrupt ?? false, diceOrder: prev?.diceOrder ?? true, share: prev?.share ?? true};
+    sets: prev?.sets || (prev?.packs ? setsFromPacks(prev.packs) : SETS.filter(x=>x.unit==='u1').map(x=>x.id)), catchup: prev?.catchup ?? true, bankrupt: prev?.bankrupt ?? false, diceOrder: prev?.diceOrder ?? true, share: prev?.share ?? true};
 }
 // 예전 판에서 저장된 값에는 새 설정이 없을 수 있다 → 빠진 값을 채운다
 function load(){
   try{
     const s=JSON.parse(localStorage.getItem(KEY)); if(!s || s.v!==2) return null;
     const d=blank(s);
-    for(const k of ['names','count','minutes','sound','packs','catchup','bankrupt','diceOrder','share']) if(s[k]==null) s[k]=d[k];
-    s.packs = s.packs.filter(id=>PACKS.some(p=>p.id===id)); if(!s.packs.length) s.packs=['goryeo'];
+    for(const k of ['names','count','minutes','sound','sets','catchup','bankrupt','diceOrder','share']) if(s[k]==null) s[k]=d[k];
+    s.sets = s.sets.filter(id=>SETS.some(x=>x.id===id));
     if(s.phase!=='setup' && !Array.isArray(s.teams)) return null;
     return s;
   }catch(e){ return null; }
@@ -302,10 +322,10 @@ function load(){
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
 function startGame(){
-  const theme = themeFor(S.packs);
+  const theme = themeFor();
   applyTheme(theme);
   S = {v:2, phase:'play', names:S.names, count:S.count, minutes:S.minutes, sound:S.sound,
-    packs:S.packs, catchup:S.catchup, bankrupt:S.bankrupt, diceOrder:S.diceOrder, share:S.share, theme, pool:poolFor(S.packs), usedBank:[],
+    sets:S.sets, catchup:S.catchup, bankrupt:S.bankrupt, diceOrder:S.diceOrder, share:S.share, theme, pool:poolFor(S.sets), usedBank:[],
     teams: S.names.slice(0,S.count).map(n=>({name:n, grain:START_GRAIN, pos:0, skip:false, out:false})),
     owner: Array(N).fill(-1), lan: Array(N).fill(0),
     turn:0, turnNo:1, rolled:false, dice:null, pending:null,
@@ -591,11 +611,14 @@ const ACT = {
   tminus(){ readNames(); S.count=Math.max(MIN_TEAMS,S.count-1); renderSetup(); },
   tplus(){ readNames(); S.count=Math.min(MAX_TEAMS,S.count+1); renderSetup(); },
   sound(){ readNames(); S.sound=!S.sound; renderSetup(); },
-  pack(id){ readNames(); const on=S.packs.includes(id);
-    if(on && S.packs.length===1) return;           // 하나는 꼭 골라야 한다
-    S.packs = on ? S.packs.filter(x=>x!==id) : [...S.packs, id]; renderSetup(); },
+  // 문제 고르기: 단원(열기·모두 선택·모두 해제) → 주제 하나씩
+  unitOpen(u){ readNames(); ui.openUnit = ui.openUnit===u ? null : u; renderSetup(); },
+  unitAll(u){ readNames(); const ids=SETS.filter(x=>x.unit===u).map(x=>x.id); S.sets=[...new Set([...S.sets,...ids])]; renderSetup(); },
+  unitNone(u){ readNames(); const ids=new Set(SETS.filter(x=>x.unit===u).map(x=>x.id)); S.sets=S.sets.filter(x=>!ids.has(x)); renderSetup(); },
+  unitToggle(u){ const ids=SETS.filter(x=>x.unit===u).map(x=>x.id); ids.every(x=>S.sets.includes(x)) ? ACT.unitNone(u) : ACT.unitAll(u); },
+  setT(id){ readNames(); S.sets = S.sets.includes(id) ? S.sets.filter(x=>x!==id) : [...S.sets, id]; renderSetup(); },
   opt(k){ readNames(); S[k]=!S[k]; renderSetup(); },
-  begin(){ readNames(); snd('ok'); startGame(); },
+  begin(){ readNames(); if(!poolFor(S.sets).length) return; snd('ok'); startGame(); },
   /* 결과 */
   board(){ ui.showBoard=true; render(); },
   showres(){ ui.showBoard=false; render(); },
@@ -791,7 +814,7 @@ function modalHTML(){
       const parts=[`기본 ${p.base}`]; if(p.lan) parts.push(`${TH.up} ${p.lan}${TH.upN} ×${LAN_MULT[p.lan]}`); if(p.mono) parts.push(`독점 ×${MONO_MULT}`); if(p.late) parts.push(`물가 상승 ×${LATE_MULT}`);
       body = head(`${ztag(p.cell)} ${esc(O.name)}의 땅`)
         + `<div class="mt">${esc(BOARD[p.cell].name)}</div>`
-        + `<div class="discount">통행료 ${money(p.full)} <small>(${parts.join(' · ')})</small> — 문제를 맞히면 절반 ${money(p.half)}!</div>`;
+        + (p.answered==null ? `<div class="discount">통행료 ${money(p.full)} <small>(${parts.join(' · ')})</small> — 문제를 맞히면 절반 ${money(p.half)}!</div>` : '');
       let after='';
       if(p.answered!=null){
         const amount = ok ? p.half : p.full;
@@ -883,22 +906,29 @@ function readNames(){
 }
 function renderSetup(){
   const el=document.getElementById('setup');
-  const pt=THEMES[themeFor(S.packs)], nq=poolFor(S.packs).length;
+  const pt=THEMES[themeFor()], nq=poolFor(S.sets).length;
   const chk = (on, act, v, label, sub) => `<button class="chk ${on?'on':''}" data-act="${act}" data-v="${v}"><i></i><span>${label}<small>${sub}</small></span></button>`;
   el.innerHTML = `<div class="sheet">
     <div>
       <h1>사회 마블</h1>
-      <div class="sub">5학년 사회 1단원 복습 · 2~6모둠이 돌아가며 주사위를 굴려요</div>
+      <div class="sub">5학년 사회 복습 · 2~6모둠이 돌아가며 주사위를 굴려요</div>
       <div class="field">모둠 수 <span class="step"><button data-act="tminus" ${S.count<=MIN_TEAMS?'disabled':''}>−1</button><b>${S.count}모둠</b><button data-act="tplus" ${S.count>=MAX_TEAMS?'disabled':''}>+1</button></span></div>
       <div class="names">${S.names.slice(0,S.count).map((n,k)=>`<label class="field"><span class="dot" style="--c:${TC[k]}"></span><input type="text" maxlength="8" value="${esc(n)}"></label>`).join('')}</div>
       <div class="field">플레이 시간 <span class="step"><button data-act="minus">−5</button><b>${S.minutes}분</b><button data-act="plus">+5</button></span></div>
       <div class="field">효과음 <button data-act="sound">${S.sound?'켜짐':'꺼짐'}</button></div>
-      <div style="margin-top:1.2rem"><button class="big solid" data-act="begin">게임 시작</button></div>
+      <div style="margin-top:1.2rem"><button class="big solid" data-act="begin" ${nq?'':'disabled'}>게임 시작</button>${nq?'':'<div class="note" style="text-align:left;color:var(--warn)">문제를 하나 이상 골라 주세요.</div>'}</div>
     </div>
     <div class="opts-col">
-      <h3>문제 고르기</h3>
-      ${PACKS.map(pk=>chk(S.packs.includes(pk.id),'pack',pk.id,pk.name,`${poolFor([pk.id]).length}문제 · ${THEMES[pk.theme].title}`)).join('')}
-      <div class="note">지금 고른 것: ${nq}문제 · <b>${pt.title}</b>${pt.quiz?' (땅마다 그 주제 문제)':' (고른 문제에서 무작위)'}</div>
+      <h3>문제 고르기 <small>지금 ${nq}문제 · 고른 문제에서 무작위</small></h3>
+      ${UNITS.map(u=>{
+        const sets=SETS.filter(x=>x.unit===u.id), on=sets.filter(x=>S.sets.includes(x.id)).length, open=ui.openUnit===u.id;
+        const nqU=poolFor(sets.filter(x=>S.sets.includes(x.id)).map(x=>x.id)).length;
+        return `<div class="unit ${open?'open':''}">
+          <div class="uhead"><button class="chk box ${on===sets.length?'on':on?'part':''}" data-act="unitToggle" data-v="${u.id}"><i></i></button>
+          <button class="uname" data-act="unitOpen" data-v="${u.id}"><span>${open?'▾':'▸'} ${esc(u.name)}</span><small>${on}/${sets.length}주제 · ${nqU}문제</small></button></div>
+          ${open?`<div class="ubtns"><button data-act="unitAll" data-v="${u.id}">모두 선택</button><button data-act="unitNone" data-v="${u.id}">모두 해제</button></div>
+          <div class="setgrid">${sets.map(x=>`<button class="chk sm ${S.sets.includes(x.id)?'on':''}" data-act="setT" data-v="${x.id}"><i></i><span>${esc(x.label)} <small>${setCount(x.id)}</small></span></button>`).join('')}</div>`:''}
+        </div>`;}).join('')}
       <h3>규칙 고르기</h3>
       <div class="rulechips">
       ${chk(S.catchup,'opt','catchup','꼴찌 응원',`꼴찌 모둠이 ${pt.start}을 지나면 +${CATCHUP_BONUS}${pt.unit} 더`)}
@@ -906,14 +936,14 @@ function renderSetup(){
       ${chk(S.diceOrder,'opt','diceOrder','주사위로 순서 정하기','시작할 때 주사위를 굴려 큰 수부터 (한 판 동안 고정)')}
       ${chk(S.bankrupt,'opt','bankrupt','파산 모드','빚이 생기면 땅을 팔아 갚고, 그래도 모자라면 탈락')}
       </div>
-      <ol class="rules">
+      ${ui.openUnit?'':`<ol class="rules">
         <li>${pt.cur} <b>${START_GRAIN}${pt.unit}</b>으로 시작. ${pt.start}을 지나면 +${LAP_BONUS}.</li>
         <li><b>빈 땅</b>: 문제를 맞히면 살 수 있다.</li>
         <li><b>우리 땅</b>: ${pt.up}(땅값의 절반) — 1${pt.upN} 통행료 ×2, 2${pt.upN} ×4.</li>
         <li><b>남의 땅</b>: 문제를 맞히면 통행료 <b>절반</b>. 4칸 독점 ×2.</li>
         <li>남은 10분부터 <b>물가 상승</b> ×${LATE_MULT}. 시간이 끝나면 <b>그 바퀴 마지막 모둠까지</b>.</li>
         <li>점수 = ${pt.cur} + 가진 땅값 + ${pt.up}값.${S.bankrupt?' 탈락한 모둠은 맨 아래.':' 모자라면 빚(마이너스).'}</li>
-      </ol>
+      </ol>`}
     </div></div>`;
 }
 
