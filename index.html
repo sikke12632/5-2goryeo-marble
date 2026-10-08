@@ -245,7 +245,7 @@ function applyTheme(id){
 // 보드는 언제나 세계 보드 (고려 보드 데이터는 하던 판 이어하기·문제 원본으로만 남긴다)
 const themeFor = packs => 'world';
 function poolFor(packs){
-  const sets = new Set(packs.flatMap(id=>PACKS.find(p=>p.id===id)?.sets || []));
+  const sets = new Set((packs||[]).flatMap(id=>PACKS.find(p=>p.id===id)?.sets || []));
   return BANK.map((q,k)=>sets.has(q.set)?k:-1).filter(k=>k>=0);
 }
 const idxOf = name => BOARD.findIndex(c=>c.name===name);
@@ -277,7 +277,17 @@ function blank(prev){
     minutes: prev?.minutes || 30, sound: prev?.sound ?? true,
     packs: prev?.packs || ['goryeo'], catchup: prev?.catchup ?? true, bankrupt: prev?.bankrupt ?? false};
 }
-function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY)); return s && s.v===2 ? s : null; }catch(e){ return null; } }
+// 예전 판에서 저장된 값에는 새 설정이 없을 수 있다 → 빠진 값을 채운다
+function load(){
+  try{
+    const s=JSON.parse(localStorage.getItem(KEY)); if(!s || s.v!==2) return null;
+    const d=blank(s);
+    for(const k of ['names','count','minutes','sound','packs','catchup','bankrupt']) if(s[k]==null) s[k]=d[k];
+    s.packs = s.packs.filter(id=>PACKS.some(p=>p.id===id)); if(!s.packs.length) s.packs=['goryeo'];
+    if(s.phase!=='setup' && !Array.isArray(s.teams)) return null;
+    return s;
+  }catch(e){ return null; }
+}
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
 function startGame(){
@@ -938,7 +948,11 @@ function snd(kind){
   }catch(e){}
 }
 
-render();
+// 그리다가 문제가 생기면 빈 화면 대신 안내를 띄운다
+try{ render(); }catch(e){
+  console.error(e);
+  document.body.insertAdjacentHTML('beforeend', `<div class="screen" style="z-index:99;flex-direction:column;gap:1.4rem;font-size:2rem;text-align:center">화면을 여는 중에 문제가 생겼어요.<br><small style="font-size:1.4rem;color:var(--dim)">${esc(e.message)}</small><button class="big solid" onclick="localStorage.removeItem(KEY);location.reload()">저장된 판 지우고 새로 시작</button></div>`);
+}
 </script>
 </body>
 </html>
