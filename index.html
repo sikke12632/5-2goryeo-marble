@@ -46,6 +46,8 @@ button:disabled{opacity:.42;cursor:default;filter:grayscale(.4)}
 .solid:active:not(:disabled){box-shadow:0 .05rem 0 var(--goldD)}
 .neg{color:var(--warn)}
 .av{display:inline-grid;place-items:center;flex:0 0 auto;border-radius:50%;background:#fff;line-height:1;font-family:var(--display)}
+.av img{width:80%;height:80%;display:block}
+img.fx{-webkit-user-drag:none;user-select:none}
 
 /* ---------- 보드 ---------- */
 #board{position:fixed;inset:0;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(7,1fr);gap:.38rem;padding:.45rem}
@@ -59,13 +61,14 @@ button:disabled{opacity:.42;cursor:default;filter:grayscale(.4)}
 .cell.owned{box-shadow:inset 0 0 0 .32rem var(--own),0 .34rem 0 rgba(8,28,70,.32)}
 .cell.owned .band{background:var(--own);color:#fff}
 .cell.owned .nm{justify-content:flex-start;align-items:flex-start;text-align:left;padding:.35rem 36% 0 .7rem;font-size:1.6rem;overflow-wrap:anywhere}
-.cell .pill{overflow:hidden;text-overflow:ellipsis;font-size:1.05rem}
+.cell .pill{overflow:hidden;font-size:1.05rem;display:flex;align-items:center;gap:.2rem;min-width:0}
+.cell .pill img{width:1.5rem;height:1.5rem;flex:0 0 auto;margin-left:-.2rem}
 .cell .toll{font-size:1.1rem}
 .cell .toll.up{background:#fff;color:var(--warn);border-radius:.4rem;padding:0 .35rem}
 .cell.pick{outline:.32rem dashed #fff;outline-offset:-.55rem;cursor:pointer}
 .cell.corner{color:#fff;align-items:center;justify-content:center;padding:.2rem .4rem;text-shadow:0 .12rem 0 rgba(0,0,0,.22)}
-.cell.corner .cic{height:2.7rem;flex:0 0 auto}
-.cell.corner .cic svg{height:100%;width:auto;display:block}
+.cell.corner .cic{height:3.1rem;flex:0 0 auto}
+.cell.corner .cic img{height:100%;width:auto;display:block;filter:drop-shadow(0 0 .35rem rgba(255,255,255,.75)) drop-shadow(0 .15rem .15rem rgba(0,0,0,.25))}
 .cell.corner .nm{flex:0 0 auto;font-family:var(--display);font-size:1.9rem;padding:0;margin-top:.1rem}
 .cell.corner .tx{font-size:.92rem;line-height:1.15;text-align:center;word-break:keep-all;opacity:.95;margin-top:.15rem}
 .k-start{background:linear-gradient(160deg,#66B884,#368658)}
@@ -74,14 +77,14 @@ button:disabled{opacity:.42;cursor:default;filter:grayscale(.4)}
 .k-yeondeung{background:linear-gradient(160deg,#E8AE70,#CC8138)}
 .cell.card{background:linear-gradient(160deg,#F4DE96,#E3B24E)}
 .cell.card .nm{gap:.45rem;font-family:var(--display);font-size:1.75rem;color:#6B3A00;padding:0}
-.cell.card .nm svg{height:2.6rem;width:auto;flex:0 0 auto}
+.cell.card .nm img{height:3rem;width:auto;flex:0 0 auto;filter:drop-shadow(0 .15rem .15rem rgba(110,60,0,.3))}
 .cell.card::after{content:'';position:absolute;inset:-50%;background:linear-gradient(115deg,transparent 42%,rgba(255,255,255,.55) 50%,transparent 58%);animation:shine 4.5s ease-in-out infinite;pointer-events:none}
 @keyframes shine{0%,70%{transform:translateX(-60%)}100%{transform:translateX(60%)}}
 
 /* 건물: 땅에서 솟아오른다 */
 .bld{position:absolute;right:.35rem;bottom:.3rem;height:50%;transform-origin:50% 100%;z-index:1;pointer-events:none}
 .bld.l1{height:55%}.bld.l2{height:68%}
-.bld svg{height:100%;width:auto;display:block;filter:drop-shadow(0 .12rem 0 rgba(0,0,0,.18))}
+.bld img,.bld svg{height:100%;width:auto;display:block;filter:drop-shadow(0 .2rem .15rem rgba(0,0,0,.28))}
 .bld.lan{display:flex;gap:.15rem;align-items:flex-end;height:42%}
 .bld.pop{animation:rise .75s cubic-bezier(.25,1.6,.5,1) both}
 @keyframes rise{0%{transform:scale(.5,0);opacity:0}55%{transform:scale(.92,1.18);opacity:1}78%{transform:scale(1.05,.94)}100%{transform:none}}
@@ -98,7 +101,8 @@ button:disabled{opacity:.42;cursor:default;filter:grayscale(.4)}
 .pin .body{position:absolute;inset:0;transform-origin:50% 100%}
 .pin .head{position:absolute;left:0;top:0;width:3em;height:3em;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--c);box-shadow:inset -.22em -.22em 0 rgba(0,0,0,.2),0 .15em .3em rgba(0,0,0,.35);border:.14em solid #fff}
 .pin .face{position:absolute;left:.42em;top:.42em;width:2.16em;height:2.16em;border-radius:50%;background:#fff;display:grid;place-items:center;line-height:1;font-family:var(--display);color:var(--c)}
-.pin .face span{font-size:1.35em}
+.pin .face span{font-size:1.35em;display:grid;place-items:center}
+.pin .face img{width:1.25em;height:1.25em;display:block}
 .pin.now .body{animation:bob 1s ease-in-out infinite}
 .pin.now .head{box-shadow:inset -.22em -.22em 0 rgba(0,0,0,.2),0 0 0 .22em rgba(255,255,255,.75),0 0 1em .3em var(--c)}
 .pin .body.hop,.pin.now .body.hop{animation:hop .23s ease-out}
@@ -118,10 +122,12 @@ button:disabled{opacity:.42;cursor:default;filter:grayscale(.4)}
 .turn b{font-family:var(--display);font-weight:normal;overflow:hidden;text-overflow:ellipsis}
 .turn small{font-size:1.4rem;opacity:.9}
 .timer{margin-left:auto;font-size:1.5rem;white-space:nowrap;background:#fff;border-radius:3rem;padding:.25rem 1.1rem;box-shadow:0 .25rem 0 #C5D3E6;color:var(--dim)}
+.timer{display:flex;align-items:center;gap:.3rem}
+.timer img{width:1.9rem;height:1.9rem}
 .timer b{font-family:var(--display);font-weight:normal;font-size:2.2rem;color:var(--ink);font-variant-numeric:tabular-nums;margin-left:.3rem}
 .timer.up{background:var(--warn);color:#fff;box-shadow:0 .25rem 0 #9E3A33}
 #tbtn{position:absolute;top:.9rem;right:1rem;font-size:1.15rem;padding:.35rem .8rem;color:var(--dim);display:flex;align-items:center;gap:.3rem}
-#tbtn svg{width:1.3rem;height:1.3rem}
+#tbtn img{width:1.5rem;height:1.5rem}
 #c-mid{flex:1;display:flex;align-items:center;justify-content:center;gap:3rem;min-height:0}
 #roll{font-family:var(--display);font-size:3.2rem;padding:1.1rem 3rem;border-radius:1.4rem;color:#5A3200;
   background:linear-gradient(var(--gold1),var(--gold2));box-shadow:0 .5rem 0 var(--goldD),0 .8rem 1.4rem rgba(120,60,0,.3);text-shadow:0 .12rem 0 rgba(255,255,255,.6)}
@@ -178,7 +184,7 @@ button:disabled{opacity:.42;cursor:default;filter:grayscale(.4)}
 #board.many .teams{gap:.5rem}
 .badge{font-size:.9rem;background:var(--warn);color:#fff;border-radius:.4rem;padding:0 .4rem;align-self:center}
 .badge.cheer{background:var(--ok);display:flex;align-items:center;gap:.2rem;padding:0 .35rem 0 .15rem}
-.badge.cheer svg{width:1.3rem;height:1.3rem;background:#fff;border-radius:50%}
+.badge.cheer img{width:1.4rem;height:1.4rem}
 #board.many .badge.cheer em,#board.many .team .seat{display:none}
 .badge em{font-style:normal}
 .float{position:absolute;left:50%;top:-.4rem;transform:translateX(-50%);font-family:var(--display);font-size:2rem;white-space:nowrap;pointer-events:none;z-index:6;animation:floatup 1.3s ease-out forwards;text-shadow:0 .12rem 0 #fff,0 -.12rem 0 #fff,.12rem 0 0 #fff,-.12rem 0 0 #fff}
@@ -195,8 +201,7 @@ button:disabled{opacity:.42;cursor:default;filter:grayscale(.4)}
 #tb .rib .av{width:5.4rem;height:5.4rem;font-size:3.3rem;color:var(--c)}
 #tb .rib small{font-size:2.4rem;opacity:.92}
 @keyframes ribbon{0%{transform:translateX(-120vw) skewX(-12deg)}22%{transform:translateX(0) skewX(0)}78%{transform:translateX(0) scale(1)}100%{transform:translateX(120vw) skewX(12deg)}}
-.coin{position:fixed;left:0;top:0;width:2rem;height:2rem;margin:-1rem 0 0 -1rem;border-radius:50%;z-index:45;pointer-events:none;
-  background:radial-gradient(circle at 35% 30%,#FFF6B0,#FFD23F 45%,#E39A00 100%);box-shadow:inset 0 0 0 .2rem #C77F00,0 .15rem .3rem rgba(0,0,0,.3)}
+.coin{position:fixed;left:0;top:0;width:2.4rem;height:2.4rem;margin:-1.2rem 0 0 -1.2rem;z-index:45;pointer-events:none;background:url(img/fx/coin.png) center/contain no-repeat;filter:drop-shadow(0 .15rem .2rem rgba(0,0,0,.3))}
 .conf{position:fixed;left:0;top:0;width:.9rem;height:.55rem;z-index:45;pointer-events:none;border-radius:.12rem}
 
 /* ---------- 문제 창 (가운데 영역만 덮는다) ---------- */
@@ -251,8 +256,10 @@ button:disabled{opacity:.42;cursor:default;filter:grayscale(.4)}
 .landlist button{font-size:1.7rem;padding:.6rem 1.2rem}
 .lanrow{display:flex;gap:.5rem;justify-content:center;align-items:center;font-size:1.6rem}
 .cardart{width:7rem;height:7rem;border-radius:1.2rem;display:grid;place-items:center;background:linear-gradient(160deg,#F4DE96,#E3B24E);box-shadow:0 .3rem 0 var(--goldD)}
-.cardart svg{height:4.6rem;width:auto}
+.cardart img,.cardart svg{height:5rem;width:auto;filter:drop-shadow(0 .2rem .2rem rgba(0,0,0,.2))}
 .lan{width:1.05rem;height:1.5rem;display:inline-block;vertical-align:middle}
+img.lan{width:1.5rem;height:1.5rem}
+img.lan.bigl{width:2.6rem;height:2.6rem}
 .lan.bigl{width:1.5rem;height:2.1rem}
 
 /* ---------- 덮개: 시작 화면·결과·교사 ---------- */
@@ -287,7 +294,7 @@ button:disabled{opacity:.42;cursor:default;filter:grayscale(.4)}
 .step b{font-family:var(--display);font-weight:normal;font-size:2rem;min-width:4.6rem;text-align:center}
 .step button{font-size:1.5rem;padding:.2rem .85rem}
 .shuf{margin-left:auto;font-size:1.3rem;padding:.35rem .9rem;display:flex;align-items:center;gap:.4rem}
-.shuf svg{width:1.5rem;height:1.5rem}
+.shuf img{width:1.7rem;height:1.7rem}
 .names{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.6rem .8rem}
 .pl{display:flex;align-items:center;gap:.55rem;background:#F3F7FC;border-radius:3rem;padding:.3rem .6rem .3rem .3rem;box-shadow:inset 0 0 0 .16rem color-mix(in srgb,var(--c) 45%,transparent)}
 .pl .av{width:3rem;height:3rem;font-size:1.8rem;background:var(--c);color:#fff}
@@ -307,13 +314,13 @@ button:disabled{opacity:.42;cursor:default;filter:grayscale(.4)}
 .rulegrid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
 .rule{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto auto;column-gap:.8rem;row-gap:.2rem;text-align:left;padding:.9rem 1rem;border-radius:1.1rem;background:#F3F7FC;box-shadow:inset 0 0 0 .18rem #D5DFEC,0 .3rem 0 #D5DFEC;align-items:center}
 .rule .ri{grid-row:1/3;width:4.2rem;height:4.2rem;border-radius:1rem;display:grid;place-items:center;background:#fff;box-shadow:inset 0 0 0 .14rem #D5DFEC}
-.rule .ri svg{width:3.2rem;height:3.2rem}
+.rule .ri img{width:3.4rem;height:3.4rem}
 .rule .rt{font-family:var(--display);font-size:1.75rem;line-height:1.1}
 .rule .sw{grid-column:2;justify-self:start;width:3.6rem;height:1.9rem;border-radius:2rem;background:#C9D4E3;position:relative;transition:background .2s}
 .rule .sw::after{content:'';position:absolute;left:.2rem;top:.2rem;width:1.5rem;height:1.5rem;border-radius:50%;background:#fff;box-shadow:0 .1rem .2rem rgba(0,0,0,.25);transition:transform .2s}
 .rule .rd{grid-column:1/3;font-size:1.2rem;color:var(--dim);line-height:1.3;word-break:keep-all;margin-top:.35rem}
 .rule.on{background:#FFF8DC;box-shadow:inset 0 0 0 .22rem var(--gold2),0 .3rem 0 var(--goldD)}
-.rule.on .ri{background:linear-gradient(var(--gold1),var(--gold2));box-shadow:none}
+.rule.on .ri{background:#fff;box-shadow:inset 0 0 0 .18rem var(--gold2)}
 .rule.on .sw{background:var(--ok)}
 .rule.on .sw::after{transform:translateX(1.7rem)}
 .rule:active:not(:disabled){box-shadow:inset 0 0 0 .18rem #D5DFEC}
@@ -355,7 +362,7 @@ button:disabled{opacity:.42;cursor:default;filter:grayscale(.4)}
 .rk .r{font-family:var(--display);font-size:2rem;color:var(--dim)}
 .rk.first{box-shadow:0 .45rem 0 var(--goldD),0 0 2.5rem rgba(255,210,60,.8);transform:translateY(-1rem)}
 .rk.first .r{color:var(--goldD)}
-.rk .crown{position:absolute;top:-3.4rem;left:50%;width:4.6rem;transform:translateX(-50%) rotate(-8deg);filter:drop-shadow(0 .2rem 0 rgba(0,0,0,.25))}
+.rk .crown{position:absolute;top:-4.6rem;left:50%;width:6.4rem;transform:translateX(-50%) rotate(-8deg);filter:drop-shadow(0 .2rem 0 rgba(0,0,0,.25))}
 .rk .n{font-size:2.1rem;line-height:1.1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rk .s{font-family:var(--display);font-size:3.6rem;line-height:1}
 .ranks[style*="--n:5"] .rk,.ranks[style*="--n:6"] .rk{padding:.8rem .9rem}
@@ -367,6 +374,7 @@ button:disabled{opacity:.42;cursor:default;filter:grayscale(.4)}
 .chips{display:flex;flex-wrap:wrap;gap:.35rem}
 .chip{font-size:1.25rem;border-radius:.5rem;padding:.15rem .5rem;display:flex;align-items:center;gap:.2rem}
 .chip .lan{width:.75rem;height:1.05rem}
+.chip img.lan{width:1.3rem;height:1.3rem}
 .mono{font-size:1.4rem;color:var(--warn)}
 .none{font-size:1.15rem;color:var(--dim)}
 .rk.out{opacity:.65}
@@ -420,20 +428,20 @@ const KEY = 'goryeoMarble.v2';
 const TC = ['#D25450','#3B6DB8','#3D945E','#8263BC','#D9893A','#2F9893'];
 const MIN_TEAMS = 2, MAX_TEAMS = TC.length;
 // 개인전 기본 이름: 동물 20마리 중에서 무작위
-const ANIMALS = [['고양이','🐱'],['강아지','🐶'],['토끼','🐰'],['호랑이','🐯'],['사자','🦁'],['판다','🐼'],['여우','🦊'],['곰','🐻'],['코알라','🐨'],['펭귄','🐧'],
-  ['원숭이','🐵'],['돼지','🐷'],['병아리','🐥'],['개구리','🐸'],['부엉이','🦉'],['말','🐴'],['햄스터','🐹'],['고래','🐳'],['코끼리','🐘'],['문어','🐙']];
+const ANIMALS = [['고양이','cat'],['강아지','dog'],['토끼','rabbit'],['호랑이','tiger'],['사자','lion'],['판다','panda'],['여우','fox'],['곰','bear'],['코알라','koala'],['펭귄','penguin'],
+  ['원숭이','monkey'],['돼지','pig'],['병아리','chick'],['개구리','frog'],['부엉이','owl'],['말','horse'],['햄스터','hamster'],['고래','whale'],['코끼리','elephant'],['문어','octopus']];
 const randomAnimals = n => shuffle(ANIMALS).slice(0,n).map(a=>a[0]);
 const teamNames = () => TC.map((_,k)=>`${k+1}모둠`);
 const defaultNamesFor = mode => mode==='team' ? teamNames() : randomAnimals(MAX_TEAMS);
 const isTeamName = n => /^\d+모둠$/.test(n);
-// 말·카드에 그릴 얼굴: 동물 이름이면 그 동물, 'N모둠'이면 숫자, 아니면 첫 글자
+// 말·카드에 그릴 얼굴: 동물 이름이면 그 동물 그림, 'N모둠'이면 숫자, 아니면 첫 글자
 function AV(name){
-  const a=ANIMALS.find(x=>x[0]===name); if(a) return a[1];
+  const a=ANIMALS.find(x=>x[0]===name); if(a) return IMG(a[1]);
   const m=/^(\d+)모둠$/.exec(name); if(m) return m[1];
-  return [...String(name)][0] || '?';
+  return esc([...String(name)][0] || '?');
 }
 const isEmoji = name => ANIMALS.some(x=>x[0]===name);
-const avHTML = (name, cls='') => `<span class="av ${isEmoji(name)?'em':''} ${cls}">${esc(AV(name))}</span>`;
+const avHTML = (name, cls='') => `<span class="av ${isEmoji(name)?'em':''} ${cls}">${AV(name)}</span>`;
 const WHO = () => S.mode==='team' ? '모둠' : '플레이어';
 const ZONE_BG = {A:'var(--zA)',B:'var(--zB)',C:'var(--zC)',D:'var(--zD)'};
 const START_GRAIN = 500, LAP_BONUS = 50, PALGWAN_BONUS = 100, NO_LAND_BONUS = 50;
@@ -888,7 +896,7 @@ document.addEventListener('click', e=>{
 document.addEventListener('input', e=>{
   const inp=e.target.closest('#setup .pl input'); if(!inp) return;
   const av=inp.parentNode.querySelector('.av'), v=inp.value.trim();
-  av.textContent=AV(v || '?'); av.classList.toggle('em', isEmoji(v));
+  av.innerHTML=AV(v || '?'); av.classList.toggle('em', isEmoji(v));
 });
 let rsT; addEventListener('resize', ()=>{ clearTimeout(rsT); rsT=setTimeout(()=>{ if(S.phase!=='setup') renderTokens(null, true); }, 80); });
 
@@ -907,48 +915,20 @@ setInterval(()=>{
   if(S.timeUp && !ui.busy && !S.rolled && S.turn===firstAlive() && S.pending?.kind!=='settle') finish();
 }, 500);
 
-/* ---------- 그림 ---------- */
-const OUT = 'stroke="#1D2B44" stroke-width="1.3" stroke-linejoin="round"';
-const shade = (pts, a=.22) => `<polygon points="${pts}" fill="#000" opacity="${a}"/>`;
-// 땅만 산 칸: 깃발
-const FLAG = c => `<svg viewBox="0 0 30 40"><ellipse cx="13" cy="37" rx="10" ry="2.5" fill="#0003"/><path d="M5 37q8-5 16 0z" fill="#7CC65A" ${OUT}/><path d="M11 36V6" stroke="#1D2B44" stroke-width="2.2" stroke-linecap="round"/><path d="M12 6q6-3 14 1v11q-7-4-14-1z" fill="${c}" ${OUT}/><circle cx="11" cy="5" r="2.2" fill="#FFD23F" ${OUT}/></svg>`;
-// 건물 1채: 집 (지붕이 주인 색)
-const HOUSE = c => `<svg viewBox="0 0 48 44"><ellipse cx="25" cy="41" rx="21" ry="3" fill="#0003"/>
-  <polygon points="30,23 41,17 41,35 30,40" fill="#F2D8A7" ${OUT}/>${shade('30,23 41,17 41,35 30,40',.12)}
-  <rect x="6" y="23" width="24" height="17" fill="#FFF4DC" ${OUT}/>
-  <rect x="15.5" y="29" width="6" height="11" rx="1" fill="#A0602E" ${OUT}/>
-  <rect x="8.5" y="26.5" width="5" height="5" fill="#8FD6FF" ${OUT}/><rect x="23.5" y="26.5" width="4.5" height="5" fill="#8FD6FF" ${OUT}/>
-  <polygon points="18,7 29,2 45,17 34,23" fill="${c}" ${OUT}/>${shade('18,7 29,2 45,17 34,23')}
-  <polygon points="2,24 18,7 34,24" fill="${c}" ${OUT}/>
-  <rect x="34" y="4" width="4" height="7" fill="#C9502F" ${OUT}/></svg>`;
-// 건물 2채: 빌딩 (꼭대기에 주인 색 깃발)
-const TOWER = c => `<svg viewBox="0 0 48 64"><ellipse cx="25" cy="61" rx="21" ry="3" fill="#0003"/>
-  <polygon points="32,16 42,11 42,55 32,60" fill="#BFD6EE" ${OUT}/>${shade('32,16 42,11 42,55 32,60',.15)}
-  <rect x="8" y="16" width="24" height="44" fill="#E9F3FF" ${OUT}/>
-  <polygon points="8,16 18,11 42,11 32,16" fill="${c}" ${OUT}/>
-  <rect x="8" y="16" width="24" height="5" fill="${c}" ${OUT}/>
-  ${[0,1,2,3,4].map(r=>[0,1,2].map(k=>`<rect x="${11+k*6.8}" y="${24+r*6.6}" width="4.2" height="4.2" fill="#7EC8F5"/>`).join('')+`<polygon points="${34.5},${23.5+r*6.6-1} 39.5,${21+r*6.6-1} 39.5,${25.5+r*6.6-1} 34.5,${28+r*6.6-1}" fill="#6AB4E2"/>`).join('')}
-  <rect x="16.5" y="53" width="7" height="7" fill="#5C6E8A" ${OUT}/>
-  <path d="M25 11V2" stroke="#1D2B44" stroke-width="1.6"/><path d="M25.5 2l7 2.5-7 2.5z" fill="${c}" ${OUT}/></svg>`;
+/* ---------- 그림: Microsoft Fluent Emoji 3D (MIT, img/fx/LICENSE) ---------- */
+const FX = k => `img/fx/${k}.png`;
+const IMG = (k, cls='') => `<img class="fx ${cls}" src="${FX(k)}" alt="" draggable="false">`;
 const LANTERN_SVG = cls => `<svg class="lan ${cls||''}" viewBox="0 0 20 28" aria-hidden="true"><rect x="7" y="0" width="6" height="3" rx="1" fill="#5B3A1E"/><ellipse cx="10" cy="13.5" rx="9" ry="10" fill="#D4462A"/><ellipse cx="10" cy="13.5" rx="4" ry="10" fill="#E8743F"/><rect x="7" y="23" width="6" height="3" rx="1" fill="#5B3A1E"/><path d="M10 26v2" stroke="#5B3A1E" stroke-width="1.5"/></svg>`;
-const HOUSE_SVG = cls => `<svg class="lan ${cls||''}" viewBox="0 0 22 24" aria-hidden="true"><path d="M11 1 1 10h3v13h14V10h3z" fill="#C2492E"/><rect x="8" y="14" width="6" height="9" fill="#F3E2C2"/><rect x="5.5" y="11" width="3" height="3" fill="#F3E2C2"/><rect x="13.5" y="11" width="3" height="3" fill="#F3E2C2"/></svg>`;
-const KEY_ICON = `<svg viewBox="0 0 24 40"><circle cx="12" cy="10" r="7.5" fill="none" stroke="#7A4300" stroke-width="5.5"/><circle cx="12" cy="10" r="7.5" fill="none" stroke="#FFF2A8" stroke-width="2.6"/><path d="M12 18v19M12 27h6M12 34h5" stroke="#7A4300" stroke-width="5.5" stroke-linecap="round"/><path d="M12 18v19M12 27h6M12 34h5" stroke="#FFF2A8" stroke-width="2.4" stroke-linecap="round"/></svg>`;
-const UPICON = cls => (TH.icon==='house' ? HOUSE_SVG : LANTERN_SVG)(cls);
-const CARDICON = cls => TH.icon==='house' ? KEY_ICON : LANTERN_SVG(cls);
-const CORNER_ICON = {
-  start:`<svg viewBox="0 0 48 36"><path d="M4 12h22V3l18 15-18 15v-9H4z" fill="#fff" stroke="#11703A" stroke-width="2.5" stroke-linejoin="round"/></svg>`,
-  rest:`<svg viewBox="0 0 48 40"><ellipse cx="24" cy="35" rx="20" ry="4.5" fill="#FFE29A" stroke="#7A5A10" stroke-width="2"/><path d="M24 34q-1-14 3-24" stroke="#7A4A1E" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M27 10q-9-6-18 0q9-2 18 0zM27 10q9-7 18 1q-9-4-18-1zM27 10q-3-9 6-10q-5 4-6 10zM27 10q-10 2-12 10q5-7 12-10zM27 10q9 2 11 10q-5-7-11-10z" fill="#3FBF5A" stroke="#1E6E30" stroke-width="1.5" stroke-linejoin="round"/></svg>`,
-  palgwan:`<svg viewBox="0 0 48 40"><g stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M24 20V5M24 20l11-9M24 20l14 2M24 20l9 11M24 20H9M24 20l-11-9M24 20l-9 11"/></g><circle cx="24" cy="20" r="4" fill="#FFE45C"/><circle cx="40" cy="6" r="2.5" fill="#FFE45C"/><circle cx="8" cy="33" r="2" fill="#FFE45C"/></svg>`,
-  yeondeung:`<svg viewBox="0 0 48 40"><rect x="6" y="30" width="36" height="6" rx="1.5" fill="#fff" stroke="#8A4300" stroke-width="2"/><rect x="21" y="10" width="6" height="21" fill="#FFE45C" stroke="#8A4300" stroke-width="2"/><path d="M24 10V4h17v4" fill="none" stroke="#8A4300" stroke-width="2.5"/><path d="M41 8v8" stroke="#8A4300" stroke-width="1.8"/><rect x="37.5" y="16" width="7" height="6" fill="#fff" stroke="#8A4300" stroke-width="2"/><path d="M6 4h18" stroke="#8A4300" stroke-width="2.5"/></svg>`,
-};
-const RULE_ICON = {
-  turtle:`<svg viewBox="0 0 48 48"><ellipse cx="24" cy="40" rx="18" ry="3" fill="#0002"/><circle cx="40" cy="26" r="5" fill="#8FD66A" stroke="#2C5E1A" stroke-width="2"/><circle cx="41.5" cy="24.5" r="1.2" fill="#1D2B44"/><rect x="11" y="31" width="6" height="7" rx="3" fill="#8FD66A" stroke="#2C5E1A" stroke-width="2"/><rect x="28" y="31" width="6" height="7" rx="3" fill="#8FD66A" stroke="#2C5E1A" stroke-width="2"/><path d="M6 33q2-20 18-20t18 20z" fill="#3FAE4E" stroke="#2C5E1A" stroke-width="2.2" stroke-linejoin="round"/><path d="M15 33l4-12 10 0 4 12M19 21l5 6 5-6M24 27v6" fill="none" stroke="#2C5E1A" stroke-width="1.8"/></svg>`,
-  crown:`<svg viewBox="0 0 48 48"><path d="M7 36l-3-22 11 9 9-15 9 15 11-9-3 22z" fill="#FFD23F" stroke="#8A4C00" stroke-width="2.4" stroke-linejoin="round"/><rect x="7" y="36" width="34" height="6" rx="1.5" fill="#FFB01F" stroke="#8A4C00" stroke-width="2.4"/><circle cx="24" cy="29" r="3.2" fill="#E8423F" stroke="#8A4C00" stroke-width="1.6"/><circle cx="4" cy="13" r="2.6" fill="#FFD23F" stroke="#8A4C00" stroke-width="1.6"/><circle cx="44" cy="13" r="2.6" fill="#FFD23F" stroke="#8A4C00" stroke-width="1.6"/><circle cx="24" cy="7" r="2.6" fill="#FFD23F" stroke="#8A4C00" stroke-width="1.6"/></svg>`,
-  dice:`<svg viewBox="0 0 48 48"><rect x="6" y="6" width="36" height="36" rx="8" fill="#fff" stroke="#1D2B44" stroke-width="2.6"/><circle cx="16" cy="16" r="3.4" fill="#1D2B44"/><circle cx="24" cy="24" r="3.4" fill="#E8423F"/><circle cx="32" cy="32" r="3.4" fill="#1D2B44"/><circle cx="32" cy="16" r="3.4" fill="#1D2B44"/><circle cx="16" cy="32" r="3.4" fill="#1D2B44"/></svg>`,
-  bomb:`<svg viewBox="0 0 48 48"><circle cx="21" cy="29" r="14" fill="#3A4660" stroke="#141C2C" stroke-width="2.4"/><circle cx="16" cy="24" r="3.5" fill="#fff" opacity=".35"/><rect x="26" y="11" width="8" height="7" rx="1.5" transform="rotate(40 30 14.5)" fill="#5C6880" stroke="#141C2C" stroke-width="2"/><path d="M33 10q4-6 9-4" fill="none" stroke="#8A5A2A" stroke-width="2.4" stroke-linecap="round"/><path d="M42 3l1.5 3.5L47 7l-3.5 1.5L42 12l-1.5-3.5L37 7l3.5-1.5z" fill="#FFB01F" stroke="#C45A00" stroke-width="1.2"/></svg>`,
-};
-const GEAR = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.4 13a7.5 7.5 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.6 7.6 0 0 0-1.7-1L15 3.2h-4L10.7 6a7.6 7.6 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.5 7.5 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.6 7.6 0 0 0 1.7 1l.3 2.7h4l.3-2.7a7.6 7.6 0 0 0 1.7-1l2.5 1 2-3.5zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>`;
-const CROWN_IMG = RULE_ICON.crown.replace('<svg ', '<svg class="crown" ');
+const UPICON = cls => TH.icon==='house' ? IMG('house', `lan ${cls||''}`) : LANTERN_SVG(cls);
+const CARDICON = cls => TH.icon==='house' ? IMG('key') : LANTERN_SVG(cls);
+const BLD = ['flag','house','office'];   // 땅만 · 건물 1채 · 건물 2채
+const CORNER_ICON = {start:IMG('startflag'), rest:IMG('island'), palgwan:IMG('fireworks'), yeondeung:IMG('build')};
+const RULE_ICON = {turtle:IMG('turtle'), crown:IMG('crown'), dice:IMG('die'), bomb:IMG('bomb')};
+const GEAR = IMG('gear');
+const CROWN_IMG = IMG('crown','crown');
+// 처음 그릴 때 빈칸이 보이지 않게 미리 받아 둔다
+['cat','dog','rabbit','tiger','lion','panda','fox','bear','koala','penguin','monkey','pig','chick','frog','owl','horse','hamster','whale','elephant','octopus',
+ 'key','build','island','fireworks','startflag','flag','house','office','crown','turtle','die','bomb','coin','gear','hourglass'].forEach(k=>{ new Image().src=FX(k); });
 
 function gridPos(i){
   if(i<=6) return [1, i+1];
@@ -959,7 +939,7 @@ function gridPos(i){
 function bldHTML(i){
   const o=S.owner[i], lan=S.lan[i], c=TC[o];
   const pop = ui.fx && ui.fx.build===i && Date.now()<ui.fx.until;
-  const art = TH.icon==='house' ? [FLAG,HOUSE,TOWER][lan](c) : (lan ? LANTERN_SVG().repeat(lan) : FLAG(c));
+  const art = TH.icon==='house' || !lan ? IMG(BLD[TH.icon==='house'?lan:0]) : LANTERN_SVG().repeat(lan);
   const cls = TH.icon==='house' || !lan ? `l${lan}` : 'lan';
   return `<div class="bld ${cls} ${pop?'pop':''}">${art}</div>${pop?'<i class="dust d1"></i><i class="dust d2"></i><i class="dust d3"></i>':''}`;
 }
@@ -972,7 +952,7 @@ function cellParts(i){
     if(o>=0){
       cls+=' owned'; style=`--own:${TC[o]}`;
       const tl=tollOf(i);
-      inner=`<div class="band"><span class="pill">${esc(AV(S.teams[o].name))} ${esc(S.teams[o].name)}</span><span class="toll ${tl>baseToll(i)?'up':''}">통행 ${tl}</span></div><div class="nm">${esc(c.name)}</div>${bldHTML(i)}`;
+      inner=`<div class="band"><span class="pill">${isEmoji(S.teams[o].name)?AV(S.teams[o].name):''}${esc(S.teams[o].name)}</span><span class="toll ${tl>baseToll(i)?'up':''}">통행 ${tl}</span></div><div class="nm">${esc(c.name)}</div>${bldHTML(i)}`;
     } else inner=`<div class="band"><span>땅 ${z.price}</span><span>통행 ${r10(baseToll(i)*(S.late?LATE_MULT:1))}</span></div><div class="nm">${esc(c.name)}</div>`;
   } else if(c.type==='card'){
     cls+=' card';
@@ -1015,7 +995,7 @@ function renderTokens(hopT, snap){
     if(!el){ el=document.createElement('div'); el.className='pin'; el.dataset.pin=t; el.innerHTML='<div class="body"><div class="head"></div><div class="face"><span></span></div></div>'; layer.appendChild(el); fresh=true; }
     el.style.setProperty('--c', TC[t]);
     const face=el.querySelector('.face span'), av=AV(T.name);
-    if(face.textContent!==av) face.textContent=av;
+    if(face._av!==av){ face.innerHTML=av; face._av=av; }
     el.classList.toggle('now', t===S.turn && S.phase==='play');
     (groups[pos[t]] ||= []).push(t);
   });
@@ -1056,7 +1036,7 @@ function diceHTML(){
 function fmt(ms){ const s=Math.ceil(ms/1000); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; }
 function timerHTML(){
   if(S.timeUp) return `<div class="timer up" id="timer">시간 끝 · ${esc(S.teams[lastAlive()].name)}까지</div>`;
-  return `<div class="timer" id="timer">${S.paused?'멈춤':'남은 시간'}<b>${fmt(S.remaining)}</b></div>`;
+  return `<div class="timer" id="timer">${IMG('hourglass')}${S.paused?'멈춤':'남은 시간'}<b>${fmt(S.remaining)}</b></div>`;
 }
 function renderTimer(){ const el=document.getElementById('timer'); if(el) el.outerHTML=timerHTML(); }
 
@@ -1187,7 +1167,7 @@ function modalHTML(){
     case 'info': {
       const c=BOARD[p.cell];
       const eff = {start:`${CUR} ${money(LAP_BONUS)}을 받았어요.`, palgwan:`${CUR} +${money(PALGWAN_BONUS)}`, rest:'다음 차례에 한 번 쉬어요.'}[c.type];
-      body = head() + `<div class="cardart" style="margin-top:1rem;background:none;box-shadow:none">${CORNER_ICON[c.type]?CORNER_ICON[c.type].replace(/#fff"/g,'#1D2B44"'):''}</div><div class="mt">${esc(c.name)}</div><div class="mp">${esc(c.text)}</div><div class="calc"><span class="sum">${eff}</span></div>`
+      body = head() + `<div class="cardart" style="margin-top:1rem;background:none;box-shadow:none">${CORNER_ICON[c.type]||''}</div><div class="mt">${esc(c.name)}</div><div class="mp">${esc(c.text)}</div><div class="calc"><span class="sum">${eff}</span></div>`
         + `<div class="btns"><button class="big solid" data-act="info">확인</button></div>`;
       break;
     }
