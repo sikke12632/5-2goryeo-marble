@@ -7,10 +7,11 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>사회 마블</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Jua&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
+/* 제목·숫자: ONE 모바일 POP (게임용 둥근 글꼴) · 본문: Pretendard */
+@font-face{font-family:'ONE Mobile POP';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/ONE-Mobile-POP.woff') format('woff');font-display:swap}
 :root{
   --ink:#1D2B44;--dim:#66768F;--line:#D5DFEC;
   --sky1:#8CBFE4;--sky2:#3F78BC;--sky3:#284C82;
@@ -18,13 +19,14 @@
   --ok:#3A9A5B;--warn:#D2544B;
   --zA:#AACF8A;--zB:#EDAAC0;--zC:#93C4E4;--zD:#EEC872;
   --tA:#F5F9F0;--tB:#FBF2F5;--tC:#F1F6FA;--tD:#FBF6E9;
-  --display:'Black Han Sans','Jua',system-ui,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  --display:'ONE Mobile POP','Pretendard Variable',Pretendard,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
 }
 *{box-sizing:border-box}
 html{font-size:min(1.85vh,1.04vw);font-size:min(1.85dvh,1.04vw)}
 body{
   margin:0;height:100vh;height:100dvh;overflow:hidden;color:var(--ink);
-  font-family:'Jua',system-ui,'Malgun Gothic','Apple SD Gothic Neo',sans-serif;
+  font-family:'Pretendard Variable',Pretendard,system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  font-weight:600;letter-spacing:-.01em;font-synthesis:none;
   background-color:var(--sky2);
   background-image:
     radial-gradient(circle at 1px 1px, rgba(255,255,255,.13) 1.5px, transparent 0),
@@ -71,10 +73,10 @@ img.fx{-webkit-user-drag:none;user-select:none}
 .cell.corner .cic img{height:100%;width:auto;display:block;filter:drop-shadow(0 0 .35rem rgba(255,255,255,.75)) drop-shadow(0 .15rem .15rem rgba(0,0,0,.25))}
 .cell.corner .nm{flex:0 0 auto;font-family:var(--display);font-size:1.9rem;padding:0;margin-top:.1rem}
 .cell.corner .tx{font-size:.92rem;line-height:1.15;text-align:center;word-break:keep-all;opacity:.95;margin-top:.15rem}
-.k-start{background:linear-gradient(160deg,#66B884,#368658)}
-.k-rest{background:linear-gradient(160deg,#63BAB6,#30838D)}
-.k-palgwan{background:linear-gradient(160deg,#DD8EAE,#B5527F)}
-.k-yeondeung{background:linear-gradient(160deg,#E8AE70,#CC8138)}
+.k-start{background:linear-gradient(160deg,#4E9D6C,#2C7650)}
+.k-rest{background:linear-gradient(160deg,#4A9E9A,#26717A)}
+.k-palgwan{background:linear-gradient(160deg,#C46C93,#9C436C)}
+.k-yeondeung{background:linear-gradient(160deg,#CF8A48,#A9632A)}
 .cell.card{background:linear-gradient(160deg,#F4DE96,#E3B24E)}
 .cell.card .nm{gap:.45rem;font-family:var(--display);font-size:1.75rem;color:#6B3A00;padding:0}
 .cell.card .nm img{height:3rem;width:auto;flex:0 0 auto;filter:drop-shadow(0 .15rem .15rem rgba(110,60,0,.3))}
@@ -162,10 +164,12 @@ img.fx{-webkit-user-drag:none;user-select:none}
 #c-msg .msg{background:#fff;border-radius:2rem;padding:.35rem 1.4rem;font-size:1.45rem;color:var(--ink);min-height:2.4rem;line-height:1.3;box-shadow:0 .2rem 0 #C9D6E8;max-width:100%;text-align:center}
 #c-msg .msg:empty{visibility:hidden}
 .legend{display:flex;justify-content:center;flex-wrap:wrap;gap:.35rem .9rem;font-size:1.05rem;color:var(--dim)}
+.legend+.legend{margin-top:-.25rem}
+.legend .mode img{width:1.3rem;height:1.3rem}
 .legend span{display:flex;align-items:center;gap:.35rem;white-space:nowrap}
 .legend i{width:1.15rem;height:1.15rem;border-radius:.3rem}
 .legend .late{color:#fff;background:var(--warn);border-radius:.5rem;padding:.05rem .6rem}
-.legend .mode{color:#fff;background:var(--ink);border-radius:.5rem;padding:.05rem .6rem}
+.legend .mode{gap:.25rem;color:var(--ink);background:#fff;border-radius:1rem;padding:.1rem .7rem .1rem .3rem;box-shadow:0 .12rem 0 #C9D6E8}
 .teams{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:.7rem}
 .team{position:relative;display:flex;align-items:center;gap:.6rem;background:#fff;border-radius:1rem;padding:.45rem .7rem;box-shadow:0 .28rem 0 #C3D1E4;border:.22rem solid transparent;min-width:0}
 .team .av{width:3.4rem;height:3.4rem;font-size:2rem;background:var(--c);color:#fff;box-shadow:inset 0 -.25rem 0 rgba(0,0,0,.18)}
@@ -211,17 +215,21 @@ img.fx{-webkit-user-drag:none;user-select:none}
 @keyframes mIn{from{transform:scale(.88);opacity:0}}
 @keyframes flipIn{from{transform:perspective(60rem) rotateY(-100deg);opacity:.2}}
 @keyframes shake{20%,60%{transform:translateX(-.8rem)}40%,80%{transform:translateX(.8rem)}}
-.mbody{min-height:100%;padding:.9rem 2.2rem 1.1rem;display:flex;flex-direction:column;align-items:center;gap:.6rem}
-.mh{align-self:stretch;display:flex;justify-content:space-between;align-items:center;font-size:1.3rem;color:var(--dim)}
+.mbody{position:relative;min-height:100%;padding:4.2rem 2.2rem 1.6rem;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.7rem}
+.mh{position:absolute;left:2.2rem;right:2.2rem;top:.9rem;display:flex;justify-content:space-between;align-items:center;font-size:1.3rem;color:var(--dim)}
 .mh .who{display:flex;align-items:center;gap:.5rem;background:var(--tc);color:#fff;border-radius:3rem;padding:.2rem 1rem .2rem .25rem;font-size:1.5rem}
 .mh .who .av{width:2.3rem;height:2.3rem;font-size:1.4rem;color:var(--tc)}
 .ztag{border-radius:.5rem;padding:.1rem .7rem;color:var(--ink)}
 .mt{font-family:var(--display);font-size:3rem;line-height:1.1;text-align:center}
-.mq{font-size:2.05rem;line-height:1.3;text-align:center;word-break:keep-all;max-width:56rem}
+.mq{font-size:2.05rem;font-weight:700;line-height:1.35;letter-spacing:-.02em;text-align:center;word-break:keep-all;max-width:56rem}
 .mp{font-size:1.75rem;line-height:1.4;text-align:center;word-break:keep-all;max-width:56rem}
 .opts{display:flex;flex-direction:column;gap:.65rem;width:100%;max-width:54rem}
 .opt{font-size:1.95rem;min-height:3.9rem;text-align:left;padding:.4rem 1.2rem;background:#fff;word-break:keep-all;line-height:1.25;box-shadow:inset 0 0 0 .18rem #CBD7E8,0 .3rem 0 #CBD7E8}
 .opt:disabled{opacity:1;filter:none}
+.opts:not(.ox) .opt{display:flex;align-items:center;gap:.9rem}
+.opt .num{flex:0 0 auto;font-style:normal;font-family:var(--display);width:2.5rem;height:2.5rem;border-radius:50%;display:grid;place-items:center;font-size:1.5rem;background:#EAF0F8;color:var(--dim)}
+.opt.right .num{background:var(--ok);color:#fff}.opt.wrong .num{background:var(--warn);color:#fff}
+.opts.done .opt .num{width:2rem;height:2rem;font-size:1.2rem}
 .opt.right{background:#DDF5E4;box-shadow:inset 0 0 0 .22rem var(--ok),0 .3rem 0 var(--ok)}
 .opt.wrong{background:#FDE1DD;box-shadow:inset 0 0 0 .22rem var(--warn),0 .3rem 0 var(--warn)}
 .opt.dim{opacity:.4}
@@ -231,7 +239,7 @@ img.fx{-webkit-user-drag:none;user-select:none}
 .opts.ox .opt{font-family:var(--display);font-size:4.4rem;min-width:11rem;min-height:7rem;text-align:center;line-height:1}
 .opts.ox .opt.o{color:#3B6DB8}.opts.ox .opt.x{color:var(--warn)}
 .opts.ox.done .opt{min-height:4.4rem;font-size:3rem;min-width:9rem}
-.payrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.4rem 1.4rem;margin-top:auto;font-variant-numeric:tabular-nums}
+.payrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.4rem 1.4rem;margin-top:.8rem;font-variant-numeric:tabular-nums}
 .payrow .sum,.payrow button{white-space:nowrap}
 .qwrap .payrow .sum{font-size:1.9rem}
 .payrow .sum{font-size:2.3rem}
@@ -249,7 +257,8 @@ img.fx{-webkit-user-drag:none;user-select:none}
 .fb{font-size:1.65rem;text-align:center;line-height:1.35;word-break:keep-all;max-width:56rem;animation:popin .35s cubic-bezier(.2,1.6,.4,1)}
 .fb b{font-family:var(--display);font-weight:normal;font-size:2.2rem;margin-right:.5rem}
 .fb.ok b{color:var(--ok)}.fb.no b{color:var(--warn)}
-.btns{display:flex;gap:1.2rem;margin-top:auto;padding-top:.3rem;flex-wrap:wrap;justify-content:center}
+.btns{display:flex;gap:1.2rem;margin-top:1rem;flex-wrap:wrap;justify-content:center}
+#modal .btns .big{min-width:13rem;font-size:2.2rem;padding:.75rem 2.2rem}
 .calc{font-size:1.8rem;line-height:1.6;text-align:center;font-variant-numeric:tabular-nums}
 .calc .sum{font-family:var(--display);font-size:2.8rem}
 .landlist{display:flex;flex-wrap:wrap;gap:.9rem;justify-content:center;max-width:56rem}
@@ -267,7 +276,7 @@ img.lan.bigl{width:2.6rem;height:2.6rem}
 .panel{background:#fff;border-radius:1.4rem;box-shadow:0 .5rem 0 rgba(8,28,70,.28),0 1rem 2.4rem rgba(8,28,70,.2)}
 .lobby{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:2.4rem;width:min(94vw,96rem);max-height:100%;padding:1.6rem 0;align-items:center}
 .rays{position:absolute;z-index:-1;left:-30vw;top:-40vh;width:110vw;height:110vw;max-height:none;pointer-events:none;
-  background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.12) 0 9deg,transparent 9deg 18deg);
+  background:repeating-conic-gradient(from 0deg,rgba(255,255,255,.07) 0 9deg,transparent 9deg 18deg);
   -webkit-mask:radial-gradient(circle,#000 10%,transparent 62%);mask:radial-gradient(circle,#000 10%,transparent 62%);
   animation:spin 80s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -310,7 +319,7 @@ img.lan.bigl{width:2.6rem;height:2.6rem}
 .tabs button{flex:1;box-shadow:none;border-radius:1rem 1rem 0 0;background:transparent;font-size:1.45rem;padding:.6rem .4rem;color:var(--dim)}
 .tabs button.on{background:#fff;color:var(--ink)}
 .tabs button:active{transform:none}
-.tabbody{padding:1.2rem 1.4rem 1.4rem;overflow:auto;display:flex;flex-direction:column;gap:.7rem;min-height:30rem}
+.tabbody{padding:1.2rem 1.4rem 1.4rem;overflow:auto;display:flex;flex-direction:column;gap:.7rem;min-height:26rem}
 .rulegrid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
 .rule{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto auto;column-gap:.8rem;row-gap:.2rem;text-align:left;padding:.9rem 1rem;border-radius:1.1rem;background:#F3F7FC;box-shadow:inset 0 0 0 .18rem #D5DFEC,0 .3rem 0 #D5DFEC;align-items:center}
 .rule .ri{grid-row:1/3;width:4.2rem;height:4.2rem;border-radius:1rem;display:grid;place-items:center;background:#fff;box-shadow:inset 0 0 0 .14rem #D5DFEC}
@@ -350,7 +359,7 @@ img.lan.bigl{width:2.6rem;height:2.6rem}
 .srow button.tg.on{background:var(--ok);color:#fff;box-shadow:0 .3rem 0 #2A7343}
 .rules{font-size:1.4rem;line-height:1.55;color:var(--ink);margin:0;padding-left:1.6rem}
 .rules li{margin:.2rem 0;word-break:keep-all}
-.rules b{font-weight:normal;color:var(--warn)}
+.rules b{font-weight:800;color:var(--warn)}
 #result{flex-direction:column;gap:1.4rem;padding:1.6rem 2rem}
 #result h2{font-family:var(--display);font-weight:normal;font-size:5rem;margin:0;color:#F6D46A;transform:rotate(-2deg);
   text-shadow:.28rem 0 #8A3C00,-.28rem 0 #8A3C00,0 .28rem #8A3C00,0 -.28rem #8A3C00,.2rem .2rem #8A3C00,-.2rem .2rem #8A3C00,.2rem -.2rem #8A3C00,-.2rem -.2rem #8A3C00,0 .7rem #5A2600}
@@ -425,7 +434,7 @@ img.lan.bigl{width:2.6rem;height:2.6rem}
 <script>
 'use strict';
 const KEY = 'goryeoMarble.v2';
-const TC = ['#D25450','#3B6DB8','#3D945E','#8263BC','#D9893A','#2F9893'];
+const TC = ['#C9473F','#3B6DB8','#34855A','#7A5AB5','#B96B25','#2A817C'];
 const MIN_TEAMS = 2, MAX_TEAMS = TC.length;
 // 개인전 기본 이름: 동물 20마리 중에서 무작위
 const ANIMALS = [['고양이','cat'],['강아지','dog'],['토끼','rabbit'],['호랑이','tiger'],['사자','lion'],['판다','panda'],['여우','fox'],['곰','bear'],['코알라','koala'],['펭귄','penguin'],
@@ -1054,10 +1063,11 @@ function renderCenter(){
   setPart('c-roll', `<button id="roll" class="${canRoll?'go':''}" data-act="roll" ${canRoll?'':'disabled'}>굴리기!</button>`);
   setPart('c-msg', `<div class="msg">${esc(S.msg||'')}</div>`);
   const legend = Object.entries(ZONES).map(([k,z])=>`<span><i style="background:${ZONE_BG[k]}"></i>${z.name} ${z.price}</span>`).join('')
-    + `<span>${TH.up} 1${TH.upN} ×2 · 2${TH.upN} ×4 · 4칸 독점 ×2 · 맞히면 절반</span>`
-    + Object.entries(RULES).filter(([k])=>S[k] && k!=='diceOrder').map(([k,r])=>`<span class="mode">${r.name}</span>`).join('')
+    + `<span>통행료: ${TH.up} 1${TH.upN} ×2 · 2${TH.upN} ×4 · 독점 ×2</span>`;
+  // 둘째 줄: 켜 둔 특수 룰 · 물가 상승
+  const modes = Object.entries(RULES).filter(([k])=>S[k] && k!=='diceOrder').map(([k,r])=>`<span class="mode">${RULE_ICON[r.icon]}${r.name}</span>`).join('')
     + (S.late?`<span class="late">물가 상승! 통행료 ×${LATE_MULT}</span>`:'');
-  setPart('c-legend', `<div class="legend">${legend}</div>`);
+  setPart('c-legend', `<div class="legend">${legend}</div>${modes?`<div class="legend">${modes}</div>`:''}`);
   setPart('c-teams', `<div class="teams" style="--n:${S.teams.length}">${S.teams.map((X,k)=>{
     const lands=LANDS.filter(i=>S.owner[i]===k), lan=sum(lands.map(i=>S.lan[i]));
     const badge = X.out ? '<span class="badge">파산</span>' : X.skip ? '<span class="badge">쉼</span>' : last[k] ? `<span class="badge cheer">${RULE_ICON.turtle}<em>슬로우 스타터</em></span>` : '';
@@ -1110,7 +1120,7 @@ function modalHTML(){
   const optsHTML = (opts, order, ans, ox) => `<div class="opts ${ox?'ox':''} ${ans!=null?'done':''}">${order.map((oi,k)=>{
       const st = ans==null ? '' : oi===0 ? 'right' : k===ans ? 'wrong' : 'dim';
       const oxc = ox ? (opts[oi]==='O'?'o':'x') : '';
-      return `<button class="opt ${st} ${oxc}" data-act="ans" data-v="${k}" ${ans!=null?'disabled':''}>${ox?'':`${k+1}. `}${esc(opts[oi])}</button>`;
+      return `<button class="opt ${st} ${oxc}" data-act="ans" data-v="${k}" ${ans!=null?'disabled':''}>${ox?'':`<i class="num">${k+1}</i>`}<span>${esc(opts[oi])}</span></button>`;
     }).join('')}</div>`;
   // 사진 문제는 사진 옆 칸에 문제·선택지·결과를 함께 둔다 (답을 고르면 사진을 줄인다)
   const quizHTML = (q, p, after='') => {
@@ -1257,7 +1267,7 @@ function renderSetup(){
       ${ruleCard('diceOrder', '시작할 때 주사위로 순서를 정해요')}
       ${ruleCard('bankrupt', '빚이 생기면 땅을 팔고, 그래도 모자라면 탈락')}
     </div><div class="hint">눌러서 켜고 끌 수 있어요</div>`;
-  else if(ui.tab==='qs') body = `<div class="hint" style="text-align:left">지금 <b style="font-weight:normal;color:var(--ink)">${nq}문제</b> · 고른 주제에서 무작위로 나와요</div>
+  else if(ui.tab==='qs') body = `<div class="hint" style="text-align:left">지금 <b style="font-weight:800;color:var(--ink)">${nq}문제</b> · 고른 주제에서 무작위로 나와요</div>
     ${UNITS.map(u=>{
       const sets=SETS.filter(x=>x.unit===u.id), on=sets.filter(x=>S.sets.includes(x.id)).length, open=ui.openUnit===u.id;
       const nqU=poolFor(sets.filter(x=>S.sets.includes(x.id)).map(x=>x.id)).length;
@@ -1281,8 +1291,7 @@ function renderSetup(){
       <li>남은 10분부터 <b>물가 상승</b> ×${LATE_MULT}. 시간이 끝나면 <b>그 바퀴 마지막 ${WHO()}까지</b>.</li>
       <li>점수 = ${pt.cur} + 가진 땅값 + ${pt.up}값.${S.bankrupt?' 탈락하면 맨 아래.':' 모자라면 빚(마이너스).'}</li>
     </ol>`;
-  el.innerHTML = `<div class="cloud" style="top:12%;animation-duration:70s;animation-delay:-20s"></div><div class="cloud" style="top:78%;animation-duration:90s;animation-delay:-60s;transform:scale(.7)"></div>
-  <div class="lobby">
+  el.innerHTML = `<div class="lobby">
     <div class="l-left">
       <div class="rays"></div>
       <div class="logo"><span class="l1">사회</span><span class="l2">마블</span></div>

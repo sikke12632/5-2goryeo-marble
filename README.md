@@ -4,7 +4,7 @@
 
 **링크로 바로 열기:** https://sikke12632.github.io/5-2goryeo-marble/ (`main` 브랜치가 GitHub Pages로 올라간다)
 
-서버·동기화 없음. 태블릿마다 따로 저장된다. `index.html` 을 더블클릭해서 열어도 된다(글꼴 Jua·Black Han Sans 는 인터넷이 될 때만).
+서버·동기화 없음. 태블릿마다 따로 저장된다. `index.html` 을 더블클릭해서 열어도 된다(글꼴 Pretendard·ONE 모바일 POP 은 인터넷이 될 때만).
 아이콘(동물 말·황금 열쇠·코너 칸·깃발/집/빌딩·특수 룰·왕관·동전)은 [Microsoft Fluent Emoji](https://github.com/microsoft/fluentui-emoji) 3D 그림(MIT 라이선스, `img/fx/LICENSE`)을 160px로 줄여 `img/fx/`에 넣었다. 건물이 솟아오르는 칸, 통통 뛰는 말, 3D 주사위, 날아가는 동전은 CSS로 움직인다. 효과음은 파일 없이 브라우저가 만든다.
 태블릿을 세로로 들면 "가로로 돌려 주세요"가 뜬다.
 
