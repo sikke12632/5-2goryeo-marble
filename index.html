@@ -418,6 +418,18 @@ img.lan.bigl{width:2.6rem;height:2.6rem}
 .mecard small{display:block;font-size:1.2rem;color:var(--dim)}
 .mecard b{display:block;font-family:var(--display);font-weight:normal;font-size:2.6rem;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mecard button{font-size:1.4rem}
+.gmodes{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:.6rem;padding:.7rem}
+.gmodes.ro .gm{pointer-events:none}
+.gm{display:flex;flex-direction:column;align-items:center;gap:.05rem;padding:.45rem .5rem;background:#F3F7FC;box-shadow:inset 0 0 0 .18rem #D5DFEC,0 .25rem 0 #D5DFEC}
+.gm b{font-family:var(--display);font-weight:normal;font-size:1.9rem;line-height:1.1}
+.gm small{font-size:1.2rem;color:var(--dim)}
+.gm.on{background:#EAF4FF;box-shadow:inset 0 0 0 .25rem var(--sky2),0 .25rem 0 var(--sky3)}
+.gm.speed.on{background:#FFF8DC;box-shadow:inset 0 0 0 .25rem var(--gold2),0 .25rem 0 var(--goldD)}
+.gm.speed b{color:#B4570F}
+.gmodes.ro .gm:not(.on){opacity:.45}
+.gmdesc{grid-column:1/-1;text-align:center;font-size:1.2rem;color:var(--dim)}
+.rmode{font-size:1.15rem;white-space:nowrap;border-radius:.5rem;padding:.05rem .5rem;background:#EAF0F8;color:var(--sky3)}
+.rmode.speed{background:#FFF1C9;color:#9A4D0E}
 svg.lock{width:1.2em;height:1.2em;vertical-align:-.15em;margin-right:.3em;flex:0 0 auto}
 .srow svg.lock{margin-left:-.2rem}
 .srow:has(svg.lock){justify-content:flex-start;gap:.4rem}
@@ -522,14 +534,30 @@ const isEmoji = x => !!animalOf(x);
 const avHTML = (x, cls='') => `<span class="av ${isEmoji(x)?'em':''} ${cls}">${AV(x)}</span>`;
 const WHO = () => S.mode==='team' && ui.view==='local' ? '모둠' : '플레이어';
 const ZONE_BG = {A:'var(--zA)',B:'var(--zB)',C:'var(--zC)',D:'var(--zD)'};
-const START_GRAIN = 500, PALGWAN_BONUS = 100, NO_LAND_BONUS = 50;
+const PALGWAN_BONUS = 100, NO_LAND_BONUS = 50;
 // 출발 보너스·통행료 비율은 판 길이에 따라: 30분 판은 모의 2,000판으로 맞춘 값(50 · 땅값의 80%),
 // 15분 이하 짧은 판은 돈이 빨리 돌도록 100 · 땅값의 100% (README '짧은 판' 모의 게임)
-const ECO = m => m<=15 ? {lap:100, toll:1.0} : {lap:50, toll:0.8};
-const eco = () => S.eco || ECO(S.minutes || 30);
+// 게임 모드 두 가지 (수업 시간 = 기본, 쉬는 시간 = 스피드). 숫자는 README '게임 모드' 모의 게임으로 맞춘 값.
+//  기본: 20·30분. 시작 500, 출발 +50, 통행료 땅값의 80%, 건물 2채까지(×2·×4)
+//  스피드: 10분. 시작 1000, 출발 +100, 통행료 땅값의 100%, 건물 1채까지(×3), 처음 살 때 건물까지 한 번에
+const MODES = {
+  basic:{start:500,  lap:50,  toll:0.8, bcost:0.5, mult:[1,2,4], maxLan:2, buyBuild:false},
+  speed:{start:1000, lap:100, toll:1.0, bcost:0.5, mult:[1,3],   maxLan:1, buyBuild:true},
+};
+const GMODES = [['speed',10,'스피드','10분'],['basic',20,'기본','20분'],['basic',30,'기본','30분']];
+const ECO = C => C.speed ? MODES.speed : MODES.basic;
+const eco = () => ({...MODES.basic, ...(S.eco || ECO(S))});   // 예전에 저장된 판은 기본 모드로
+const modeName = C => `${C.speed?'스피드':'기본'} ${C.minutes}분`;
+// 게임 모드 고르기 (시작 화면·대기실 왼쪽). edit: 바꿀 수 있는가(방장)
+function gmodeHTML(C, edit){
+  return `<div class="panel gmodes ${edit?'':'ro'}">${GMODES.map(([m,min,n,t])=>{
+    const on = (C.speed?'speed':'basic')===m && C.minutes===min;
+    return `<button class="gm ${m} ${on?'on':''}" data-act="gmode" data-v="${m}-${min}"><b>${n}</b><small>${t}</small></button>`;
+  }).join('')}<div class="gmdesc">${C.speed ? '돈 넉넉하게 · 건물 1채 · 살 때 건물까지 한 번에 — 쉬는 시간용' : '건물 2채까지 차근차근 — 수업 시간용'}</div></div>`;
+}
 const SHARE_RATE = 0.2;       // 노블레스 오블리주: 바퀴가 끝날 때마다 1등이 곡식의 20%를 꼴찌에게 (모의 140판에서 3배 이상 격차 16% → 3%)
 const CATCHUP_BONUS = 150;     // 슬로우 스타터: 꼴찌가 출발점을 지나면 더 받는다 (모의 200판에서 격차가 절반으로 줄어든 값)
-const LAN_MULT = [1,2,4];      // 연등(건물) 0·1·2개일 때 통행료 배수
+
 const MONO_MULT = 2, LATE_MULT = 1.5;
 const LATE_MS = 10*60000;      // 남은 시간이 10분(짧은 판은 전체의 1/3) 이하면 물가 상승
 const RULES = {
@@ -558,7 +586,7 @@ function poolFor(setIds){
 }
 const idxOf = name => BOARD.findIndex(c=>c.name===name);
 const price = i => ZONES[BOARD[i].zone].price;
-const lanCost = i => price(i)/2;
+const lanCost = i => r10(price(i)*eco().bcost);
 const baseToll = i => Math.round(price(i)*eco().toll/10)*10;
 const r10 = n => Math.round(n/10)*10;
 const cname = i => BOARD[i].type==='card' ? TH.card : BOARD[i].name;
@@ -591,7 +619,7 @@ function blank(prev){
   return {v:2, phase:'setup', mode,
     names: prev?.names?.length===MAX_TEAMS ? [...prev.names] : defaultNamesFor(mode),
     count: prev?.count || prev?.teams?.length || 4,
-    minutes: prev?.minutes || 30, sound: prev?.sound ?? true,
+    minutes: prev?.speed ? 10 : [20,30].includes(prev?.minutes) ? prev.minutes : 30, speed: !!prev?.speed, sound: prev?.sound ?? true,
     sets: prev?.sets || (prev?.packs ? setsFromPacks(prev.packs) : SETS.filter(x=>x.unit==='u1').map(x=>x.id)), catchup: prev?.catchup ?? true, bankrupt: prev?.bankrupt ?? false, diceOrder: prev?.diceOrder ?? true, share: prev?.share ?? true};
 }
 // 예전 판에서 저장된 값에는 새 설정이 없을 수 있다 → 빠진 값을 채운다
@@ -605,7 +633,8 @@ function load(){
       else s.mode = def ? 'team' : 'solo';
     }
     const d=blank(s);
-    for(const k of ['names','count','minutes','sound','sets','catchup','bankrupt','diceOrder','share']) if(s[k]==null) s[k]=d[k];
+    for(const k of ['names','count','minutes','speed','sound','sets','catchup','bankrupt','diceOrder','share']) if(s[k]==null) s[k]=d[k];
+    if(s.phase==='setup'){ s.minutes=d.minutes; s.speed=d.speed; }    // 예전의 5~90분 → 기본 20·30분 / 스피드 10분
     while(s.names.length<MAX_TEAMS) s.names.push(randomAnimals(MAX_TEAMS).find(n=>!s.names.includes(n)));
     s.sets = s.sets.filter(id=>SETS.some(x=>x.id===id));
     if(s.phase!=='setup' && !Array.isArray(s.teams)) return null;
@@ -622,12 +651,13 @@ function save(){
 function startGame(C=S, players=S.names.slice(0,S.count).map(name=>({name}))){
   const theme = themeFor();
   applyTheme(theme);
-  S = {v:2, phase:'play', mode:C.mode||'solo', names:C.names||players.map(p=>p.name), count:players.length, minutes:C.minutes, sound:S.sound,
+  const E = ECO(C);
+  S = {v:2, phase:'play', mode:C.mode||'solo', names:C.names||players.map(p=>p.name), count:players.length, minutes:C.minutes, speed:!!C.speed, sound:S.sound,
     sets:C.sets, catchup:C.catchup, bankrupt:C.bankrupt, diceOrder:C.diceOrder, share:C.share, theme, pool:poolFor(C.sets), usedBank:[],
-    teams: players.map(p=>({name:p.name, ...(p.animal?{animal:p.animal}:{}), grain:START_GRAIN, pos:0, skip:false, out:false})),
+    teams: players.map(p=>({name:p.name, ...(p.animal?{animal:p.animal}:{}), grain:E.start, pos:0, skip:false, out:false})),
     owner: Array(N).fill(-1), lan: Array(N).fill(0),
     turn:0, turnNo:1, rolled:false, dice:null, pending:null,
-    deck: shuffle(CARDS.keys()), deckPos:0, outCount:0, eco:ECO(C.minutes),
+    deck: shuffle(CARDS.keys()), deckPos:0, outCount:0, eco:E,
     remaining: C.minutes*60000, paused:false, timeUp:false, late:false, usedQ:{},
     msg:'', hist:[]};
   // 시작할 때 모두 주사위를 굴려 큰 수부터 순서를 정한다 (같으면 무작위). 한 판 안에서는 고정.
@@ -716,7 +746,7 @@ function isMono(zone,t){ return ZONE_CELLS[zone].every(i=>S.owner[i]===t); }
 // 통행료 = 기본(땅값의 80%) × 연등 배수(1·2·4) × 독점 ×2 × 물가 상승 ×1.5
 function tollWith(i, lan, o){
   const z=BOARD[i].zone;
-  return r10(baseToll(i)*LAN_MULT[lan]*(isMono(z,o)?MONO_MULT:1)*(S.late?LATE_MULT:1));
+  return r10(baseToll(i)*eco().mult[lan]*(isMono(z,o)?MONO_MULT:1)*(S.late?LATE_MULT:1));
 }
 function tollOf(i){ const o=S.owner[i]; return o<0 ? 0 : tollWith(i, S.lan[i], o); }
 const orderFor = q => q.ox ? (q.o[0]==='O'?[0,1]:[1,0]) : shuffle(q.o.map((_,k)=>k));
@@ -758,7 +788,7 @@ function landingPending(i){
     }
   }
 }
-function lanternTargets(t){ return LANDS.filter(i=>S.owner[i]===t && S.lan[i]<2); }
+function lanternTargets(t){ return LANDS.filter(i=>S.owner[i]===t && S.lan[i]<eco().maxLan); }
 
 /* 곡식을 낸 뒤: 파산 서바이벌에서 빚이 생기면 땅을 팔고, 그래도 모자라면 탈락 */
 function settleOrEnd(){
@@ -839,7 +869,7 @@ const serverNow = () => Date.now()+NET.off;
 function online(){ return ui.view==='game'; }
 function sndOn(){ return ui.view==='local' ? !!S.sound : (ME?.sound ?? true); }
 // 판을 움직이는 단추 (온라인에서는 내 차례에만)
-const GAME_ACTS = new Set(['roll','ans','buy','pass','lantern','pay','info','hang','nolan','card','skip','shareok','orderok','settle']);
+const GAME_ACTS = new Set(['roll','ans','buy','buyb','pass','lantern','pay','info','hang','nolan','card','skip','shareok','orderok','settle']);
 function canAct(){ return !online() || (NET.room && S.turn===NET.room.you); }
 const isHost = () => NET.room && NET.room.you===NET.room.host;
 const CFG = () => ui.view==='room' ? NET.room.settings : S;
@@ -849,7 +879,7 @@ function cfgDone(){
   ME.cfg = NET.room.settings; saveMe();
   net({t:'settings', settings:NET.room.settings}); renderRoom();
 }
-const DEFAULT_CFG = () => ({minutes:10, sets:SETS.filter(x=>x.unit==='u1').map(x=>x.id), catchup:true, share:true, diceOrder:true, bankrupt:false});
+const DEFAULT_CFG = () => ({speed:true, minutes:10, sets:SETS.filter(x=>x.unit==='u1').map(x=>x.id), catchup:true, share:true, diceOrder:true, bankrupt:false});
 
 function connect(){
   if(!ME || NET.ws) return;
@@ -1140,7 +1170,7 @@ function renderHome(){
     : list.map(r=>{
       const full=r.players.length>=r.max, playing=r.status!=='wait';
       return `<button class="roomrow" data-act="join" data-v="${esc(r.id)}" ${playing||full||!NET.up?'disabled':''}>
-        <span class="rt">${r.lock?LOCK:''}${esc(r.title)}</span>
+        <span class="rt">${r.lock?LOCK:''}${esc(r.title)}</span>${r.mode?`<span class="rmode ${r.mode.speed?'speed':''}">${esc(modeName(r.mode))}</span>`:''}
         <span class="ravs">${r.players.map(p=>avHTML({name:p.name, animal:p.animal})).join('')}</span>
         <span class="rn">${r.players.length}/${r.max}명</span>
         <span class="go">${playing?'게임 중':full?'꽉 참':'들어가기'}</span></button>`;
@@ -1155,9 +1185,10 @@ function renderRoom(){
   el.innerHTML = `<div class="lobby">
     <div class="l-left">
       <div class="panel players">
-        <div class="prow"><b class="rtitle">${esc(R.title)}</b><span class="rid">${R.players.length}/${R.max||4}명 · ${R.settings.minutes}분</span>${R.pw?`<span class="pwtag">${LOCK}비밀번호 <b>${esc(R.pw)}</b></span>`:''}<button class="shuf" data-act="leaveAsk">나가기</button></div>
+        <div class="prow"><b class="rtitle">${esc(R.title)}</b><span class="rid">${R.players.length}/${R.max||4}명</span>${R.pw?`<span class="pwtag">${LOCK}비밀번호 <b>${esc(R.pw)}</b></span>`:''}<button class="shuf" data-act="leaveAsk">나가기</button></div>
         <div class="seats">${seats}</div>
       </div>
+      ${gmodeHTML(R.settings, host)}
       ${host ? `<button class="start" data-act="ostart" ${ok?'':'disabled'}>게임 시작!</button>
         ${R.players.length<2?'<div class="waitmsg">친구가 들어오면 시작할 수 있어요</div>':!nq?'<div class="warnline">[문제 범위]에서 주제를 하나 이상 골라 주세요.</div>':''}`
         : `<div class="waitmsg">${avHTML({name:R.players[R.host].name, animal:R.players[R.host].animal})}방장이 시작하기를 기다리는 중…</div>`}
@@ -1184,6 +1215,14 @@ const ACT = {
     emit('ans', p.order[k]===0);
     save(); render();
   },
+  // 스피드 모드: 처음 살 때 건물까지 한 번에
+  buyb(){
+    const p=S.pending, t=S.turn, T=S.teams[t], E=eco(); if(p?.kind!=='land' || !E.buyBuild) return;
+    const i=p.cell, cost=price(i)+lanCost(i)*E.maxLan; if(T.grain<cost || S.owner[i]>=0) return;
+    T.grain-=cost; S.owner[i]=t; S.lan[i]=E.maxLan;
+    S.msg=`${T.name}: ${eul(`「${cname(i)}」`)} ${TH.up}까지 샀어요 (-${money(cost)})`;
+    emit('build', i, t); endTurn();
+  },
   buy(){
     const p=S.pending, t=S.turn, T=S.teams[t]; if(p?.kind!=='land') return;
     const i=p.cell; if(T.grain<price(i) || S.owner[i]>=0) return;
@@ -1199,7 +1238,7 @@ const ACT = {
   },
   lantern(){
     const p=S.pending, t=S.turn, T=S.teams[t]; if(p?.kind!=='own') return;
-    const i=p.cell; if(S.lan[i]>=2 || T.grain<lanCost(i)) return;
+    const i=p.cell; if(S.lan[i]>=eco().maxLan || T.grain<lanCost(i)) return;
     T.grain-=lanCost(i); S.lan[i]++;
     S.msg=`${T.name}: 「${cname(i)}」에 ${TH.upDone} (-${money(lanCost(i))})`;
     emit('build', i, t); endTurn();
@@ -1221,7 +1260,7 @@ const ACT = {
   },
   hang(i){
     const p=S.pending, t=S.turn, T=S.teams[t]; if(p?.kind!=='lantern') return;
-    i=+i; if(S.owner[i]!==t || S.lan[i]>=2) return;
+    i=+i; if(S.owner[i]!==t || S.lan[i]>=eco().maxLan) return;
     S.lan[i]++; S.msg=`${T.name}: 「${cname(i)}」에 공짜로 ${TH.upDone}`;
     emit('build', i, -1); endTurn();
   },
@@ -1269,8 +1308,7 @@ const ACT = {
   },
   /* 시작 화면 */
   // 다시 그리기 전에 입력한 이름을 먼저 담아 둔다 (안 그러면 지워진다)
-  minus(){ if(!cfgEdit()) return; readNames(); const C=CFG(); C.minutes=Math.max(5,C.minutes-5); cfgDone(); },
-  plus(){ if(!cfgEdit()) return; readNames(); const C=CFG(); C.minutes=Math.min(ui.view==='room'?30:90,C.minutes+5); cfgDone(); },
+  gmode(v){ if(!cfgEdit()) return; readNames(); const [m,min]=v.split('-'), C=CFG(); C.speed = m==='speed'; C.minutes=+min; cfgDone(); },
   tminus(){ readNames(); S.count=Math.max(MIN_TEAMS,S.count-1); renderSetup(); },
   tplus(){ readNames(); S.count=Math.min(MAX_TEAMS,S.count+1); renderSetup(); },
   sound(){
@@ -1399,8 +1437,9 @@ function gridPos(i){
 function bldHTML(i){
   const o=S.owner[i], lan=S.lan[i], c=TC[o];
   const pop = ui.fx && ui.fx.build===i && Date.now()<ui.fx.until;
-  const art = TH.icon==='house' || !lan ? IMG(BLD[TH.icon==='house'?lan:0]) : LANTERN_SVG().repeat(lan);
-  const cls = TH.icon==='house' || !lan ? `l${lan}` : 'lan';
+  const lv = lan && lan>=eco().maxLan ? 2 : lan;     // 마지막 단계는 언제나 가장 큰 건물 (스피드는 1채가 곧 빌딩)
+  const art = TH.icon==='house' || !lan ? IMG(BLD[TH.icon==='house'?lv:0]) : LANTERN_SVG().repeat(lan);
+  const cls = TH.icon==='house' || !lan ? `l${lv}` : 'lan';
   return `<div class="bld ${cls} ${pop?'pop':''}">${art}</div>${pop?'<i class="dust d1"></i><i class="dust d2"></i><i class="dust d3"></i>':''}`;
 }
 function cellParts(i){
@@ -1419,7 +1458,9 @@ function cellParts(i){
     inner=`<div class="nm">${CARDICON('bigl')}<span>${esc(TH.card)}</span></div>`;
   } else {
     cls+=' corner k-'+c.type;
-    inner=`<div class="cic">${CORNER_ICON[c.type]||''}</div><div class="nm">${esc(c.name)}</div><div class="tx">${esc(c.text)}</div>`;
+    // 출발 칸 글은 게임 모드(출발 보너스)에 맞춘다
+    const tx = c.type==='start' ? `지나가거나 도착하면 ${CUR} ${money(eco().lap)}` : c.text;
+    inner=`<div class="cic">${CORNER_ICON[c.type]||''}</div><div class="nm">${esc(c.name)}</div><div class="tx">${esc(tx)}</div>`;
   }
   if(ui.moveMode!=null) cls+=' pick';
   const [r,col]=gridPos(i);
@@ -1518,7 +1559,7 @@ function renderCenter(){
   setPart('c-roll', `<button id="roll" class="${canRoll?'go':''}" data-act="roll" ${canRoll?'':'disabled'}>${canAct()||S.phase!=='play'?'굴리기!':`${esc(T.name)} 차례`}</button>`);
   setPart('c-msg', `<div class="msg">${esc(S.msg||'')}</div>`);
   const legend = Object.entries(ZONES).map(([k,z])=>`<span><i style="background:${ZONE_BG[k]}"></i>${z.name} ${z.price}</span>`).join('')
-    + `<span>통행료: ${TH.up} 1${TH.upN} ×2 · 2${TH.upN} ×4 · 독점 ×2</span>`;
+    + `<span>통행료: ${eco().mult.slice(1).map((m,k)=>`${TH.up} ${k+1}${TH.upN} ×${m}`).join(' · ')} · 독점 ×2</span>`;
   // 둘째 줄: 켜 둔 특수 룰 · 물가 상승
   const modes = Object.entries(RULES).filter(([k])=>S[k] && k!=='diceOrder').map(([k,r])=>`<span class="mode">${RULE_ICON[r.icon]}${r.name}</span>`).join('')
     + (S.late?`<span class="late">물가 상승! 통행료 ×${LATE_MULT}</span>`:'');
@@ -1604,7 +1645,10 @@ function modalInner(){
       if(p.answered!=null){
         after += `<div class="fb ${ok?'ok':'no'}"><b>${ok?'정답!':'아쉬워요.'}</b>${esc(exOf(q))}</div>`;
         after += ok
-          ? `<div class="btns"><button class="big solid" data-act="buy" ${T.grain<price(p.cell)?'disabled':''}>산다 (${money(price(p.cell))})</button><button class="big" data-act="pass">안 산다</button></div>`
+          ? (eco().buyBuild
+            ? `<div class="btns"><button class="big solid" data-act="buyb" ${T.grain<price(p.cell)+lanCost(p.cell)?'disabled':''}>${TH.up}까지 (${money(price(p.cell)+lanCost(p.cell))})</button><button class="big" data-act="buy" ${T.grain<price(p.cell)?'disabled':''}>땅만 (${money(price(p.cell))})</button><button class="big" data-act="pass">안 산다</button></div>
+              <div class="note">${TH.up}까지 사면 통행료 ${money(tollWith(p.cell,0,t))} → ${money(tollWith(p.cell,eco().maxLan,t))}</div>`
+            : `<div class="btns"><button class="big solid" data-act="buy" ${T.grain<price(p.cell)?'disabled':''}>산다 (${money(price(p.cell))})</button><button class="big" data-act="pass">안 산다</button></div>`)
             + (T.grain<price(p.cell)?`<div class="note">${CUR}이 모자라서 살 수 없어요 (지금 ${money(T.grain)})</div>`:'')
           : `<div class="btns"><button class="big" data-act="pass">넘어가기</button></div>`;
       }
@@ -1612,10 +1656,10 @@ function modalInner(){
       break;
     }
     case 'own': {
-      const i=p.cell, full=S.lan[i]>=2, cost=lanCost(i);
+      const i=p.cell, full=S.lan[i]>=eco().maxLan, cost=lanCost(i);
       body = head(`${ztag(i)} 우리 땅`)
         + `<div class="mt">${esc(BOARD[i].name)}</div>`
-        + `<div class="lanrow">${TH.up} ${UPICON('bigl').repeat(S.lan[i]) || '없음'} <span>(${S.lan[i]}/2)</span></div>`
+        + `<div class="lanrow">${TH.up} ${UPICON('bigl').repeat(S.lan[i]) || '없음'} <span>(${S.lan[i]}/${eco().maxLan})</span></div>`
         + `<div class="mp">${full ? TH.upFull : `${TH.up} 1${TH.upN}를 더하면 통행료가 ${money(tollOf(i))} → ${money(tollWith(i,S.lan[i]+1,t))}이 돼요.`}</div>`
         + `<div class="btns">${full ? '' : `<button class="big solid" data-act="lantern" ${T.grain<cost?'disabled':''}>${TH.upAct} (${money(cost)})</button>`}<button class="big" data-act="pass">${full?'확인':'그냥 두기'}</button></div>`
         + (!full && T.grain<cost ? `<div class="note">${CUR}이 모자라요 (지금 ${money(T.grain)})</div>`:'');
@@ -1623,7 +1667,7 @@ function modalInner(){
     }
     case 'toll': {
       const O=S.teams[p.to], q=qOf(p), ok=isRight(p);
-      const parts=[`기본 ${p.base}`]; if(p.lan) parts.push(`${TH.up} ${p.lan}${TH.upN} ×${LAN_MULT[p.lan]}`); if(p.mono) parts.push(`독점 ×${MONO_MULT}`); if(p.late) parts.push(`물가 상승 ×${LATE_MULT}`);
+      const parts=[`기본 ${p.base}`]; if(p.lan) parts.push(`${TH.up} ${p.lan}${TH.upN} ×${eco().mult[p.lan]}`); if(p.mono) parts.push(`독점 ×${MONO_MULT}`); if(p.late) parts.push(`물가 상승 ×${LATE_MULT}`);
       body = head(`${ztag(p.cell)} ${esc(O.name)}의 땅`)
         + `<div class="mt">${esc(BOARD[p.cell].name)}</div>`
         + (p.answered==null ? `<div class="discount">통행료 ${money(p.full)} <small>(${parts.join(' · ')})</small> — 문제를 맞히면 절반 ${money(p.half)}!</div>` : '');
@@ -1651,7 +1695,7 @@ function modalInner(){
       body = head(p.fromCard?TH.card:'') + `<div class="mt" style="margin-top:1rem">${p.fromCard?esc(CARDS[p.card].text):esc(c.name)}</div>`
         + `<div class="mp">${p.fromCard?`${TH.upFree}.`:esc(c.text)}</div>`;
       body += tg.length
-        ? `<div class="mp">${TH.upPick}</div><div class="landlist">${tg.map(i=>`<button data-act="hang" data-v="${i}" style="background:${ZONE_BG[BOARD[i].zone]}">${esc(BOARD[i].name)} <small>(${S.lan[i]}/2)</small></button>`).join('')}</div>`
+        ? `<div class="mp">${TH.upPick}</div><div class="landlist">${tg.map(i=>`<button data-act="hang" data-v="${i}" style="background:${ZONE_BG[BOARD[i].zone]}">${esc(BOARD[i].name)} <small>(${S.lan[i]}/${eco().maxLan})</small></button>`).join('')}</div>`
         : `<div class="calc"><span class="sum">${LANDS.some(i=>S.owner[i]===t)?`${TH.up}이 꽉 찬 땅뿐이라`:'땅이 없어서'} ${CUR} +${money(NO_LAND_BONUS)}</span></div><div class="btns"><button class="big solid" data-act="nolan">받기</button></div>`;
       break;
     }
@@ -1724,7 +1768,7 @@ function cfgPanel(C, edit){
   const pt=THEMES[themeFor()], nq=poolFor(C.sets).length, lateAt=fmt(Math.min(LATE_MS, C.minutes*60000/3));
   const fsOK = document.fullscreenEnabled || document.webkitFullscreenEnabled;
   const ruleCard = (k, desc) => `<button class="rule ${C[k]?'on':''}" data-act="opt" data-v="${k}"><span class="ri">${RULE_ICON[RULES[k].icon]}</span><span class="rt">${RULES[k].name}</span><span class="sw"></span><span class="rd">${desc}</span></button>`;
-  const tabs = [['rules','특수 룰'],['qs','문제 범위'],['time','시간·소리'],['how','게임 방법']];
+  const tabs = [['rules','특수 룰'],['qs','문제 범위'],['time','소리·화면'],['how','게임 방법']];
   let body='';
   if(ui.tab==='rules') body = `<div class="rulegrid">
       ${ruleCard('catchup', `꼴찌가 ${pt.start}을 지나면 +${CATCHUP_BONUS}${pt.unit} 더`)}
@@ -1743,19 +1787,18 @@ function cfgPanel(C, edit){
         <div class="setgrid">${sets.map(x=>`<button class="chk ${C.sets.includes(x.id)?'on':''}" data-act="setT" data-v="${x.id}"><i></i><span>${esc(x.label)} <small>${setCount(x.id)}</small></span></button>`).join('')}</div>`:''}
       </div>`;}).join('')}`;
   else if(ui.tab==='time') body = `
-    <div class="srow">플레이 시간 <span class="step"><button data-act="minus">−5</button><b>${C.minutes}분</b><button data-act="plus">+5</button></span></div>
     <div class="srow">효과음 <button class="tg ${sndOn()?'on':''}" data-act="sound">${sndOn()?'켜짐':'꺼짐'}</button></div>
     ${fsOK?`<div class="srow">전체 화면 <button id="fsbtn" class="tg" data-act="fs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>${document.fullscreenElement||document.webkitFullscreenElement?'나가기':'켜기'}</button></div>`:''}
     <div class="hint">남은 시간이 ${lateAt}이 되면 물가가 올라요(통행료 ×${LATE_MULT}). 시간이 끝나면 그 바퀴의 마지막 ${WHO()}까지 해요.</div>`;
   else body = `<ol class="rules">
-      <li>${pt.cur} <b>${START_GRAIN}${pt.unit}</b>으로 시작. ${pt.start}을 지나면 +${ECO(C.minutes).lap}.</li>
-      <li><b>빈 땅</b>: 문제를 맞히면 살 수 있다.</li>
-      <li><b>우리 땅</b>: ${pt.up}(땅값의 절반) — 1${pt.upN} 통행료 ×2, 2${pt.upN} ×4.</li>
+      <li><b>${modeName(C)}</b>: ${pt.cur} <b>${ECO(C).start}${pt.unit}</b>으로 시작. ${pt.start}을 지나면 +${ECO(C).lap}.</li>
+      <li><b>빈 땅</b>: 문제를 맞히면 살 수 있다.${ECO(C).buyBuild?` 살 때 ${pt.up}까지 한 번에 살 수 있다.`:''}</li>
+      <li><b>우리 땅</b>: ${pt.up}(땅값의 절반) ${ECO(C).maxLan}${pt.upN}까지 — ${ECO(C).mult.slice(1).map((m,k)=>`${k+1}${pt.upN} 통행료 ×${m}`).join(', ')}.</li>
       <li><b>남의 땅</b>: 문제를 맞히면 통행료 <b>절반</b>. 같은 색 4칸 독점 ×2.</li>
       <li><b>${pt.card}</b>: 돈을 받거나 잃거나, 퀴즈가 나온다.</li>
       <li>남은 시간 ${lateAt}부터 <b>물가 상승</b> ×${LATE_MULT}. 시간이 끝나면 <b>그 바퀴 마지막 ${WHO()}까지</b>.</li>
       <li>점수 = ${pt.cur} + 가진 땅값 + ${pt.up}값.${C.bankrupt?' 탈락하면 맨 아래.':' 모자라면 빚(마이너스).'}</li>
-      ${ui.view==='local'?'':'<li>차례에 45초 동안 아무것도 안 하면 <b>자동으로</b> 넘어간다.</li>'}
+      ${ui.view==='local'?'':`<li>차례에 ${C.speed?30:45}초 동안 아무것도 안 하면 <b>자동으로</b> 넘어간다.</li>`}
     </ol>`;
   return `<div class="tabs">${tabs.map(([k,l])=>`<button class="${ui.tab===k?'on':''}" data-act="tab" data-v="${k}">${l}</button>`).join('')}</div>
       <div class="tabbody ${edit?'':'ro'}">${body}</div>`;
@@ -1776,6 +1819,7 @@ function renderSetup(){
         </div>
         <div class="names">${S.names.slice(0,S.count).map((n,k)=>`<label class="pl" style="--c:${TC[k]}">${avHTML(n)}<input type="text" maxlength="8" value="${esc(n)}"></label>`).join('')}</div>
       </div>
+      ${gmodeHTML(S, true)}
       <button class="start" data-act="begin" ${nq?'':'disabled'}>게임 시작!</button>
       ${nq?'':'<div class="warnline">[문제 범위]에서 주제를 하나 이상 골라 주세요.</div>'}
 
