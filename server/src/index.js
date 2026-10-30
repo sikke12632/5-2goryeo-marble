@@ -3,7 +3,7 @@
 // 차례 번호(ver)로 확인해 받아 두고 모두에게 퍼뜨린다. 시간은 이 서버 시각 하나로 잰다.
 import { DurableObject } from 'cloudflare:workers';
 
-const MAX_PLAYERS = 6;
+const MAX_PLAYERS = 4;
 const IDLE_MS = 45000;    // 차례인 사람이 이만큼 아무것도 안 하면 다른 사람 화면이 대신 진행한다
 const AWAY_MS = 4000;     // 차례인 사람이 나갔거나 연결이 끊겼을 때
 const AUTO_MS = 2500;     // 대신 진행하는 중에는 한 단계씩 이 간격으로
@@ -68,7 +68,7 @@ export class Hub extends DurableObject {
   view(r, pid) {
     const on = this.onlineIn(r.id), v = r.vote;
     return {
-      id: r.id, title: r.title, status: r.status, settings: r.settings,
+      id: r.id, title: r.title, status: r.status, settings: r.settings, max: MAX_PLAYERS, pw: r.pw || '',
       host: r.players.findIndex(p => p.pid === r.host), you: r.players.findIndex(p => p.pid === pid),
       players: r.players.map(p => ({ name: p.name, animal: p.animal, left: !!p.left, on: on.has(p.pid) })),
       ver: r.ver, state: r.state, endAt: r.endAt, deadline: r.deadline, pausedAt: r.pausedAt || 0,
@@ -92,7 +92,7 @@ export class Hub extends DurableObject {
     this.roomcast(r);
   }
   summary(r) {
-    return { id: r.id, title: r.title, status: r.status, max: MAX_PLAYERS,
+    return { id: r.id, title: r.title, status: r.status, max: MAX_PLAYERS, lock: !!r.pw,
       players: r.players.filter(p => !p.left).map(p => ({ name: p.name, animal: p.animal })) };
   }
   roomcast(r) { for (const ws of this.socketsIn(r.id)) this.send(ws, { t: 'room', room: this.view(r, this.me(ws).pid) }); }
@@ -135,7 +135,8 @@ export class Hub extends DurableObject {
       case 'create': {
         if (r) this.leave(ws, r);
         let id; do { id = String(1000 + Math.floor(Math.random() * 9000)); } while (this.rooms.has(id));
-        const room = { id, title: `${m.name}의 방`, host: m.pid, status: 'wait', created: now,
+        // 비밀번호: 숫자 4자리 (안 쓰면 빈칸). 방 안 사람들에게는 보여 주고, 목록에는 자물쇠만
+        const room = { id, title: `${m.name}의 방`, host: m.pid, status: 'wait', created: now, pw: /^\d{4}$/.test(msg.pw || '') ? msg.pw : '',
           players: [{ pid: m.pid, name: m.name, animal: m.animal }], settings: settingsOf(msg.settings),
           ver: 0, state: null, endAt: 0, deadline: 0 };
         this.rooms.set(id, room); this.enter(ws, room); this.store(room);
@@ -151,6 +152,7 @@ export class Hub extends DurableObject {
         else {
           if (room.status !== 'wait') return err('이미 게임을 시작한 방이에요.');
           if (room.players.length >= MAX_PLAYERS) return err('방이 꽉 찼어요.');
+          if (room.pw && String(msg.pw || '') !== room.pw) { this.send(ws, { t: 'err', msg: '비밀번호가 틀렸어요.', code: 'pw' }); return; }
           room.players.push({ pid: m.pid, name: m.name, animal: m.animal });
         }
         this.enter(ws, room); this.store(room); this.roomcast(room); this.lobby();

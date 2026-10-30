@@ -418,6 +418,13 @@ img.lan.bigl{width:2.6rem;height:2.6rem}
 .mecard small{display:block;font-size:1.2rem;color:var(--dim)}
 .mecard b{display:block;font-family:var(--display);font-weight:normal;font-size:2.6rem;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mecard button{font-size:1.4rem}
+svg.lock{width:1.2em;height:1.2em;vertical-align:-.15em;margin-right:.3em;flex:0 0 auto}
+.srow svg.lock{margin-left:-.2rem}
+.srow:has(svg.lock){justify-content:flex-start;gap:.4rem}
+.srow:has(svg.lock) .tg{margin-left:auto}
+.pwtag{display:flex;align-items:center;font-size:1.25rem;color:var(--dim);background:#FFF8DC;border-radius:2rem;padding:.15rem .7rem;white-space:nowrap;box-shadow:inset 0 0 0 .14rem var(--gold2)}
+.pwtag b{font-family:var(--display);font-weight:normal;font-size:1.6rem;color:var(--ink);margin-left:.35rem;letter-spacing:.08em}
+#pwin{text-align:center;font-family:var(--display);font-size:2.6rem;letter-spacing:.4em}
 .modeseg{align-self:center;background:rgba(10,40,100,.35);margin-top:-.2rem}
 .modeseg button{color:rgba(255,255,255,.85);font-size:1.6rem;padding:.4rem 1.4rem;display:flex;align-items:baseline;gap:.45rem}
 .modeseg button small{font-size:1.15rem;opacity:.85}
@@ -887,7 +894,10 @@ function onNet(m){
     case 'room': gotRoom(m.room, m.resync); break;
     case 'state': NET.q.push(m); pump(); break;
     case 'ack': NET.ver=Math.max(NET.ver, m.ver); if(NET.room){ NET.room.deadline=m.deadline; NET.room.ver=m.ver; } break;
-    case 'err': toast(m.msg, 2200); break;
+    case 'err':
+      toast(m.msg, 2200);
+      if(m.code==='pw'){ const el=document.getElementById('pwin'); if(el){ el.value=''; el.focus(); } }
+      break;
     case 'voted':
       toast(m.pass ? `동의를 받았어요: ${m.text}` : `동의를 못 받았어요: ${m.text}`, 2200);
       if(m.pass && isHost()) whenIdle(()=>applyHost(m.act));
@@ -929,6 +939,12 @@ function voteHTML(){
       : '<div class="row"><button class="big solid" data-act="vyes">동의</button><button class="big" data-act="vno">반대</button></div>'}
     <div class="note">과반이 동의하면 바로 돼요 · <b id="vleft">${left}</b>초 안에 답이 모자라면 취소</div>`;
 }
+const LOCK = '<svg class="lock" viewBox="0 0 20 22" aria-label="비밀번호"><rect x="2" y="9" width="16" height="12" rx="3" fill="#E9AC3E"/><path d="M6 9V6.5a4 4 0 0 1 8 0V9" fill="none" stroke="#8A5A10" stroke-width="2.2"/><circle cx="10" cy="15" r="1.8" fill="#8A5A10"/></svg>';
+const newPw = () => String(rnd(10000)).padStart(4,'0');
+const readPw = () => (document.getElementById('pwin')?.value || '').replace(/\D/g,'').slice(0,4);
+// 비밀번호 칸: 숫자만, Enter 로 바로
+document.addEventListener('input', e=>{ if(e.target.id==='pwin') e.target.value=e.target.value.replace(/\D/g,'').slice(0,4); });
+document.addEventListener('keydown', e=>{ if(e.target.id==='pwin' && e.key==='Enter') document.querySelector('#layer .solid')?.click(); });
 const whenIdle = fn => (async()=>{ while(ui.busy || NET.pumping || NET.q.length) await wait(80); fn(); })();
 // 교사(오프라인)·방장(온라인) 단추가 하는 일. 온라인은 참여자 과반이 동의한 뒤 방장 화면에서 실행한다.
 function hostDo(a, text){
@@ -1025,8 +1041,25 @@ function autoStep(){
 }
 
 const NETACT = {
-  create(){ if(!ME) return; snd('ok'); net({t:'create', settings:ME.cfg || DEFAULT_CFG()}); },
-  join(id){ snd('ok'); net({t:'join', id}); },
+  // 방 만들기: 비밀번호 켜기·끄기(숫자 4자리)를 고른 뒤 만든다. 켜고 끈 것은 다음에도 기억한다.
+  create(){ if(!ME) return; ui.pw=newPw(); ui.layer={view:'create'}; renderLayer(); },
+  pwToggle(){ ui.pw=readPw() || ui.pw; ME.pwOn=!ME.pwOn; saveMe(); renderLayer(); },
+  createGo(){
+    const pw = ME.pwOn ? readPw() : '';
+    if(ME.pwOn && !/^\d{4}$/.test(pw)){ toast('비밀번호는 숫자 4자리로 써 주세요', 1800); return; }
+    snd('ok'); ui.layer=null; renderLayer();
+    net({t:'create', settings:ME.cfg || DEFAULT_CFG(), pw});
+  },
+  join(id){
+    const r=NET.rooms?.find(x=>x.id===id);
+    if(r?.lock){ ui.layer={view:'pw', id, title:r.title}; renderLayer(); setTimeout(()=>document.getElementById('pwin')?.focus(), 60); return; }
+    snd('ok'); net({t:'join', id});
+  },
+  joinGo(){
+    const pw=readPw(), id=ui.layer?.id;
+    if(!/^\d{4}$/.test(pw)){ toast('비밀번호 숫자 4자리를 넣어 주세요', 1800); return; }
+    snd('ok'); net({t:'join', id, pw});
+  },
   leaveAsk(){ ask(online() && S.phase==='play' ? '방에서 나갈까요? 남은 차례는 자동으로 넘어가요.' : '방에서 나갈까요?', ()=>{ net({t:'leave'}); toHome(); }); },
   leave(){ net({t:'leave'}); toHome(); },
   ostart(){
@@ -1107,7 +1140,7 @@ function renderHome(){
     : list.map(r=>{
       const full=r.players.length>=r.max, playing=r.status!=='wait';
       return `<button class="roomrow" data-act="join" data-v="${esc(r.id)}" ${playing||full||!NET.up?'disabled':''}>
-        <span class="rt">${esc(r.title)}</span>
+        <span class="rt">${r.lock?LOCK:''}${esc(r.title)}</span>
         <span class="ravs">${r.players.map(p=>avHTML({name:p.name, animal:p.animal})).join('')}</span>
         <span class="rn">${r.players.length}/${r.max}명</span>
         <span class="go">${playing?'게임 중':full?'꽉 참':'들어가기'}</span></button>`;
@@ -1118,11 +1151,11 @@ function renderRoom(){
   el.dataset.v='room';
   const host=isHost(), nq=poolFor(R.settings.sets).length, ok=R.players.length>=2 && nq;
   const seats = R.players.map((p,k)=>`<div class="seatc ${p.on?'':'off'}" style="--c:${TC[k]}">${avHTML({name:p.name, animal:p.animal})}<span class="sn">${esc(p.name)}</span>${k===R.host?`<img class="fx host" src="${FX('crown')}" alt="방장">`:''}${k===R.you?'<em>나</em>':''}${p.on?'':'<small>연결 끊김</small>'}</div>`).join('')
-    + Array(Math.max(0, MAX_TEAMS-R.players.length)).fill('<div class="seatc emptyseat">빈 자리</div>').join('');
+    + Array(Math.max(0, (R.max||4)-R.players.length)).fill('<div class="seatc emptyseat">빈 자리</div>').join('');
   el.innerHTML = `<div class="lobby">
     <div class="l-left">
       <div class="panel players">
-        <div class="prow"><b class="rtitle">${esc(R.title)}</b><span class="rid">${R.players.length}/${MAX_TEAMS}명 · ${R.settings.minutes}분</span><button class="shuf" data-act="leaveAsk">나가기</button></div>
+        <div class="prow"><b class="rtitle">${esc(R.title)}</b><span class="rid">${R.players.length}/${R.max||4}명 · ${R.settings.minutes}분</span>${R.pw?`<span class="pwtag">${LOCK}비밀번호 <b>${esc(R.pw)}</b></span>`:''}<button class="shuf" data-act="leaveAsk">나가기</button></div>
         <div class="seats">${seats}</div>
       </div>
       ${host ? `<button class="start" data-act="ostart" ${ok?'':'disabled'}>게임 시작!</button>
@@ -1792,6 +1825,18 @@ function renderLayer(){
       : `<div class="row"><button data-act="leaveAsk">방 나가기</button></div>`}
       <div class="row"><button data-act="sound">효과음 ${sndOn()?'끄기':'켜기'}</button><button data-act="lclose">닫기</button></div>
       <div class="note">방을 나가면 남은 차례는 자동으로 넘어가요. 창을 닫았다가 다시 열면 같은 판으로 돌아와요.</div>`;
+  } else if(L.view==='create'){
+    const on=!!ME.pwOn;
+    h = `<h3>방 만들기</h3>
+      <div class="srow" style="width:100%;max-width:38rem">${LOCK}비밀번호 <button class="tg ${on?'on':''}" data-act="pwToggle">${on?'켜짐':'꺼짐'}</button></div>
+      ${on ? `<label class="nick">숫자 4자리 <input id="pwin" type="tel" inputmode="numeric" maxlength="4" autocomplete="off" value="${esc(ui.pw||'')}"></label>
+        <div class="note">같이 할 친구들에게만 알려 주세요. 방 안에서도 보여요.</div>`
+        : '<div class="note">비밀번호 없이 누구나 방 목록에서 눌러 들어올 수 있어요.</div>'}
+      <div class="row"><button class="big solid" data-act="createGo">만들기</button><button class="big" data-act="lclose">취소</button></div>`;
+  } else if(L.view==='pw'){
+    h = `<h3>${LOCK}${esc(L.title)}</h3><div class="mp">비밀번호 숫자 4자리를 넣어요</div>
+      <label class="nick"><input id="pwin" type="tel" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="0000"></label>
+      <div class="row"><button class="big solid" data-act="joinGo">들어가기</button><button class="big" data-act="lclose">취소</button></div>`;
   } else if(L.view==='vote'){
     h = voteHTML();
   } else if(L.view==='char'){
