@@ -5,6 +5,8 @@ import { DurableObject } from 'cloudflare:workers';
 
 const MAX_PLAYERS = 4;
 const IDLE_MS = 45000;    // 차례인 사람이 이만큼 아무것도 안 하면 다른 사람 화면이 대신 진행한다
+const IDLE_SPEED_MS = 30000;      // 스피드 모드(10분)는 더 짧게
+const idleMs = r => r.settings.speed ? IDLE_SPEED_MS : IDLE_MS;
 const AWAY_MS = 4000;     // 차례인 사람이 나갔거나 연결이 끊겼을 때
 const AUTO_MS = 2500;     // 대신 진행하는 중에는 한 단계씩 이 간격으로
 const WAIT_GONE_MS = 3 * 60000;   // 대기실에서 연결이 끊긴 채 이만큼 지나면 자리에서 뺀다
@@ -14,10 +16,11 @@ const ANIMALS = ['cat','dog','rabbit','tiger','lion','panda','fox','bear','koala
 
 const clean = s => String(s ?? '').replace(/[\u0000-\u001f<>&"'`]/g, '').trim().slice(0, 8);
 const bool = (v, d) => typeof v === 'boolean' ? v : d;
+// 게임 모드: 스피드 10분 / 기본 20·30분 (speed 가 없던 예전 화면은 시간으로 정한다)
 function settingsOf(x = {}) {
-  const m = Math.round(Number(x.minutes) / 5) * 5;
+  const speed = typeof x.speed === 'boolean' ? x.speed : !(Number(x.minutes) >= 20);
   return {
-    minutes: m >= 5 && m <= 30 ? m : 10,
+    speed, minutes: speed ? 10 : (Number(x.minutes) === 20 ? 20 : 30),
     sets: Array.isArray(x.sets) ? x.sets.filter(s => typeof s === 'string' && s.length < 20).slice(0, 80) : [],
     catchup: bool(x.catchup, true), share: bool(x.share, true),
     diceOrder: bool(x.diceOrder, true), bankrupt: bool(x.bankrupt, false),
@@ -93,6 +96,7 @@ export class Hub extends DurableObject {
   }
   summary(r) {
     return { id: r.id, title: r.title, status: r.status, max: MAX_PLAYERS, lock: !!r.pw,
+      mode: { speed: r.settings.speed, minutes: r.settings.minutes },
       players: r.players.filter(p => !p.left).map(p => ({ name: p.name, animal: p.animal })) };
   }
   roomcast(r) { for (const ws of this.socketsIn(r.id)) this.send(ws, { t: 'room', room: this.view(r, this.me(ws).pid) }); }
@@ -171,7 +175,7 @@ export class Hub extends DurableObject {
         if (!st || !Array.isArray(st.teams) || st.teams.length !== r.players.length) return err('시작하지 못했어요. 다시 눌러 주세요.');
         r.status = 'play'; r.state = st; r.ver = 1;
         r.endAt = now + r.settings.minutes * 60000;
-        r.deadline = now + (this.awayNow(r, this.turnPlayer(r)) ? AWAY_MS : IDLE_MS);
+        r.deadline = now + (this.awayNow(r, this.turnPlayer(r)) ? AWAY_MS : idleMs(r));
         this.store(r); this.roomcast(r); this.lobby();
         break;
       }
@@ -186,7 +190,7 @@ export class Hub extends DurableObject {
         r.state = st; r.ver++;
         if (st.phase === 'over') r.status = 'over';
         const next = this.turnPlayer(r);
-        r.deadline = now + (this.awayNow(r, next) ? AWAY_MS : (!isOwner && sameTurn ? AUTO_MS : IDLE_MS));
+        r.deadline = now + (this.awayNow(r, next) ? AWAY_MS : (!isOwner && sameTurn ? AUTO_MS : idleMs(r)));
         this.store(r);
         this.send(ws, { t: 'ack', ver: r.ver, deadline: r.deadline });
         for (const o of this.socketsIn(r.id)) if (o !== ws)
