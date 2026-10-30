@@ -411,6 +411,65 @@ img.lan.bigl{width:2.6rem;height:2.6rem}
 .die i.on{background:var(--ink)}
 #fsbtn{display:flex;align-items:center;gap:.4rem}
 #fsbtn svg{width:1.4rem;height:1.4rem}
+/* ---------- 온라인: 방 목록 · 대기실 · 내 캐릭터 ---------- */
+.mecard{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem}
+.mecard .av{width:5.4rem;height:5.4rem;background:#F3F7FC;box-shadow:inset 0 0 0 .2rem var(--line)}
+.mecard .mi{flex:1;min-width:0}
+.mecard small{display:block;font-size:1.2rem;color:var(--dim)}
+.mecard b{display:block;font-family:var(--display);font-weight:normal;font-size:2.6rem;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mecard button{font-size:1.4rem}
+.modeseg{align-self:center;background:rgba(10,40,100,.35);margin-top:-.2rem}
+.modeseg button{color:rgba(255,255,255,.85);font-size:1.6rem;padding:.4rem 1.4rem;display:flex;align-items:baseline;gap:.45rem}
+.modeseg button small{font-size:1.15rem;opacity:.85}
+.modeseg button.on{background:#fff;color:var(--ink)}
+.linkbtn{align-self:center;font-size:1.4rem;background:rgba(10,40,100,.35);color:#fff;box-shadow:none;border-radius:3rem;padding:.45rem 1.4rem}
+.linkbtn:active:not(:disabled){transform:translateY(.1rem);box-shadow:none}
+.rhead{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 1.4rem .5rem;font-family:var(--display);font-size:2.3rem}
+.conn{display:flex;align-items:center;gap:.4rem;font-family:'Pretendard Variable',Pretendard,system-ui,sans-serif;font-size:1.2rem;color:var(--dim)}
+.conn i{width:.8rem;height:.8rem;border-radius:50%;background:#C9D4E3}
+.conn.on i{background:var(--ok)}
+.roomlist{padding:.4rem 1.2rem 1.4rem;overflow:auto;display:flex;flex-direction:column;gap:.7rem;min-height:30rem}
+.roomrow{display:flex;align-items:center;gap:1rem;text-align:left;padding:.75rem 1rem;background:#F3F7FC;box-shadow:inset 0 0 0 .18rem #D5DFEC,0 .3rem 0 #D5DFEC}
+.roomrow:active:not(:disabled){box-shadow:inset 0 0 0 .18rem #D5DFEC}
+.roomrow:disabled{opacity:.6}
+.roomrow .rt{font-size:1.7rem;min-width:0;max-width:40%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.roomrow .ravs{display:flex;flex:1;min-width:0;padding-left:.5rem}
+.roomrow .ravs .av{width:2.6rem;height:2.6rem;margin-left:-.5rem;box-shadow:0 0 0 .15rem #fff}
+.roomrow .rn{font-size:1.3rem;color:var(--dim);white-space:nowrap}
+.roomrow .go{font-family:var(--display);font-size:1.5rem;background:linear-gradient(var(--gold1),var(--gold2));color:#5A3200;border-radius:.7rem;padding:.35rem 1rem;white-space:nowrap;box-shadow:0 .2rem 0 var(--goldD)}
+.roomrow:disabled .go{background:#C9D4E3;color:#fff;box-shadow:none}
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;text-align:center;font-size:1.5rem;line-height:1.5;color:var(--dim);word-break:keep-all}
+.empty img{width:4rem;height:4rem;opacity:.8}
+.rtitle{font-family:var(--display);font-weight:normal;font-size:2.4rem;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rid{font-size:1.3rem;color:var(--dim);white-space:nowrap}
+.seats{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.6rem .8rem}
+.seatc{display:flex;align-items:center;gap:.55rem;min-height:3.8rem;background:#F3F7FC;border-radius:3rem;padding:.3rem .8rem .3rem .3rem;font-size:1.7rem;box-shadow:inset 0 0 0 .16rem color-mix(in srgb,var(--c) 45%,transparent)}
+.seatc .av{width:3.1rem;height:3.1rem;background:#fff;box-shadow:inset 0 0 0 .2rem var(--c)}
+.seatc .sn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.seatc img.host{width:2rem;height:2rem}
+.seatc em{font-style:normal;font-size:1.05rem;background:var(--ink);color:#fff;border-radius:.4rem;padding:0 .4rem}
+.seatc small{font-size:1rem;color:var(--warn);white-space:nowrap}
+.seatc.off{opacity:.55}
+.seatc.emptyseat{justify-content:center;background:transparent;box-shadow:inset 0 0 0 .16rem #D5DFEC;color:#A9B6C8;font-size:1.3rem}
+.waitmsg{align-self:center;display:flex;align-items:center;gap:.6rem;color:#fff;font-size:1.5rem;background:rgba(10,40,100,.35);border-radius:3rem;padding:.4rem 1.4rem .4rem .5rem;text-align:center}
+.waitmsg .av{width:2.6rem;height:2.6rem}
+#result .waitmsg{padding:.4rem 1.4rem}
+.tabbody.ro .rule,.tabbody.ro .chk,.tabbody.ro .ubtns,.tabbody.ro .step button{pointer-events:none}
+.tabbody.ro .step button{visibility:hidden}
+.anigrid{display:grid;grid-template-columns:repeat(10,1fr);gap:.6rem;width:100%}
+.ani{padding:.45rem;border-radius:1rem;background:#F3F7FC;box-shadow:inset 0 0 0 .16rem #D5DFEC,0 .25rem 0 #D5DFEC}
+.ani img{width:3.6rem;height:3.6rem;display:block;margin:auto}
+.ani.on{background:#FFF8DC;box-shadow:inset 0 0 0 .25rem var(--gold2),0 .25rem 0 var(--goldD)}
+.nick{display:flex;align-items:center;gap:1rem;font-size:1.7rem;width:100%;max-width:38rem}
+.nick input{flex:1;min-width:0;font:inherit;font-size:2rem;padding:.4rem .9rem;border-radius:.8rem;border:.18rem solid #C9D4E3;outline:none;color:var(--ink);-webkit-user-select:text;user-select:text}
+.nick input:focus{border-color:var(--sky2)}
+#modal.spect .btns,#modal.spect .payrow button{display:none}
+#modal.spect button{pointer-events:none}
+.spectnote{display:flex;align-items:center;gap:.5rem;font-size:1.5rem;color:var(--dim);margin-top:.4rem}
+.spectnote .av{width:2.4rem;height:2.4rem;background:#F3F7FC}
+.team .me{font-style:normal;font-size:.9rem;background:var(--ink);color:#fff;border-radius:.4rem;padding:0 .35rem;margin-left:.3rem;vertical-align:.15rem}
+.timer em{font-style:normal;font-size:1.15rem;background:var(--warn);color:#fff;border-radius:2rem;padding:.05rem .6rem;margin-left:.5rem}
+#netbad{position:fixed;left:50%;top:.6rem;transform:translateX(-50%);z-index:50;background:var(--warn);color:#fff;border-radius:2rem;padding:.3rem 1.2rem;font-size:1.3rem;pointer-events:none}
 #rotate{position:fixed;inset:0;z-index:99;display:none;flex-direction:column;align-items:center;justify-content:center;gap:2rem;color:#fff;font-size:5vw;text-align:center;background:var(--sky2)}
 #rotate svg{width:28vw;height:28vw;animation:turn 2s ease-in-out infinite}
 @keyframes turn{0%,30%{transform:none}60%,100%{transform:rotate(-90deg)}}
@@ -443,23 +502,29 @@ const randomAnimals = n => shuffle(ANIMALS).slice(0,n).map(a=>a[0]);
 const teamNames = () => TC.map((_,k)=>`${k+1}모둠`);
 const defaultNamesFor = mode => mode==='team' ? teamNames() : randomAnimals(MAX_TEAMS);
 const isTeamName = n => /^\d+모둠$/.test(n);
-// 말·카드에 그릴 얼굴: 동물 이름이면 그 동물 그림, 'N모둠'이면 숫자, 아니면 첫 글자
-function AV(name){
-  const a=ANIMALS.find(x=>x[0]===name); if(a) return IMG(a[1]);
+// 말·카드에 그릴 얼굴: 동물을 고른 사람(온라인)·동물 이름이면 그 동물 그림, 'N모둠'이면 숫자, 아니면 첫 글자
+// x 는 이름(글자) 또는 {name, animal} (S.teams 의 한 사람)
+const animalOf = x => x && typeof x==='object' ? (x.animal || animalOf(x.name)) : ANIMALS.find(a=>a[0]===x)?.[1];
+function AV(x){
+  const a=animalOf(x); if(a) return IMG(a);
+  const name = x && typeof x==='object' ? x.name : x;
   const m=/^(\d+)모둠$/.exec(name); if(m) return m[1];
   return esc([...String(name)][0] || '?');
 }
-const isEmoji = name => ANIMALS.some(x=>x[0]===name);
-const avHTML = (name, cls='') => `<span class="av ${isEmoji(name)?'em':''} ${cls}">${AV(name)}</span>`;
-const WHO = () => S.mode==='team' ? '모둠' : '플레이어';
+const isEmoji = x => !!animalOf(x);
+const avHTML = (x, cls='') => `<span class="av ${isEmoji(x)?'em':''} ${cls}">${AV(x)}</span>`;
+const WHO = () => S.mode==='team' && ui.view==='local' ? '모둠' : '플레이어';
 const ZONE_BG = {A:'var(--zA)',B:'var(--zB)',C:'var(--zC)',D:'var(--zD)'};
-const START_GRAIN = 500, LAP_BONUS = 50, PALGWAN_BONUS = 100, NO_LAND_BONUS = 50;
+const START_GRAIN = 500, PALGWAN_BONUS = 100, NO_LAND_BONUS = 50;
+// 출발 보너스·통행료 비율은 판 길이에 따라: 30분 판은 모의 2,000판으로 맞춘 값(50 · 땅값의 80%),
+// 15분 이하 짧은 판은 돈이 빨리 돌도록 100 · 땅값의 100% (README '짧은 판' 모의 게임)
+const ECO = m => m<=15 ? {lap:100, toll:1.0} : {lap:50, toll:0.8};
+const eco = () => S.eco || ECO(S.minutes || 30);
 const SHARE_RATE = 0.2;       // 노블레스 오블리주: 바퀴가 끝날 때마다 1등이 곡식의 20%를 꼴찌에게 (모의 140판에서 3배 이상 격차 16% → 3%)
 const CATCHUP_BONUS = 150;     // 슬로우 스타터: 꼴찌가 출발점을 지나면 더 받는다 (모의 200판에서 격차가 절반으로 줄어든 값)
 const LAN_MULT = [1,2,4];      // 연등(건물) 0·1·2개일 때 통행료 배수
 const MONO_MULT = 2, LATE_MULT = 1.5;
 const LATE_MS = 10*60000;      // 남은 시간이 10분(짧은 판은 전체의 1/3) 이하면 물가 상승
-const TOLL_RATE = 0.8;          // 기본 통행료 = 땅값의 80% (모의 2,000판으로 맞춘 값)
 const RULES = {
   catchup:  {name:'슬로우 스타터', icon:'turtle'},
   share:    {name:'노블레스 오블리주', icon:'crown'},
@@ -487,7 +552,7 @@ function poolFor(setIds){
 const idxOf = name => BOARD.findIndex(c=>c.name===name);
 const price = i => ZONES[BOARD[i].zone].price;
 const lanCost = i => price(i)/2;
-const baseToll = i => Math.round(price(i)*TOLL_RATE/10)*10;
+const baseToll = i => Math.round(price(i)*eco().toll/10)*10;
 const r10 = n => Math.round(n/10)*10;
 const cname = i => BOARD[i].type==='card' ? TH.card : BOARD[i].name;
 
@@ -504,8 +569,15 @@ const g = n => `<span class="${n<0?'neg':''}">${money(n)}</span>`;
 /* ---------- 상태 ---------- */
 let S = load() || blank();
 applyTheme(S.theme || 'goryeo');
+// view: home(온라인 방 목록) · room(대기실) · game(온라인 판) · local(같은 화면에서 하기 — 예전 방식)
+// 주소 끝에 #local 을 붙이거나, 같은 화면 판을 하던 중이면 바로 같은 화면으로 연다
 const ui = {openUnit:null, tab:'rules', busy:false, rolling:false, landed:false, tok:null, shown:null, moveMode:null, showBoard:false, layer:null, lockUntil:0, gsel:0,
-  fx:null, fxq:[], money:[], tw:{}};
+  fx:null, fxq:[], ev:[], money:[], tw:{}, view: location.hash==='#local' || S.phase==='play' || lastMode()==='local' ? 'local' : 'home'};
+// 온라인/오프라인 중 마지막에 고른 것으로 다음에도 연다
+function lastMode(){ try{ return localStorage.getItem('socialMarble.mode'); }catch(e){ return null; } }
+function rememberMode(v){ try{ localStorage.setItem('socialMarble.mode', v); }catch(e){} }
+// 시작 화면 맨 위: 온라인(각자 디벗) / 오프라인(디벗 한 대에 여럿이)
+const modeSeg = on => `<div class="seg modeseg"><button class="${on==='home'?'on':''}" data-act="goHome">온라인 <small>각자 디벗</small></button><button class="${on==='local'?'on':''}" data-act="goLocal">오프라인 <small>디벗 한 대에 여럿이</small></button></div>`;
 
 function blank(prev){
   const mode = prev?.mode || 'solo';
@@ -533,18 +605,23 @@ function load(){
     return s;
   }catch(e){ return null; }
 }
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function save(){
+  if(online()){ netPush(); return; }
+  ui.ev=[];
+  if(ui.view==='local') try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){}
+}
 
-function startGame(){
+// C: 설정(같은 화면이면 S, 온라인 방이면 방 설정) · players: [{name, animal?}]
+function startGame(C=S, players=S.names.slice(0,S.count).map(name=>({name}))){
   const theme = themeFor();
   applyTheme(theme);
-  S = {v:2, phase:'play', mode:S.mode, names:S.names, count:S.count, minutes:S.minutes, sound:S.sound,
-    sets:S.sets, catchup:S.catchup, bankrupt:S.bankrupt, diceOrder:S.diceOrder, share:S.share, theme, pool:poolFor(S.sets), usedBank:[],
-    teams: S.names.slice(0,S.count).map(n=>({name:n, grain:START_GRAIN, pos:0, skip:false, out:false})),
+  S = {v:2, phase:'play', mode:C.mode||'solo', names:C.names||players.map(p=>p.name), count:players.length, minutes:C.minutes, sound:S.sound,
+    sets:C.sets, catchup:C.catchup, bankrupt:C.bankrupt, diceOrder:C.diceOrder, share:C.share, theme, pool:poolFor(C.sets), usedBank:[],
+    teams: players.map(p=>({name:p.name, ...(p.animal?{animal:p.animal}:{}), grain:START_GRAIN, pos:0, skip:false, out:false})),
     owner: Array(N).fill(-1), lan: Array(N).fill(0),
     turn:0, turnNo:1, rolled:false, dice:null, pending:null,
-    deck: shuffle(CARDS.keys()), deckPos:0, outCount:0,
-    remaining: S.minutes*60000, paused:false, timeUp:false, late:false, usedQ:{},
+    deck: shuffle(CARDS.keys()), deckPos:0, outCount:0, eco:ECO(C.minutes),
+    remaining: C.minutes*60000, paused:false, timeUp:false, late:false, usedQ:{},
     msg:'', hist:[]};
   // 시작할 때 모두 주사위를 굴려 큰 수부터 순서를 정한다 (같으면 무작위). 한 판 안에서는 고정.
   let rolls = S.teams.map((_,t)=>({t, d:[1+rnd(6),1+rnd(6)]}));
@@ -554,8 +631,8 @@ function startGame(){
   S.msg = `${S.teams[S.turn].name}부터 시작해요.`;
   startTurn();
   if(S.diceOrder) S.pending = {kind:'order', rolls};
-  else ui.fxq.push(turnBanner);
-  save(); render();
+  else emit('banner');
+  if(ui.view!=='room'){ save(); render(); }    // 온라인 방장은 이 판을 서버로 보내고, 서버가 모두에게 시작을 알린다
 }
 
 /* 살아 있는 모둠 (파산 서바이벌에서 탈락한 모둠은 건너뛴다) */
@@ -573,7 +650,7 @@ function snapshot(){ const o={}; for(const k in S) if(!SNAP_SKIP.has(k)) o[k]=S[
 function startTurn(){
   S.rolled=false; S.dice=null; ui.landed=false;
   S.pending = S.teams[S.turn].skip ? {kind:'skip'} : null;
-  S.hist.push(snapshot()); if(S.hist.length>6) S.hist.shift();
+  S.hist.push(snapshot()); if(S.hist.length>(online()?3:6)) S.hist.shift();   // 온라인은 판을 통째로 보내므로 짧게
 }
 function endTurn(){
   S.pending=null;
@@ -584,7 +661,7 @@ function endTurn(){
   S.turn=nxt; S.turnNo++;
   startTurn();
   if(seat(nxt)<=seat(cur)) roundShare();   // 한 바퀴가 끝났다
-  ui.fxq.push(turnBanner);
+  emit('banner');
   save(); render();
 }
 /* 노블레스 오블리주: 1등이 곡식의 일부를 꼴찌에게 */
@@ -597,7 +674,7 @@ function roundShare(){
   S.teams[A].grain-=amount; S.teams[B].grain+=amount;
   S.msg=`노블레스 오블리주: ${S.teams[A].name} → ${S.teams[B].name} ${CUR} ${money(amount)}`;
   S.pending={kind:'share', from:A, to:B, amount, then:S.pending};
-  ui.fxq.push(()=>fly(teamEl(A), teamEl(B)));
+  emit('fly', A, B, 7);
 }
 function canUndo(){ return S.phase==='play' && !ui.busy && (S.rolled || S.hist.length>=2); }
 function undo(){
@@ -609,7 +686,7 @@ function undo(){
 }
 function finish(){
   S.phase='over'; S.pending=null; ui.showBoard=false; ui.moveMode=null;
-  ui.fxq.push(()=>{ snd('fanfare'); confetti(innerWidth/2, innerHeight*.25, 90); });
+  emit('finish');
   save(); render();
 }
 
@@ -692,17 +769,21 @@ function settleOrEnd(){
   save(); render();
 }
 
-/* 이동: 상태를 먼저 확정·저장한 뒤 그림만 따라간다 (도중에 새로고침해도 두 번 굴리기 없음) */
+/* 이동: 상태를 먼저 확정·저장한 뒤 그림만 따라간다 (도중에 새로고침해도 두 번 굴리기 없음)
+   온라인에서는 같은 그림 정보(mv)가 다른 사람 화면으로 가서 똑같이 움직인다 */
 async function travel(steps, bonus, dice){
   const t=S.turn, T=S.teams[t], from=T.pos, to=(from+steps)%N;
   const passed = from+steps>=N && bonus;
   const extra = passed && S.catchup && isLast(t) ? CATCHUP_BONUS : 0;
-  const before = T.grain;
-  T.pos=to; if(passed) T.grain+=LAP_BONUS+extra;
+  const mv = {t, from, steps, passed, extra, lap:eco().lap, before:T.grain, dice:!!dice};
+  T.pos=to; if(passed) T.grain+=mv.lap+extra;
   if(dice) S.dice=dice;
   S.pending = landingPending(to);
+  ui.ev.push(['travel', mv]);
   save();
-
+  await moveAnim(mv);
+}
+async function moveAnim({t, from, steps, passed, extra, lap, before, dice}){
   ui.busy=true; ui.tok={t,pos:from}; ui.shown={t,grain:before};
   if(dice){ await rollAnim(); }
   render();
@@ -711,8 +792,8 @@ async function travel(steps, bonus, dice){
     ui.tok.pos=(from+k)%N;
     renderTokens(t);
     if(ui.tok.pos===0 && passed){
-      ui.shown.grain=before+LAP_BONUS+extra;
-      toast(`${TH.start} 통과 +${money(LAP_BONUS)}${extra?` · 슬로우 스타터 +${money(extra)}`:''}`, extra?2200:1300); snd('coin');
+      ui.shown.grain=before+lap+extra;
+      toast(`${TH.start} 통과 +${money(lap)}${extra?` · 슬로우 스타터 +${money(extra)}`:''}`, extra?2200:1300); snd('coin');
       fly(cellEl(0), teamEl(t), extra?10:6);
       renderCenter();
     } else snd('step');
@@ -737,16 +818,337 @@ function roll(){
   travel(d[0]+d[1], true, d);
 }
 
+/* ---------- 온라인 방 (서버: server/ — Cloudflare Worker) ----------
+   차례인 사람의 화면이 규칙대로 판을 바꾸고(지금까지와 같은 코드), 바뀐 판 전체를 서버로 보낸다.
+   서버는 '몇 번째 판(ver)에서 바꿨는지'와 '차례인 사람이 보냈는지'만 확인해 모두에게 퍼뜨린다.
+   차례인 사람이 응답이 없으면(서버가 정한 시각이 지나면) 다음 사람 화면이 대신 한 단계씩 진행한다. */
+const SERVER = 'wss://social-marble.deokinec.workers.dev/ws';
+const ME_KEY = 'socialMarble.me';
+const NET = {ws:null, up:false, tries:0, rooms:null, room:null, ver:0, off:0, q:[], pumping:false, dirty:false};
+let ME = (()=>{ try{ const m=JSON.parse(localStorage.getItem(ME_KEY)); if(m && /^[a-z0-9]{8,32}$/.test(m.pid) && ANIMALS.some(a=>a[1]===m.animal)) return m; }catch(e){} return null; })();
+function saveMe(){ try{ localStorage.setItem(ME_KEY, JSON.stringify(ME)); }catch(e){} }
+const newPid = () => Array.from({length:16}, ()=>'abcdefghijklmnopqrstuvwxyz0123456789'[rnd(36)]).join('');
+const serverNow = () => Date.now()+NET.off;
+function online(){ return ui.view==='game'; }
+function sndOn(){ return ui.view==='local' ? !!S.sound : (ME?.sound ?? true); }
+// 판을 움직이는 단추 (온라인에서는 내 차례에만)
+const GAME_ACTS = new Set(['roll','ans','buy','pass','lantern','pay','info','hang','nolan','card','skip','shareok','orderok','settle']);
+function canAct(){ return !online() || (NET.room && S.turn===NET.room.you); }
+const isHost = () => NET.room && NET.room.you===NET.room.host;
+const CFG = () => ui.view==='room' ? NET.room.settings : S;
+const cfgEdit = () => ui.view!=='room' || isHost();
+function cfgDone(){
+  if(ui.view!=='room'){ renderSetup(); return; }
+  ME.cfg = NET.room.settings; saveMe();
+  net({t:'settings', settings:NET.room.settings}); renderRoom();
+}
+const DEFAULT_CFG = () => ({minutes:10, sets:SETS.filter(x=>x.unit==='u1').map(x=>x.id), catchup:true, share:true, diceOrder:true, bankrupt:false});
+
+function connect(){
+  if(!ME || NET.ws) return;
+  let ws; try{ ws=new WebSocket(SERVER); }catch(e){ retry(); return; }
+  NET.ws=ws;
+  ws.onopen=()=>{ NET.up=true; NET.tries=0; ws.send(JSON.stringify({t:'hello', pid:ME.pid, name:ME.name, animal:ME.animal})); paint(); };
+  ws.onmessage=e=>{ let m; try{ m=JSON.parse(e.data); }catch(x){ return; } onNet(m); };
+  ws.onclose=()=>{ if(NET.ws!==ws) return; NET.ws=null; NET.up=false; paint(); retry(); };
+}
+let retryT;
+function retry(){ clearTimeout(retryT); retryT=setTimeout(connect, Math.min(5000, 700*(++NET.tries))); }
+function reconnect(){ const ws=NET.ws; NET.ws=null; NET.up=false; try{ ws && ws.close(); }catch(e){} connect(); }
+setInterval(()=>{ if(NET.up) try{ NET.ws.send('{"t":"ping"}'); }catch(e){} }, 20000);
+// 화면이 잠겼다 켜지면 연결이 죽어 있을 수 있다 → 새로 붙는다
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden && ME && (!NET.ws || NET.ws.readyState!==1)) reconnect(); });
+function net(o){
+  if(NET.up){ try{ NET.ws.send(JSON.stringify(o)); return true; }catch(e){} }
+  toast('서버와 연결이 끊겼어요. 다시 연결하는 중…', 1800); return false;
+}
+// 판이 바뀔 때마다(save) 서버로: 기다리지 않고 다음 번호를 미리 센다 (한 연결 안에서는 순서대로 도착)
+function netPush(){
+  const ev=ui.ev; ui.ev=[];
+  if(net({t:'push', base:NET.ver, state:S, ev})) NET.ver++;
+  else NET.dirty=true;
+}
+// 연결 상태가 바뀌면 지금 화면만 다시 그린다
+function paint(){
+  let bad=document.getElementById('netbad');
+  if(!bad){ bad=document.createElement('div'); bad.id='netbad'; document.body.appendChild(bad); }
+  bad.hidden = NET.up || ui.view==='local' || !ME;
+  bad.textContent = '서버에 연결하는 중…';
+  if(ui.view==='home' || ui.view==='room') render();
+}
+
+function onNet(m){
+  if(m.now) NET.off = m.now-Date.now();
+  switch(m.t){
+    case 'hello':      // 서버 기준으로 나는 어느 방에도 없다
+      if(ui.view==='room' || ui.view==='game'){ toast('방이 없어졌어요.', 2000); toHome(); }
+      break;
+    case 'rooms': NET.rooms=m.list; if(ui.view==='home') renderHome(); break;
+    case 'room': gotRoom(m.room, m.resync); break;
+    case 'state': NET.q.push(m); pump(); break;
+    case 'ack': NET.ver=Math.max(NET.ver, m.ver); if(NET.room){ NET.room.deadline=m.deadline; NET.room.ver=m.ver; } break;
+    case 'err': toast(m.msg, 2200); break;
+    case 'voted':
+      toast(m.pass ? `동의를 받았어요: ${m.text}` : `동의를 못 받았어요: ${m.text}`, 2200);
+      if(m.pass && isHost()) whenIdle(()=>applyHost(m.act));
+      break;
+    case 'gone': toast('방이 닫혔어요.', 2000); toHome(); break;
+  }
+}
+function toHome(){ NET.room=null; NET.q=[]; ui.layer=null; renderLayer(); ui.view='home'; render(); }
+function gotRoom(r, resync){
+  const was=NET.room; NET.room=r;
+  if(r.you<0){ toHome(); return; }
+  if(r.status==='wait'){
+    if(ui.view!=='room'){ ui.layer=null; renderLayer(); ui.tab='rules'; }
+    ui.view='room'; render(); return;
+  }
+  // 내가 보낸 판이 아직 오는 중이면(r.ver < NET.ver) 방 정보만 바꾸고 판은 그대로 둔다
+  if(ui.view!=='game' || resync || NET.dirty || r.ver>NET.ver || !was){
+    NET.dirty=false;
+    NET.q.push({t:'state', ver:r.ver, state:r.state, ev:[], deadline:r.deadline, endAt:r.endAt, full:true}); pump();
+  } else if(!ui.busy) render();     // 누가 들어오거나 나간 것만 바뀜
+  syncVote();
+}
+// 방장 제안이 있으면 모두에게 [동의]/[반대] 창을 띄운다
+function syncVote(){
+  const V=NET.room?.vote;
+  if(V && ui.view==='game'){ ui.layer={view:'vote', id:V.id}; renderLayer(); }
+  else if(ui.layer?.view==='vote'){ ui.layer=null; renderLayer(); }
+}
+function voteHTML(){
+  const V=NET.room.vote; if(!V) return '';
+  const left=Math.max(0, Math.ceil((V.until-serverNow())/1000));
+  const host=NET.room.players[NET.room.host];
+  return `<h3>방장 제안</h3>
+    <div class="waitmsg" style="background:#EAF0F8;color:var(--ink)">${avHTML({name:host.name, animal:host.animal})}${esc(host.name)}</div>
+    <div class="mp">${esc(V.text)}</div>
+    <div class="calc">동의 <span class="sum">${V.yes}</span> · 반대 <span class="sum">${V.no}</span> <small>/ ${V.n}명</small></div>
+    ${isHost() ? '<div class="note">친구들의 동의를 기다리는 중…</div>'
+      : V.mine ? `<div class="note">${V.mine==='yes'?'[동의]':'[반대]'}를 골랐어요</div>`
+      : '<div class="row"><button class="big solid" data-act="vyes">동의</button><button class="big" data-act="vno">반대</button></div>'}
+    <div class="note">과반이 동의하면 바로 돼요 · <b id="vleft">${left}</b>초 안에 답이 모자라면 취소</div>`;
+}
+const whenIdle = fn => (async()=>{ while(ui.busy || NET.pumping || NET.q.length) await wait(80); fn(); })();
+// 교사(오프라인)·방장(온라인) 단추가 하는 일. 온라인은 참여자 과반이 동의한 뒤 방장 화면에서 실행한다.
+function hostDo(a, text){
+  if(!online()){ applyHost(a); return; }
+  if(NET.room.vote){ toast('먼저 낸 제안의 답을 기다리는 중이에요', 1800); return; }
+  ui.layer=null; ui.moveMode=null; renderLayer(); render();
+  net({t:'propose', act:a, text});
+}
+function applyHost(a){
+  const who = online() ? '방장' : '교사';
+  switch(a.k){
+    case 'undo': if(canUndo()) undo(); break;
+    case 'gadd': { const T=S.teams[a.t]; if(!T) break; T.grain+=a.n; S.msg=`${who}: ${T.name} ${CUR} ${a.n>0?'+':''}${money(a.n)}`; save(); render(); break; }
+    case 'move': {
+      const T=S.teams[a.t]; if(!T) break;
+      if(S.rolled || S.pending){ toast('그 사이에 주사위를 굴려서 못 옮겼어요', 2000); break; }
+      T.pos=a.i; S.msg=`${who}: ${T.name} 말을 ${ro(`「${cname(a.i)}」`)} 옮겼어요`; save(); render(); break;
+    }
+    case 'pause': if(online()) net({t:'pause', on:true}); else { S.paused=!S.paused; save(); render(); } break;
+    case 'end': syncClock(); finish(); break;
+  }
+}
+// 받은 판을 순서대로 적용한다. 말이 움직이는 중이면 끝날 때까지 기다린다.
+async function pump(){
+  if(NET.pumping) return; NET.pumping=true;
+  while(NET.q.length){
+    while(ui.busy) await wait(80);
+    const m=NET.q.shift();
+    NET.ver=m.ver;
+    if(NET.room){ NET.room.ver=m.ver; NET.room.deadline=m.deadline; NET.room.endAt=m.endAt; }
+    const fresh = ui.view!=='game' || m.full;
+    S=m.state; S.hist ||= []; applyTheme(S.theme);
+    if(ui.view!=='game'){ ui.view='game'; ui.lateShown=false; ui.upShown=false; ui.layer=null; renderLayer(); paint(); }
+    if(fresh){ ui.money=[]; ui.tw={}; ui.fxq=[]; ui.showBoard=false; ui.landed=false; }
+    syncClock();
+    const evs=m.ev||[], mv=evs.find(e=>e[0]==='travel');
+    evs.filter(e=>e[0]!=='travel').forEach(e=>ui.fxq.push(()=>playEv(e)));
+    if(mv){ ui.landed=false; await moveAnim(mv[1]); } else render();
+  }
+  NET.pumping=false;
+}
+// 남은 시간·물가 상승·시간 끝은 서버의 끝나는 시각 하나로 모두 똑같이 센다
+function syncClock(){
+  if(!online() || S.phase!=='play' || !NET.room) return;
+  S.paused = !!NET.room.pausedAt;
+  const rem=Math.max(0, NET.room.endAt-(NET.room.pausedAt || serverNow()));
+  S.remaining=rem;
+  if(rem>0 && rem<=Math.min(LATE_MS, S.minutes*60000/3)) S.late=true;
+  if(rem===0) S.timeUp=true;
+}
+function onlineTick(){
+  if(S.phase!=='play' || !NET.room) return;
+  syncClock();
+  if(S.late && !ui.lateShown){ ui.lateShown=true; if(S.remaining>0){ toast(`물가 상승! 통행료 ×${LATE_MULT}`); snd('no'); } if(!ui.busy) render(); }
+  if(S.timeUp && !ui.upShown){ ui.upShown=true; toast(`시간 끝! ${S.teams[lastAlive()].name} 차례까지 하고 끝나요`, 2500); if(!ui.busy) render(); }
+  renderTimer();
+  const V=NET.room.vote, vl=document.getElementById('vleft');
+  if(V && vl){ const left=Math.max(0, Math.ceil((V.until-serverNow())/1000)); vl.textContent=left;
+    if(!left && isHost() && ui.voteChecked!==V.id){ ui.voteChecked=V.id; net({t:'voteCheck'}); } }
+  driveAuto();
+}
+// 내가 '대신 할 사람'인가: 차례 다음 자리부터 연결된 첫 사람
+function helper(){
+  const R=NET.room, o=ORD();
+  for(let k=1;k<o.length;k++){ const t=o[(seat(S.turn)+k)%o.length], p=R.players[t]; if(p && p.on && !p.left) return t; }
+  return -1;
+}
+function driveAuto(){
+  if(ui.busy || NET.pumping || NET.q.length || !NET.up || ui.layer || S.paused) return;
+  const R=NET.room, now=serverNow(), me=R.you;
+  // 시간이 끝났고 새 바퀴가 막 시작되려는 참이면 바로 결과로 (차례인 사람이나 다음 사람이)
+  if(S.timeUp && !S.rolled && S.turn===firstAlive() && S.pending?.kind!=='settle'){
+    if(S.turn===me || helper()===me) finish();
+    return;
+  }
+  if(S.turn===me || now<R.deadline+300) return;
+  if(helper()===me || now>R.deadline+6000) autoStep();
+}
+// 응답 없는 사람의 차례를 한 단계 진행: 문제는 틀린 것으로, 땅은 안 사고, 확인 창은 확인
+function autoStep(){
+  const p=S.pending, wrong = p && p.order ? p.order.findIndex(x=>x!==0) : -1;
+  if(!p){ if(!S.rolled) roll(); return; }
+  switch(p.kind){
+    case 'land': case 'own': ACT.pass(); break;
+    case 'toll': if(p.answered==null) p.answered=wrong; ACT.pay(); break;
+    case 'card': if(CARDS[p.card].quiz && p.answered==null) p.answered=wrong; ACT.card(); break;
+    case 'info': ACT.info(); break;
+    case 'lantern': { const tg=lanternTargets(S.turn); tg.length ? ACT.hang(tg[0]) : ACT.nolan(); break; }
+    case 'skip': ACT.skip(); break;
+    case 'share': ACT.shareok(); break;
+    case 'order': ACT.orderok(); break;
+    case 'settle': ACT.settle(); break;
+  }
+}
+
+const NETACT = {
+  create(){ if(!ME) return; snd('ok'); net({t:'create', settings:ME.cfg || DEFAULT_CFG()}); },
+  join(id){ snd('ok'); net({t:'join', id}); },
+  leaveAsk(){ ask(online() && S.phase==='play' ? '방에서 나갈까요? 남은 차례는 자동으로 넘어가요.' : '방에서 나갈까요?', ()=>{ net({t:'leave'}); toHome(); }); },
+  leave(){ net({t:'leave'}); toHome(); },
+  ostart(){
+    const R=NET.room; if(!isHost() || R.players.length<2 || !poolFor(R.settings.sets).length) return;
+    snd('ok');
+    startGame(R.settings, R.players.map(p=>({name:p.name, animal:p.animal})));
+    ui.ev=[]; ui.fxq=[];
+    net({t:'start', state:S});
+  },
+  again(){ if(isHost()) net({t:'again'}); },
+  goLocal(){ if(ui.view==='local') return; rememberMode('local'); S=load()||blank(); applyTheme(S.theme||'goryeo'); ui.view='local'; ui.layer=null; renderLayer(); paint(); render(); },
+  goHome(){ if(ui.view==='home') return; rememberMode('home'); readNames(); save(); ui.view='home'; if(!ME){ ui.layer={view:'char'}; renderLayer(); } connect(); paint(); render(); },
+  charOpen(){ ui.layer={view:'char'}; ui.charSel=ME?.animal; renderLayer(); },
+  charPick(k){ const v=document.getElementById('nick')?.value; ui.nick=v; ui.charSel=k; renderLayer(); snd('tick'); },
+  charSave(){
+    const k=ui.charSel || ANIMALS[0][1];
+    const raw=(document.getElementById('nick')?.value||'').replace(/[<>&"'`]/g,'').trim().slice(0,8);
+    const name = raw || ANIMALS.find(a=>a[1]===k)[0];
+    if(ME){ ME.name=name; ME.animal=k; } else ME={pid:newPid(), name, animal:k, sound:true};
+    saveMe(); ui.layer=null; ui.nick=null; renderLayer(); snd('ok');
+    if(NET.up) net({t:'hello', pid:ME.pid, name:ME.name, animal:ME.animal}); else connect();
+    render();
+  },
+  reconnect(){ reconnect(); },
+};
+
+/* 효과: 이 화면에서 보여 주고, 온라인이면 다른 사람 화면에서도 똑같이 (ui.ev 로 함께 보낸다) */
+function emit(...e){ ui.ev.push(e); ui.fxq.push(()=>playEv(e)); }
+function playEv([k,a,b,c]){
+  switch(k){
+    case 'banner': turnBanner(); break;
+    case 'fly': fly(teamEl(a), teamEl(b), c); break;
+    case 'gain': snd('coin'); fly(cellEl(a), teamEl(b)); break;
+    case 'snd': snd(a); break;
+    case 'build': {
+      ui.fx={build:a, until:Date.now()+1500};
+      const el=cellEl(a); if(el){ el._k=null; renderCells(); }
+      if(b>=0) fly(teamEl(b), cellEl(a));
+      snd('build'); break;
+    }
+    case 'ans': {
+      snd(a?'ok':'no');
+      const m=document.getElementById('modal'); if(!m) break;
+      if(a){ const r=m.getBoundingClientRect(); confetti(r.left+r.width/2, r.top+r.height*.35, 40); }
+      else { m.classList.remove('shake','flip'); void m.offsetWidth; m.classList.add('shake'); }
+      break;
+    }
+    case 'finish': snd('fanfare'); confetti(innerWidth/2, innerHeight*.25, 90); break;
+  }
+}
+
+/* ---------- 처음 화면(방 목록) · 대기실 · 내 캐릭터 ---------- */
+function renderHome(){
+  const el=document.getElementById('setup');
+  if(el.dataset.v!=='home'){
+    el.dataset.v='home';
+    el.innerHTML = `<div class="lobby">
+      <div class="l-left">
+        <div class="rays"></div>
+        <div class="logo"><span class="l1">사회</span><span class="l2">마블</span></div>
+        ${modeSeg('home')}
+        <div class="panel mecard" id="h-me"></div>
+        <button class="start" data-act="create" id="h-create">방 만들기</button>
+      </div>
+      <div class="l-right panel">
+        <div class="rhead">방 목록 <span id="h-conn"></span></div>
+        <div class="roomlist" id="h-list"></div>
+      </div>
+    </div>`;
+  }
+  setPart('h-me', ME ? `${avHTML({name:ME.name, animal:ME.animal})}<div class="mi"><small>내 캐릭터</small><b>${esc(ME.name)}</b></div><button data-act="charOpen">바꾸기</button>`
+    : `<div class="mi"><small>내 캐릭터</small><b>정하는 중…</b></div><button data-act="charOpen">고르기</button>`);
+  const cb=document.getElementById('h-create'); if(cb) cb.disabled = !NET.up || !ME;
+  setPart('h-conn', NET.up ? '<span class="conn on"><i></i>연결됨</span>' : `<span class="conn"><i></i>연결 중…</span>`);
+  const list=NET.rooms;
+  setPart('h-list', !NET.up && !list ? `<div class="empty">서버에 연결하는 중이에요.<br><button data-act="reconnect">다시 연결</button></div>`
+    : !list || !list.length ? `<div class="empty">${IMG('hourglass')}<span>아직 만든 방이 없어요.<br>[방 만들기]를 누르면 친구들 목록에 내 방이 떠요.</span></div>`
+    : list.map(r=>{
+      const full=r.players.length>=r.max, playing=r.status!=='wait';
+      return `<button class="roomrow" data-act="join" data-v="${esc(r.id)}" ${playing||full||!NET.up?'disabled':''}>
+        <span class="rt">${esc(r.title)}</span>
+        <span class="ravs">${r.players.map(p=>avHTML({name:p.name, animal:p.animal})).join('')}</span>
+        <span class="rn">${r.players.length}/${r.max}명</span>
+        <span class="go">${playing?'게임 중':full?'꽉 참':'들어가기'}</span></button>`;
+    }).join(''));
+}
+function renderRoom(){
+  const el=document.getElementById('setup'), R=NET.room; if(!R) return;
+  el.dataset.v='room';
+  const host=isHost(), nq=poolFor(R.settings.sets).length, ok=R.players.length>=2 && nq;
+  const seats = R.players.map((p,k)=>`<div class="seatc ${p.on?'':'off'}" style="--c:${TC[k]}">${avHTML({name:p.name, animal:p.animal})}<span class="sn">${esc(p.name)}</span>${k===R.host?`<img class="fx host" src="${FX('crown')}" alt="방장">`:''}${k===R.you?'<em>나</em>':''}${p.on?'':'<small>연결 끊김</small>'}</div>`).join('')
+    + Array(Math.max(0, MAX_TEAMS-R.players.length)).fill('<div class="seatc emptyseat">빈 자리</div>').join('');
+  el.innerHTML = `<div class="lobby">
+    <div class="l-left">
+      <div class="panel players">
+        <div class="prow"><b class="rtitle">${esc(R.title)}</b><span class="rid">${R.players.length}/${MAX_TEAMS}명 · ${R.settings.minutes}분</span><button class="shuf" data-act="leaveAsk">나가기</button></div>
+        <div class="seats">${seats}</div>
+      </div>
+      ${host ? `<button class="start" data-act="ostart" ${ok?'':'disabled'}>게임 시작!</button>
+        ${R.players.length<2?'<div class="waitmsg">친구가 들어오면 시작할 수 있어요</div>':!nq?'<div class="warnline">[문제 범위]에서 주제를 하나 이상 골라 주세요.</div>':''}`
+        : `<div class="waitmsg">${avHTML({name:R.players[R.host].name, animal:R.players[R.host].animal})}방장이 시작하기를 기다리는 중…</div>`}
+    </div>
+    <div class="l-right panel">${cfgPanel(R.settings, host)}</div>
+  </div>`;
+}
+function charHTML(){
+  const sel=ui.charSel || ANIMALS[rnd(ANIMALS.length)][1]; ui.charSel=sel;
+  const nick = ui.nick ?? ME?.name ?? '';
+  return `<h3>${ME?'내 캐릭터 바꾸기':'내 캐릭터를 골라요'}</h3>
+    <div class="anigrid">${ANIMALS.map(([n,k])=>`<button class="ani ${k===sel?'on':''}" data-act="charPick" data-v="${k}" title="${n}">${IMG(k)}</button>`).join('')}</div>
+    <label class="nick">닉네임 <input id="nick" maxlength="8" placeholder="${esc(ANIMALS.find(a=>a[1]===sel)[0])}" value="${esc(nick)}"></label>
+    <div class="note">이름(실명) 말고 친구들이 알아볼 닉네임을 써요. 이 디벗에 저장돼요.</div>
+    <div class="row"><button class="big solid" data-act="charSave">좋아요!</button>${ME?'<button class="big" data-act="lclose">취소</button>':'<button class="big" data-act="goLocal">오프라인으로 하기</button>'}</div>`;
+}
+
 /* 모달 버튼 */
 const ACT = {
   roll,
   ans(k){
     const p=S.pending; if(!p || p.answered!=null || !p.order) return;
     p.answered=+k;
-    const ok=p.order[k]===0;
-    snd(ok ? 'ok':'no');
-    ui.fxq.push(ok ? ()=>{ const m=document.getElementById('modal'); if(m){ const r=m.getBoundingClientRect(); confetti(r.left+r.width/2, r.top+r.height*.35, 40); } }
-                   : ()=>{ const m=document.getElementById('modal'); if(m){ m.classList.remove('shake','flip'); void m.offsetWidth; m.classList.add('shake'); } });
+    emit('ans', p.order[k]===0);
     save(); render();
   },
   buy(){
@@ -754,9 +1156,7 @@ const ACT = {
     const i=p.cell; if(T.grain<price(i) || S.owner[i]>=0) return;
     T.grain-=price(i); S.owner[i]=t;
     S.msg=`${T.name}: ${eul(`「${cname(i)}」`)} 샀어요 (-${money(price(i))})`;
-    ui.fx={build:i, until:Date.now()+1500};
-    ui.fxq.push(()=>fly(teamEl(t), cellEl(i)));
-    snd('build'); endTurn();
+    emit('build', i, t); endTurn();
   },
   pass(){
     const p=S.pending, T=S.teams[S.turn];
@@ -769,22 +1169,19 @@ const ACT = {
     const i=p.cell; if(S.lan[i]>=2 || T.grain<lanCost(i)) return;
     T.grain-=lanCost(i); S.lan[i]++;
     S.msg=`${T.name}: 「${cname(i)}」에 ${TH.upDone} (-${money(lanCost(i))})`;
-    ui.fx={build:i, until:Date.now()+1500};
-    ui.fxq.push(()=>fly(teamEl(t), cellEl(i)));
-    snd('build'); endTurn();
+    emit('build', i, t); endTurn();
   },
   pay(){
     const p=S.pending; if(p?.kind!=='toll' || p.answered==null) return;
     const T=S.teams[S.turn], O=S.teams[p.to], amount=isRight(p)?p.half:p.full;
     T.grain-=amount; O.grain+=amount;
     S.msg=`${T.name} → ${O.name} 통행료 ${money(amount)}${isRight(p)?' (정답 할인)':''}`;
-    const a=S.turn, b=p.to; ui.fxq.push(()=>fly(teamEl(a), teamEl(b), 9));
-    snd('coin'); settleOrEnd();
+    emit('fly', S.turn, p.to, 9); emit('snd', 'coin'); settleOrEnd();
   },
   info(){
     const p=S.pending; if(p?.kind!=='info') return;
     const c=BOARD[p.cell], T=S.teams[S.turn];
-    if(c.type==='palgwan'){ T.grain+=PALGWAN_BONUS; S.msg=`${T.name}: ${TH.festMsg} +${money(PALGWAN_BONUS)}`; snd('coin'); const t=S.turn; ui.fxq.push(()=>fly(cellEl(p.cell), teamEl(t))); }
+    if(c.type==='palgwan'){ T.grain+=PALGWAN_BONUS; S.msg=`${T.name}: ${TH.festMsg} +${money(PALGWAN_BONUS)}`; emit('gain', p.cell, S.turn); }
     if(c.type==='rest'){ T.skip=true; S.msg=`${T.name}: ${TH.restMsg}`; }
     if(c.type==='start'){ S.msg=`${T.name}: ${TH.start}에 도착`; }
     endTurn();
@@ -793,13 +1190,12 @@ const ACT = {
     const p=S.pending, t=S.turn, T=S.teams[t]; if(p?.kind!=='lantern') return;
     i=+i; if(S.owner[i]!==t || S.lan[i]>=2) return;
     S.lan[i]++; S.msg=`${T.name}: 「${cname(i)}」에 공짜로 ${TH.upDone}`;
-    ui.fx={build:i, until:Date.now()+1500};
-    snd('build'); endTurn();
+    emit('build', i, -1); endTurn();
   },
   nolan(){
     const p=S.pending, t=S.turn, T=S.teams[t]; if(p?.kind!=='lantern' || lanternTargets(t).length) return;
     T.grain+=NO_LAND_BONUS; S.msg=`${T.name}: ${LANDS.some(i=>S.owner[i]===t)?`${TH.up}이 꽉 차서`:'땅이 없어서'} ${CUR} +${money(NO_LAND_BONUS)}`;
-    snd('coin'); endTurn();
+    emit('snd', 'coin'); endTurn();
   },
   card(){
     const p=S.pending; if(p?.kind!=='card') return;
@@ -807,12 +1203,12 @@ const ACT = {
     if(C.quiz){
       if(p.answered==null) return;
       const win = C.quiz==='pool' ? C.win : C.quiz.win;
-      if(isRight(p)){ T.grain+=win; S.msg=`${T.name}: ${TH.card} 문제 정답 +${money(win)}`; snd('coin'); }
+      if(isRight(p)){ T.grain+=win; S.msg=`${T.name}: ${TH.card} 문제 정답 +${money(win)}`; emit('snd', 'coin'); }
       else S.msg=`${T.name}: ${TH.card} 문제를 틀렸어요`;
       endTurn(); return;
     }
     const a=C.act;
-    if(a.grain){ T.grain+=a.grain; S.msg=`${T.name}: ${TH.card} ${a.grain>0?'+':''}${money(a.grain)}`; snd(a.grain>0?'coin':'no'); settleOrEnd(); return; }
+    if(a.grain){ T.grain+=a.grain; S.msg=`${T.name}: ${TH.card} ${a.grain>0?'+':''}${money(a.grain)}`; emit('snd', a.grain>0?'coin':'no'); settleOrEnd(); return; }
     if(a.freeLantern){ S.pending={kind:'lantern', cell:p.cell, fromCard:true, card:p.card}; save(); render(); return; }
     if(a.moveTo){
       const to=idxOf(a.moveTo), steps=(to-T.pos+N)%N || N;
@@ -827,60 +1223,77 @@ const ACT = {
     endTurn();
   },
   shareok(){ const p=S.pending; if(p?.kind!=='share') return; S.pending=p.then||null; save(); render(); },
-  orderok(){ if(S.pending?.kind!=='order') return; S.pending=null; ui.fxq.push(turnBanner); save(); render(); },
+  orderok(){ if(S.pending?.kind!=='order') return; S.pending=null; emit('banner'); save(); render(); },
   settle(){
     const p=S.pending; if(p?.kind!=='settle') return;
     const T=S.teams[S.turn];
     if(p.out){
       T.out=true; T.skip=false; T.outNo=++S.outCount;
       S.owner=S.owner.map(o=>o===S.turn?-1:o);
-      S.msg=`${T.name} 파산! 탈락했어요`; snd('no');
+      S.msg=`${T.name} 파산! 탈락했어요`; emit('snd', 'no');
     } else S.msg=`${T.name}: 땅을 팔아 빚을 갚았어요`;
     endTurn();
   },
   /* 시작 화면 */
   // 다시 그리기 전에 입력한 이름을 먼저 담아 둔다 (안 그러면 지워진다)
-  minus(){ readNames(); S.minutes=Math.max(5,S.minutes-5); renderSetup(); },
-  plus(){ readNames(); S.minutes=Math.min(90,S.minutes+5); renderSetup(); },
+  minus(){ if(!cfgEdit()) return; readNames(); const C=CFG(); C.minutes=Math.max(5,C.minutes-5); cfgDone(); },
+  plus(){ if(!cfgEdit()) return; readNames(); const C=CFG(); C.minutes=Math.min(ui.view==='room'?30:90,C.minutes+5); cfgDone(); },
   tminus(){ readNames(); S.count=Math.max(MIN_TEAMS,S.count-1); renderSetup(); },
   tplus(){ readNames(); S.count=Math.min(MAX_TEAMS,S.count+1); renderSetup(); },
-  sound(){ readNames(); S.sound=!S.sound; renderSetup(); if(S.sound) snd('coin'); },
+  sound(){
+    if(ui.view==='local'){ readNames(); S.sound=!S.sound; renderSetup(); }
+    else { ME.sound=!sndOn(); saveMe(); ui.view==='room' ? renderRoom() : renderLayer(); }
+    if(sndOn()) snd('coin');
+  },
   mode(v){ readNames(); if(S.mode===v) return; S.mode=v; S.names=defaultNamesFor(v); renderSetup(); },
   reroll(){ readNames(); S.names=randomAnimals(MAX_TEAMS); snd('rattle'); renderSetup(); },
-  tab(v){ readNames(); ui.tab=v; renderSetup(); },
+  tab(v){ readNames(); ui.tab=v; ui.view==='room' ? renderRoom() : renderSetup(); },
   fs(){
     const d=document.documentElement;
     if(document.fullscreenElement || document.webkitFullscreenElement) (document.exitFullscreen||document.webkitExitFullscreen).call(document);
     else (d.requestFullscreen||d.webkitRequestFullscreen)?.call(d);
   },
   // 문제 고르기: 단원(열기·모두 선택·모두 해제) → 주제 하나씩
-  unitOpen(u){ readNames(); ui.openUnit = ui.openUnit===u ? null : u; renderSetup(); },
-  unitAll(u){ readNames(); const ids=SETS.filter(x=>x.unit===u).map(x=>x.id); S.sets=[...new Set([...S.sets,...ids])]; renderSetup(); },
-  unitNone(u){ readNames(); const ids=new Set(SETS.filter(x=>x.unit===u).map(x=>x.id)); S.sets=S.sets.filter(x=>!ids.has(x)); renderSetup(); },
-  unitToggle(u){ const ids=SETS.filter(x=>x.unit===u).map(x=>x.id); ids.every(x=>S.sets.includes(x)) ? ACT.unitNone(u) : ACT.unitAll(u); },
-  setT(id){ readNames(); S.sets = S.sets.includes(id) ? S.sets.filter(x=>x!==id) : [...S.sets, id]; renderSetup(); },
-  opt(k){ readNames(); S[k]=!S[k]; renderSetup(); },
+  unitOpen(u){ readNames(); ui.openUnit = ui.openUnit===u ? null : u; ui.view==='room' ? renderRoom() : renderSetup(); },
+  unitAll(u){ if(!cfgEdit()) return; readNames(); const C=CFG(), ids=SETS.filter(x=>x.unit===u).map(x=>x.id); C.sets=[...new Set([...C.sets,...ids])]; cfgDone(); },
+  unitNone(u){ if(!cfgEdit()) return; readNames(); const C=CFG(), ids=new Set(SETS.filter(x=>x.unit===u).map(x=>x.id)); C.sets=C.sets.filter(x=>!ids.has(x)); cfgDone(); },
+  unitToggle(u){ const ids=SETS.filter(x=>x.unit===u).map(x=>x.id); ids.every(x=>CFG().sets.includes(x)) ? ACT.unitNone(u) : ACT.unitAll(u); },
+  setT(id){ if(!cfgEdit()) return; readNames(); const C=CFG(); C.sets = C.sets.includes(id) ? C.sets.filter(x=>x!==id) : [...C.sets, id]; cfgDone(); },
+  opt(k){ if(!cfgEdit()) return; readNames(); const C=CFG(); C[k]=!C[k]; cfgDone(); },
   begin(){ readNames(); if(!poolFor(S.sets).length) return; snd('ok'); startGame(); },
   /* 결과 */
   board(){ ui.showBoard=true; render(); },
   showres(){ ui.showBoard=false; render(); },
   /* 교사 */
   teacher(){ if(ui.busy) return; ui.layer={view:'menu'}; renderLayer(); },
+  ...NETACT,
   lclose(){ ui.layer=null; renderLayer(); },
   undoAsk(){
     if(!canUndo()) return;
     const who = S.rolled ? S.teams[S.turn].name : `앞 ${WHO()}`;
-    ask(`${who} 차례가 시작될 때로 되돌릴까요?`, ()=>undo());
+    if(online()) hostDo({k:'undo'}, `${who} 차례가 시작될 때로 되돌리기`);
+    else ask(`${who} 차례가 시작될 때로 되돌릴까요?`, ()=>undo());
   },
   gview(){ ui.layer={view:'grain'}; renderLayer(); },
   gsel(t){ ui.gsel=+t; renderLayer(); },
-  gadd(n){ const T=S.teams[ui.gsel]; T.grain+=(+n); S.msg=`교사: ${T.name} ${CUR} ${+n>0?'+':''}${money(n)}`; save(); renderLayer(); render(); },
+  gadd(n){
+    const T=S.teams[ui.gsel]; n=+n;
+    if(online()){ hostDo({k:'gadd', t:ui.gsel, n}, `${T.name} ${CUR} ${n>0?'+':''}${money(n)}`); return; }
+    applyHost({k:'gadd', t:ui.gsel, n}); renderLayer();
+  },
+  vyes(){ const V=NET.room?.vote; if(V) net({t:'vote', id:V.id, yes:true}); },
+  vno(){ const V=NET.room?.vote; if(V) net({t:'vote', id:V.id, yes:false}); },
   mview(){ if(S.rolled || S.pending) return; ui.layer={view:'move'}; renderLayer(); },
   msel(t){ ui.moveMode=+t; ui.layer=null; renderLayer(); render(); },
   mcancel(){ ui.moveMode=null; render(); },
-  pause(){ S.paused=!S.paused; save(); renderLayer(); render(); },
+  pause(){
+    if(!online()){ applyHost({k:'pause'}); renderLayer(); return; }
+    if(S.paused){ net({t:'pause', on:false}); ui.layer=null; renderLayer(); }   // 다시 시작은 동의 없이
+    else hostDo({k:'pause'}, '시간 멈추기');
+  },
   endAsk(){ ask('지금 게임을 끝내고 결과를 볼까요?', ()=>finish()); },
   newAsk(){ ask('새 게임을 시작할까요? 지금 판은 지워져요.', ()=>{ S=blank(S); ui.moveMode=null; ui.showBoard=false; save(); render(); }); },
+  endAsk2(){ hostDo({k:'end'}, '지금 게임을 끝내고 결과 보기'); },
   yes(){ const f=ui.layer?.yes; ui.layer=null; renderLayer(); f && f(); },
 };
 function ask(text, yes){ ui.layer={view:'confirm', text, yes}; renderLayer(); }
@@ -890,14 +1303,18 @@ document.addEventListener('click', e=>{
   const cell=e.target.closest('[data-cell]');
   if(ui.moveMode!=null && cell){
     const t=ui.moveMode, i=+cell.dataset.cell;
-    S.teams[t].pos=i; S.msg=`교사: ${S.teams[t].name} 말을 ${ro(`「${cname(i)}」`)} 옮겼어요`;
-    ui.moveMode=null; save(); render(); return;
+    ui.moveMode=null;
+    if(online()) hostDo({k:'move', t, i}, `${S.teams[t].name} 말을 ${ro(`「${cname(i)}」`)} 옮기기`);
+    else applyHost({k:'move', t, i});
+    return;
   }
   const b=e.target.closest('[data-act]'); if(!b || b.disabled) return;
   const act=b.dataset.act, inLayer=!!b.closest('#layer');
+  // 온라인: 내 차례가 아니면 판을 움직이는 단추는 안 눌린다 (구경만)
+  if(online() && GAME_ACTS.has(act) && !canAct()) return;
   // 화면이 바뀐 직후 같은 자리를 한 번 더 누른 것은 무시 (두 번 누르기 방지)
   if(!inLayer && now<ui.lockUntil) return;
-  if(ui.busy && act!=='lclose') return;
+  if(ui.busy && act!=='lclose' && !inLayer) return;
   ui.lockUntil = now+400;
   ACT[act] && ACT[act](b.dataset.v);
 });
@@ -913,7 +1330,8 @@ let rsT; addEventListener('resize', ()=>{ clearTimeout(rsT); rsT=setTimeout(()=>
 let lastTick=Date.now();
 setInterval(()=>{
   const now=Date.now(), d=now-lastTick; lastTick=now;
-  if(S.phase!=='play') return;
+  if(online()){ onlineTick(); return; }
+  if(ui.view!=='local' || S.phase!=='play') return;
   if(!S.paused && S.remaining>0){
     S.remaining=Math.max(0,S.remaining-d);
     if(S.remaining===0){ S.timeUp=true; toast(`시간 끝! ${S.teams[lastAlive()].name} 차례까지 하고 끝나요`, 2500); if(!ui.busy) render(); }
@@ -961,7 +1379,7 @@ function cellParts(i){
     if(o>=0){
       cls+=' owned'; style=`--own:${TC[o]}`;
       const tl=tollOf(i);
-      inner=`<div class="band"><span class="pill">${isEmoji(S.teams[o].name)?AV(S.teams[o].name):''}${esc(S.teams[o].name)}</span><span class="toll ${tl>baseToll(i)?'up':''}">통행 ${tl}</span></div><div class="nm">${esc(c.name)}</div>${bldHTML(i)}`;
+      inner=`<div class="band"><span class="pill">${isEmoji(S.teams[o])?AV(S.teams[o]):''}${esc(S.teams[o].name)}</span><span class="toll ${tl>baseToll(i)?'up':''}">통행 ${tl}</span></div><div class="nm">${esc(c.name)}</div>${bldHTML(i)}`;
     } else inner=`<div class="band"><span>땅 ${z.price}</span><span>통행 ${r10(baseToll(i)*(S.late?LATE_MULT:1))}</span></div><div class="nm">${esc(c.name)}</div>`;
   } else if(c.type==='card'){
     cls+=' card';
@@ -1003,7 +1421,7 @@ function renderTokens(hopT, snap){
     if(!alive(t)){ el && el.remove(); return; }
     if(!el){ el=document.createElement('div'); el.className='pin'; el.dataset.pin=t; el.innerHTML='<div class="body"><div class="head"></div><div class="face"><span></span></div></div>'; layer.appendChild(el); fresh=true; }
     el.style.setProperty('--c', TC[t]);
-    const face=el.querySelector('.face span'), av=AV(T.name);
+    const face=el.querySelector('.face span'), av=AV(T);
     if(face._av!==av){ face.innerHTML=av; face._av=av; }
     el.classList.toggle('now', t===S.turn && S.phase==='play');
     (groups[pos[t]] ||= []).push(t);
@@ -1044,8 +1462,11 @@ function diceHTML(){
 }
 function fmt(ms){ const s=Math.ceil(ms/1000); return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`; }
 function timerHTML(){
-  if(S.timeUp) return `<div class="timer up" id="timer">시간 끝 · ${esc(S.teams[lastAlive()].name)}까지</div>`;
-  return `<div class="timer" id="timer">${IMG('hourglass')}${S.paused?'멈춤':'남은 시간'}<b>${fmt(S.remaining)}</b></div>`;
+  // 온라인: 차례인 사람이 가만히 있으면 몇 초 뒤 자동으로 넘어가는지
+  const auto = online() && S.phase==='play' && !ui.busy ? Math.ceil((NET.room.deadline-serverNow())/1000) : 99;
+  const em = auto>0 && auto<=15 ? `<em>${auto}초 뒤 자동</em>` : '';
+  if(S.timeUp) return `<div class="timer up" id="timer">시간 끝 · ${esc(S.teams[lastAlive()].name)}까지${em}</div>`;
+  return `<div class="timer" id="timer">${IMG('hourglass')}${S.paused?'멈춤':'남은 시간'}<b>${fmt(S.remaining)}</b>${em}</div>`;
 }
 function renderTimer(){ const el=document.getElementById('timer'); if(el) el.outerHTML=timerHTML(); }
 
@@ -1054,13 +1475,14 @@ function renderCenter(){
   const el=document.getElementById('center'); if(!el) return;
   const t=S.turn, T=S.teams[t];
   el.style.setProperty('--tc', TC[t]);
-  const canRoll = S.phase==='play' && !ui.busy && !S.pending && !S.rolled && ui.moveMode==null && !S.paused;
+  const canRoll = S.phase==='play' && !ui.busy && !S.pending && !S.rolled && ui.moveMode==null && !S.paused && canAct();
+  const R = online() ? NET.room : null;
   const last = S.phase==='play' && S.catchup ? S.teams.map((_,k)=>alive(k) && isLast(k)) : [];
-  setPart('c-hud', `${S.phase==='play'?`<button id="tbtn" data-act="teacher" ${ui.busy?'disabled':''}>${GEAR}교사</button>`:''}
-    <div class="turn">${avHTML(T.name)}<b>${esc(T.name)}</b><small>차례</small></div>${timerHTML()}`);
+  setPart('c-hud', `${S.phase==='play'?`<button id="tbtn" data-act="teacher" ${ui.busy?'disabled':''}>${GEAR}${R?'메뉴':'교사'}</button>`:''}
+    <div class="turn">${avHTML(T)}<b>${esc(T.name)}</b><small>차례</small></div>${timerHTML()}`);
   setPart('c-banner', ui.moveMode!=null ? `<div class="mbanner">${esc(S.teams[ui.moveMode].name)} 말을 옮길 칸을 누르세요 <button data-act="mcancel">취소</button></div>` : '');
   setPart('c-dice', diceHTML());
-  setPart('c-roll', `<button id="roll" class="${canRoll?'go':''}" data-act="roll" ${canRoll?'':'disabled'}>굴리기!</button>`);
+  setPart('c-roll', `<button id="roll" class="${canRoll?'go':''}" data-act="roll" ${canRoll?'':'disabled'}>${canAct()||S.phase!=='play'?'굴리기!':`${esc(T.name)} 차례`}</button>`);
   setPart('c-msg', `<div class="msg">${esc(S.msg||'')}</div>`);
   const legend = Object.entries(ZONES).map(([k,z])=>`<span><i style="background:${ZONE_BG[k]}"></i>${z.name} ${z.price}</span>`).join('')
     + `<span>통행료: ${TH.up} 1${TH.upN} ×2 · 2${TH.upN} ×4 · 독점 ×2</span>`;
@@ -1070,9 +1492,10 @@ function renderCenter(){
   setPart('c-legend', `<div class="legend">${legend}</div>${modes?`<div class="legend">${modes}</div>`:''}`);
   setPart('c-teams', `<div class="teams" style="--n:${S.teams.length}">${S.teams.map((X,k)=>{
     const lands=LANDS.filter(i=>S.owner[i]===k), lan=sum(lands.map(i=>S.lan[i]));
-    const badge = X.out ? '<span class="badge">파산</span>' : X.skip ? '<span class="badge">쉼</span>' : last[k] ? `<span class="badge cheer">${RULE_ICON.turtle}<em>슬로우 스타터</em></span>` : '';
-    return `<div class="team ${k===t?'now':''} ${X.out?'out':''}" data-t="${k}" style="--c:${TC[k]}">${avHTML(X.name)}
-      <div class="ti"><div class="tn"><span>${esc(X.name)}</span>${badge}</div>
+    const away = R && R.players[k] && (R.players[k].left || !R.players[k].on);
+    const badge = X.out ? '<span class="badge">파산</span>' : away ? `<span class="badge">${R.players[k].left?'나감':'자리 비움'}</span>` : X.skip ? '<span class="badge">쉼</span>' : last[k] ? `<span class="badge cheer">${RULE_ICON.turtle}<em>슬로우 스타터</em></span>` : '';
+    return `<div class="team ${k===t?'now':''} ${X.out?'out':''}" data-t="${k}" style="--c:${TC[k]}">${avHTML(X)}
+      <div class="ti"><div class="tn"><span>${esc(X.name)}${R&&R.you===k?'<i class="me">나</i>':''}</span>${badge}</div>
       <div class="tg" id="tg-${k}">${X.out?'탈락':''}</div>
       <div class="ts"><span class="seat">${seat(k)+1}번 · </span>땅 ${lands.length} · ${TH.up} ${lan}</div></div></div>`;
   }).join('')}</div>`);
@@ -1113,9 +1536,18 @@ function renderModal(){
 }
 
 function modalHTML(){
+  const m=modalInner(); if(!m) return null;
+  // 온라인에서 남의 차례: 문제·결과는 같이 보고, 단추 대신 누가 고르는 중인지 보여 준다
+  if(online() && !canAct()){
+    const T=S.teams[S.turn];
+    return {key:m.key+'|spect', cls:(m.cls||'')+' spect', body:m.body+`<div class="spectnote">${avHTML(T)}${esc(eun(T.name))} 고르는 중…</div>`};
+  }
+  return m;
+}
+function modalInner(){
   const p=S.pending; if(!p || ui.busy || S.phase!=='play') return null;
   const t=S.turn, T=S.teams[t];
-  const head = (right='') => `<div class="mh"><span class="who">${avHTML(T.name)}${esc(T.name)}</span><span>${right}</span></div>`;
+  const head = (right='') => `<div class="mh"><span class="who">${avHTML(T)}${esc(T.name)}</span><span>${right}</span></div>`;
   const ztag = i => `<span class="ztag" style="background:${ZONE_BG[BOARD[i].zone]}">${ZONES[BOARD[i].zone].name}</span>`;
   const optsHTML = (opts, order, ans, ox) => `<div class="opts ${ox?'ox':''} ${ans!=null?'done':''}">${order.map((oi,k)=>{
       const st = ans==null ? '' : oi===0 ? 'right' : k===ans ? 'wrong' : 'dim';
@@ -1176,7 +1608,7 @@ function modalHTML(){
     }
     case 'info': {
       const c=BOARD[p.cell];
-      const eff = {start:`${CUR} ${money(LAP_BONUS)}을 받았어요.`, palgwan:`${CUR} +${money(PALGWAN_BONUS)}`, rest:'다음 차례에 한 번 쉬어요.'}[c.type];
+      const eff = {start:`${CUR} ${money(eco().lap)}을 받았어요.`, palgwan:`${CUR} +${money(PALGWAN_BONUS)}`, rest:'다음 차례에 한 번 쉬어요.'}[c.type];
       body = head() + `<div class="cardart" style="margin-top:1rem;background:none;box-shadow:none">${CORNER_ICON[c.type]||''}</div><div class="mt">${esc(c.name)}</div><div class="mp">${esc(c.text)}</div><div class="calc"><span class="sum">${eff}</span></div>`
         + `<div class="btns"><button class="big solid" data-act="info">확인</button></div>`;
       break;
@@ -1232,7 +1664,7 @@ function modalHTML(){
     }
     case 'order': {
       body = `<div class="mt" style="margin-top:.6rem">선 잡기</div><div class="mp">주사위 큰 수부터 해요.</div>
-        <div class="orderlist">${p.rolls.map((r,k)=>`<div class="orow" style="--c:${TC[r.t]};animation-delay:${k*.12}s"><b>${k+1}</b>${avHTML(S.teams[r.t].name)}<span class="on">${esc(S.teams[r.t].name)}</span>${dieHTML(r.d[0])}${dieHTML(r.d[1])}<em>${r.d[0]+r.d[1]}</em></div>`).join('')}</div>
+        <div class="orderlist">${p.rolls.map((r,k)=>`<div class="orow" style="--c:${TC[r.t]};animation-delay:${k*.12}s"><b>${k+1}</b>${avHTML(S.teams[r.t])}<span class="on">${esc(S.teams[r.t].name)}</span>${dieHTML(r.d[0])}${dieHTML(r.d[1])}<em>${r.d[0]+r.d[1]}</em></div>`).join('')}</div>
         <div class="btns"><button class="big solid" data-act="orderok">${esc(S.teams[p.rolls[0].t].name)}부터 시작!</button></div>`;
       break;
     }
@@ -1254,11 +1686,11 @@ function readNames(){
     S.names[k] = v || (S.mode==='team' ? `${k+1}모둠` : ANIMALS.map(a=>a[0]).find(n=>!S.names.includes(n)));
   });
 }
-function renderSetup(){
-  const el=document.getElementById('setup');
-  const pt=THEMES[themeFor()], nq=poolFor(S.sets).length, team=S.mode==='team';
+// 오른쪽 설정 칸(특수 룰·문제 범위·시간·게임 방법). C: 같은 화면이면 S, 온라인 방이면 방 설정. edit: 바꿀 수 있는가(방장)
+function cfgPanel(C, edit){
+  const pt=THEMES[themeFor()], nq=poolFor(C.sets).length, lateAt=fmt(Math.min(LATE_MS, C.minutes*60000/3));
   const fsOK = document.fullscreenEnabled || document.webkitFullscreenEnabled;
-  const ruleCard = (k, desc) => `<button class="rule ${S[k]?'on':''}" data-act="opt" data-v="${k}"><span class="ri">${RULE_ICON[RULES[k].icon]}</span><span class="rt">${RULES[k].name}</span><span class="sw"></span><span class="rd">${desc}</span></button>`;
+  const ruleCard = (k, desc) => `<button class="rule ${C[k]?'on':''}" data-act="opt" data-v="${k}"><span class="ri">${RULE_ICON[RULES[k].icon]}</span><span class="rt">${RULES[k].name}</span><span class="sw"></span><span class="rd">${desc}</span></button>`;
   const tabs = [['rules','특수 룰'],['qs','문제 범위'],['time','시간·소리'],['how','게임 방법']];
   let body='';
   if(ui.tab==='rules') body = `<div class="rulegrid">
@@ -1266,36 +1698,43 @@ function renderSetup(){
       ${ruleCard('share', `한 바퀴마다 1등이 ${pt.cur}의 ${SHARE_RATE*100}%를 꼴찌에게 기부`)}
       ${ruleCard('diceOrder', '시작할 때 주사위로 순서를 정해요')}
       ${ruleCard('bankrupt', '빚이 생기면 땅을 팔고, 그래도 모자라면 탈락')}
-    </div><div class="hint">눌러서 켜고 끌 수 있어요</div>`;
+    </div><div class="hint">${edit?'눌러서 켜고 끌 수 있어요':'방장이 정해요'}</div>`;
   else if(ui.tab==='qs') body = `<div class="hint" style="text-align:left">지금 <b style="font-weight:800;color:var(--ink)">${nq}문제</b> · 고른 주제에서 무작위로 나와요</div>
     ${UNITS.map(u=>{
-      const sets=SETS.filter(x=>x.unit===u.id), on=sets.filter(x=>S.sets.includes(x.id)).length, open=ui.openUnit===u.id;
-      const nqU=poolFor(sets.filter(x=>S.sets.includes(x.id)).map(x=>x.id)).length;
+      const sets=SETS.filter(x=>x.unit===u.id), on=sets.filter(x=>C.sets.includes(x.id)).length, open=ui.openUnit===u.id;
+      const nqU=poolFor(sets.filter(x=>C.sets.includes(x.id)).map(x=>x.id)).length;
       return `<div class="unit ${open?'open':''}">
         <div class="uhead"><button class="chk box ${on===sets.length?'on':on?'part':''}" data-act="unitToggle" data-v="${u.id}"><i></i></button>
         <button class="uname" data-act="unitOpen" data-v="${u.id}"><span>${open?'▾':'▸'} ${esc(u.name)}</span><small>${on}/${sets.length}주제 · ${nqU}문제</small></button></div>
         ${open?`<div class="ubtns"><button data-act="unitAll" data-v="${u.id}">모두 선택</button><button data-act="unitNone" data-v="${u.id}">모두 해제</button></div>
-        <div class="setgrid">${sets.map(x=>`<button class="chk ${S.sets.includes(x.id)?'on':''}" data-act="setT" data-v="${x.id}"><i></i><span>${esc(x.label)} <small>${setCount(x.id)}</small></span></button>`).join('')}</div>`:''}
+        <div class="setgrid">${sets.map(x=>`<button class="chk ${C.sets.includes(x.id)?'on':''}" data-act="setT" data-v="${x.id}"><i></i><span>${esc(x.label)} <small>${setCount(x.id)}</small></span></button>`).join('')}</div>`:''}
       </div>`;}).join('')}`;
   else if(ui.tab==='time') body = `
-    <div class="srow">플레이 시간 <span class="step"><button data-act="minus">−5</button><b>${S.minutes}분</b><button data-act="plus">+5</button></span></div>
-    <div class="srow">효과음 <button class="tg ${S.sound?'on':''}" data-act="sound">${S.sound?'켜짐':'꺼짐'}</button></div>
+    <div class="srow">플레이 시간 <span class="step"><button data-act="minus">−5</button><b>${C.minutes}분</b><button data-act="plus">+5</button></span></div>
+    <div class="srow">효과음 <button class="tg ${sndOn()?'on':''}" data-act="sound">${sndOn()?'켜짐':'꺼짐'}</button></div>
     ${fsOK?`<div class="srow">전체 화면 <button id="fsbtn" class="tg" data-act="fs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>${document.fullscreenElement||document.webkitFullscreenElement?'나가기':'켜기'}</button></div>`:''}
-    <div class="hint">남은 10분부터 물가가 올라요(통행료 ×${LATE_MULT}). 시간이 끝나면 그 바퀴의 마지막 ${WHO()}까지 해요.</div>`;
+    <div class="hint">남은 시간이 ${lateAt}이 되면 물가가 올라요(통행료 ×${LATE_MULT}). 시간이 끝나면 그 바퀴의 마지막 ${WHO()}까지 해요.</div>`;
   else body = `<ol class="rules">
-      <li>${pt.cur} <b>${START_GRAIN}${pt.unit}</b>으로 시작. ${pt.start}을 지나면 +${LAP_BONUS}.</li>
+      <li>${pt.cur} <b>${START_GRAIN}${pt.unit}</b>으로 시작. ${pt.start}을 지나면 +${ECO(C.minutes).lap}.</li>
       <li><b>빈 땅</b>: 문제를 맞히면 살 수 있다.</li>
       <li><b>우리 땅</b>: ${pt.up}(땅값의 절반) — 1${pt.upN} 통행료 ×2, 2${pt.upN} ×4.</li>
       <li><b>남의 땅</b>: 문제를 맞히면 통행료 <b>절반</b>. 같은 색 4칸 독점 ×2.</li>
       <li><b>${pt.card}</b>: 돈을 받거나 잃거나, 퀴즈가 나온다.</li>
-      <li>남은 10분부터 <b>물가 상승</b> ×${LATE_MULT}. 시간이 끝나면 <b>그 바퀴 마지막 ${WHO()}까지</b>.</li>
-      <li>점수 = ${pt.cur} + 가진 땅값 + ${pt.up}값.${S.bankrupt?' 탈락하면 맨 아래.':' 모자라면 빚(마이너스).'}</li>
+      <li>남은 시간 ${lateAt}부터 <b>물가 상승</b> ×${LATE_MULT}. 시간이 끝나면 <b>그 바퀴 마지막 ${WHO()}까지</b>.</li>
+      <li>점수 = ${pt.cur} + 가진 땅값 + ${pt.up}값.${C.bankrupt?' 탈락하면 맨 아래.':' 모자라면 빚(마이너스).'}</li>
+      ${ui.view==='local'?'':'<li>차례에 45초 동안 아무것도 안 하면 <b>자동으로</b> 넘어간다.</li>'}
     </ol>`;
+  return `<div class="tabs">${tabs.map(([k,l])=>`<button class="${ui.tab===k?'on':''}" data-act="tab" data-v="${k}">${l}</button>`).join('')}</div>
+      <div class="tabbody ${edit?'':'ro'}">${body}</div>`;
+}
+function renderSetup(){
+  const el=document.getElementById('setup'); el.dataset.v='local';
+  const nq=poolFor(S.sets).length, team=S.mode==='team';
   el.innerHTML = `<div class="lobby">
     <div class="l-left">
       <div class="rays"></div>
       <div class="logo"><span class="l1">사회</span><span class="l2">마블</span></div>
-      <div class="tag">주사위 굴리고 · 문제 맞히고 · 땅 사고!</div>
+      ${modeSeg('local')}
       <div class="panel players">
         <div class="prow">
           <div class="seg"><button class="${team?'':'on'}" data-act="mode" data-v="solo">개인전</button><button class="${team?'on':''}" data-act="mode" data-v="team">모둠전</button></div>
@@ -1306,11 +1745,9 @@ function renderSetup(){
       </div>
       <button class="start" data-act="begin" ${nq?'':'disabled'}>게임 시작!</button>
       ${nq?'':'<div class="warnline">[문제 범위]에서 주제를 하나 이상 골라 주세요.</div>'}
+
     </div>
-    <div class="l-right panel">
-      <div class="tabs">${tabs.map(([k,l])=>`<button class="${ui.tab===k?'on':''}" data-act="tab" data-v="${k}">${l}</button>`).join('')}</div>
-      <div class="tabbody">${body}</div>
-    </div>
+    <div class="l-right panel">${cfgPanel(S, true)}</div>
   </div>`;
 }
 
@@ -1322,15 +1759,17 @@ function renderResult(){
   el.innerHTML = `<h2>게임 끝!</h2><div class="ranks" style="--n:${S.teams.length}">${[...live,...dead].map((x,k)=>{
     const rank = x.T.out ? live.length+1+dead.indexOf(x) : 1+live.filter(y=>y.total>x.total).length;
     const delay = `animation-delay:${(S.teams.length-k)*.15}s`;
-    if(x.T.out) return `<div class="rk out" style="--c:${TC[x.t]};${delay}"><div class="rh">${avHTML(x.T.name)}<div class="r">${rank}위</div></div><div class="n">${esc(x.T.name)}</div><div class="s">파산</div><div class="none">${x.T.outNo}번째로 탈락했어요</div></div>`;
+    if(x.T.out) return `<div class="rk out" style="--c:${TC[x.t]};${delay}"><div class="rh">${avHTML(x.T)}<div class="r">${rank}위</div></div><div class="n">${esc(x.T.name)}</div><div class="s">파산</div><div class="none">${x.T.outNo}번째로 탈락했어요</div></div>`;
     return `<div class="rk ${rank===1?'first':''}" style="--c:${TC[x.t]};${delay}">${rank===1?CROWN_IMG:''}
-      <div class="rh">${avHTML(x.T.name)}<div class="r">${rank}위</div></div><div class="n">${esc(x.T.name)}</div><div class="s">${x.total}</div>
+      <div class="rh">${avHTML(x.T)}<div class="r">${rank}위</div></div><div class="n">${esc(x.T.name)}</div><div class="s">${x.total}</div>
       <table><tr><td>${CUR}</td><td>${g(x.T.grain)}</td></tr><tr><td>가진 땅값</td><td>${money(x.landV)}</td></tr><tr><td>${TH.up}값</td><td>${money(x.lanV)}</td></tr>
       <tr class="tot"><td>합계</td><td>${money(x.total)}</td></tr></table>
       ${x.monos.map(z=>`<div class="mono">구역 독점: ${ZONES[z].name}</div>`).join('')}
       <div class="chips">${x.lands.length ? x.lands.map(i=>`<span class="chip" style="background:${ZONE_BG[BOARD[i].zone]}">${esc(BOARD[i].name)}${UPICON().repeat(S.lan[i])}</span>`).join('') : '<span class="none">가진 땅 없음</span>'}</div>
     </div>`;}).join('')}</div>
-    <div class="btns"><button class="big" data-act="board">보드 보기</button><button class="big solid" data-act="newAsk">새 게임</button></div>`;
+    ${online() ? `<div class="btns"><button class="big" data-act="board">보드 보기</button>${NET.room.you===NET.room.host?'<button class="big solid" data-act="again">한 판 더</button>':''}<button class="big" data-act="leaveAsk">나가기</button></div>
+      ${NET.room.you===NET.room.host?'':'<div class="waitmsg">방장이 [한 판 더]를 누르면 같은 방에서 다시 해요</div>'}`
+    : '<div class="btns"><button class="big" data-act="board">보드 보기</button><button class="big solid" data-act="newAsk">새 게임</button></div>'}`;
 }
 
 function renderLayer(){
@@ -1338,7 +1777,26 @@ function renderLayer(){
   if(!L){ el.hidden=true; el.innerHTML=''; return; }
   el.hidden=false;
   let h='';
-  if(L.view==='menu'){
+  if(L.view==='menu' && online()){
+    // 방장 단추: 오프라인의 교사 단추와 같지만, 참여자 과반이 [동의]해야 실행된다
+    const mid = S.rolled || !!S.pending;
+    h = `<h3>메뉴</h3>
+      ${isHost() ? `<div class="grid3">
+        <button data-act="undoAsk" ${canUndo()?'':'disabled'}>되돌리기</button>
+        <button data-act="gview">${CUR} 조정</button>
+        <button data-act="mview" ${mid?'disabled':''}>말 옮기기</button>
+        <button data-act="pause">${S.paused?'시간 계속':'시간 멈추기'}</button>
+        <button data-act="endAsk2">지금 끝내기</button>
+        <button data-act="leaveAsk">방 나가기</button></div>
+        <div class="note">방장 단추는 참여자 과반이 [동의]해야 실행돼요. (시간 계속은 바로)</div>`
+      : `<div class="row"><button data-act="leaveAsk">방 나가기</button></div>`}
+      <div class="row"><button data-act="sound">효과음 ${sndOn()?'끄기':'켜기'}</button><button data-act="lclose">닫기</button></div>
+      <div class="note">방을 나가면 남은 차례는 자동으로 넘어가요. 창을 닫았다가 다시 열면 같은 판으로 돌아와요.</div>`;
+  } else if(L.view==='vote'){
+    h = voteHTML();
+  } else if(L.view==='char'){
+    h = charHTML();
+  } else if(L.view==='menu'){
     const mid = S.rolled || !!S.pending;
     h = `<h3>교사</h3><div class="grid3">
       <button data-act="undoAsk" ${canUndo()?'':'disabled'}>되돌리기</button>
@@ -1353,7 +1811,7 @@ function renderLayer(){
     const T=S.teams[ui.gsel];
     h = `<h3>${CUR} 조정</h3><div class="row">${S.teams.map((X,k)=>`<button class="${k===ui.gsel?'sel':''}" style="--c:${TC[k]}" data-act="gsel" data-v="${k}" ${X.out?'disabled':''}>${esc(X.name)}</button>`).join('')}</div>
       <div class="calc"><span class="sum">${esc(T.name)} ${g(T.grain)}</span></div>
-      <div class="row">${[-100,-50,-10,10,50,100].map(n=>`<button data-act="gadd" data-v="${n}">${n>0?'+':''}${n}</button>`).join('')}</div>
+      <div class="row">${[-100,-50,-10,10,50,100].map(n=>`<button data-act="gadd" data-v="${n}">${n>0?'+':''}${n}</button>`).join('')}</div>${online()?'<div class="note">누르면 참여자들에게 동의를 물어요</div>':''}
       <button data-act="teacher">뒤로</button>`;
   } else if(L.view==='move'){
     h = `<h3>말 옮기기</h3><div class="note">옮길 ${WHO()}를 고른 다음 보드에서 칸을 누르세요. 칸 효과는 없어요.</div>
@@ -1367,6 +1825,12 @@ function renderLayer(){
 
 function render(){
   const setup=document.getElementById('setup'), result=document.getElementById('result');
+  if(ui.view==='home' || ui.view==='room'){
+    setup.hidden=false; result.hidden=true; document.getElementById('backres').hidden=true;
+    document.getElementById('board').innerHTML=''; ui.fxq=[];
+    ui.view==='home' ? renderHome() : renderRoom();
+    return;
+  }
   setup.hidden = S.phase!=='setup';
   result.hidden = !(S.phase==='over' && !ui.showBoard);
   document.getElementById('backres').hidden = !(S.phase==='over' && ui.showBoard);
@@ -1386,7 +1850,7 @@ function toast(text, ms=1300){
 function turnBanner(){
   if(S.phase!=='play') return;
   const T=S.teams[S.turn], el=document.getElementById('tb');
-  el.innerHTML=`<div class="rib" style="--c:${TC[S.turn]}">${avHTML(T.name)}<span>${esc(T.name)} <small>차례!</small></span></div>`;
+  el.innerHTML=`<div class="rib" style="--c:${TC[S.turn]}">${avHTML(T)}<span>${esc(T.name)} <small>차례!</small></span></div>`;
   snd('whoosh');
 }
 function center(el){ const r=el.getBoundingClientRect(); return [r.left+r.width/2, r.top+r.height/2]; }
@@ -1425,7 +1889,7 @@ function confetti(x, y, n=40){
 /* 효과음: 파일 없이 브라우저에서 바로 만든다 */
 let AC, NOISE;
 function snd(kind){
-  if(!S.sound) return;
+  if(!sndOn()) return;
   try{
     AC = AC || new (window.AudioContext||window.webkitAudioContext)();
     if(AC.state==='suspended') AC.resume();
@@ -1460,7 +1924,10 @@ function snd(kind){
 }
 
 // 그리다가 문제가 생기면 빈 화면 대신 안내를 띄운다
-try{ render(); }catch(e){
+try{
+  if(ui.view==='home'){ if(ME) connect(); else { ui.layer={view:'char'}; renderLayer(); } }
+  paint(); render();
+}catch(e){
   console.error(e);
   document.body.insertAdjacentHTML('beforeend', `<div class="screen" style="z-index:99;flex-direction:column;gap:1.4rem;font-size:2rem;text-align:center;color:#fff">화면을 여는 중에 문제가 생겼어요.<br><small style="font-size:1.4rem">${esc(e.message)}</small><button class="big solid" onclick="localStorage.removeItem(KEY);location.reload()">저장된 판 지우고 새로 시작</button></div>`);
 }
