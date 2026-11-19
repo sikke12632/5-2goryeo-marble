@@ -509,7 +509,7 @@ svg.lock{width:1.2em;height:1.2em;vertical-align:-.15em;margin-right:.3em;flex:0
 <script src="data.js?v=7"></script>
 <script src="bank.js?v=7"></script>
 <script src="bank2.js?v=7"></script>
-<script src="bank3.js?v=8"></script>
+<script src="bank3.js?v=9"></script>
 <script>
 'use strict';
 const KEY = 'goryeoMarble.v2';
@@ -581,8 +581,12 @@ const themeFor = packs => 'world';
 // 예전에 저장된 '문제 묶음'을 차시 묶음 목록으로 바꾼다
 const setsFromPacks = packs => [...new Set((packs||[]).flatMap(id=>PACKS.find(p=>p.id===id)?.sets || []))];
 const setCount = id => BANK.filter(q=>q.set===id).length;
+// 검수 전 단원(UNITS 의 hidden:true)은 주소 끝에 ?review 를 붙였을 때만 [문제 범위]에 보이고 문제로 나온다
+const REVIEW = new URLSearchParams(location.search).has('review');
+const unitShown = u => !u.hidden || REVIEW;
+const setShown = id => { const x=SETS.find(s=>s.id===id), u=x && UNITS.find(v=>v.id===x.unit); return !!u && unitShown(u); };
 function poolFor(setIds){
-  const sets = new Set(setIds||[]);
+  const sets = new Set((setIds||[]).filter(setShown));
   return BANK.map((q,k)=>sets.has(q.set)?k:-1).filter(k=>k>=0);
 }
 const idxOf = name => BOARD.findIndex(c=>c.name===name);
@@ -1778,7 +1782,7 @@ function cfgPanel(C, edit){
       ${ruleCard('bankrupt', '빚이 생기면 땅을 팔고, 그래도 모자라면 탈락')}
     </div><div class="hint">${edit?'눌러서 켜고 끌 수 있어요':'방장이 정해요'}</div>`;
   else if(ui.tab==='qs') body = `<div class="hint" style="text-align:left">지금 <b style="font-weight:800;color:var(--ink)">${nq}문제</b> · 고른 주제에서 무작위로 나와요</div>
-    ${UNITS.map(u=>{
+    ${UNITS.filter(unitShown).map(u=>{
       const sets=SETS.filter(x=>x.unit===u.id), on=sets.filter(x=>C.sets.includes(x.id)).length, open=ui.openUnit===u.id;
       const nqU=poolFor(sets.filter(x=>C.sets.includes(x.id)).map(x=>x.id)).length;
       return `<div class="unit ${open?'open':''}">
